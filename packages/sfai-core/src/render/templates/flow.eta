@@ -1,0 +1,166 @@
+# Flow: <%= it.flow.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.flow.fullyQualifiedName %>`
+<% if (it.flow.label) { %>- Label: <%= it.flow.label %><% } %>
+- Type: <%= it.flow.type %>
+- Status: <%= it.flow.status %>
+<% if (it.flow.triggeringObject) { %>- Triggering Object: `<%= it.flow.triggeringObject %>`<% } %>
+- Source: `<%= it.flow.sourcePath %>`
+- Content hash: `<%= it.flow.contentHash %>`
+<% if (it.flow.description) { %>
+## Description
+<%= it.flow.description %>
+<% } %>
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="elements" -->
+## 構成要素 (<%= it.flow.body ? it.flow.body.elements.length : 0 %>)
+
+<% if (!it.flow.body || it.flow.body.elements.length === 0) { %>
+(検出要素なし)
+<% } else { %>
+| 種別 | API 名 | ラベル | 対象 |
+|---|---|---|---|
+<% it.flow.body.elements.forEach(function(e){ %>
+| <%= e.kind %> | `<%= e.name %>` | <%= e.label || "—" %> | <%= e.target ? "`"+e.target+"`" : "—" %> |
+<% }) %>
+<% } %>
+
+### 操作対象オブジェクト
+<% if (!it.flow.body || it.flow.body.recordObjects.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.flow.body.recordObjects.forEach(function(o){ %>
+- `<%= o %>`
+<% }) %>
+<% } %>
+
+### サブフロー / アクション呼び出し
+<% if (it.flow.body && it.flow.body.subflows.length > 0) { %>
+- サブフロー:
+<% it.flow.body.subflows.forEach(function(s){ %>
+  - `<%= s %>`
+<% }) %>
+<% } %>
+<% if (it.flow.body && it.flow.body.actionCalls.length > 0) { %>
+- アクション:
+<% it.flow.body.actionCalls.forEach(function(a){ %>
+  - `<%= a %>`
+<% }) %>
+<% } %>
+<% if (!it.flow.body || (it.flow.body.subflows.length === 0 && it.flow.body.actionCalls.length === 0)) { %>
+(検出なし)
+<% } %>
+<!-- DETERMINISTIC_END id="elements" -->
+
+<!-- DETERMINISTIC_START id="flow-diagram" -->
+## 処理フロー (詳細)
+
+<% if (it.flowchart) { %>
+```mermaid
+<%~ it.flowchart %>
+```
+
+<% if (it.flowchartDetails && it.flowchartDetails.length > 0) { %>
+**ノード詳細**
+
+| Step | 種別 | 内容 |
+|---|---|---|
+<% it.flowchartDetails.forEach(function(d){ %>
+| `<%~ d.id %>` | <%~ d.kind %> | `<%~ d.fullText %>` |
+<% }) %>
+<% } %>
+<% } else { %>
+(Flow body 未取得)
+<% } %>
+<!-- DETERMINISTIC_END id="flow-diagram" -->
+
+<!-- DETERMINISTIC_START id="dependencies" -->
+## Dependencies (<%= it.dependencies.length %>)
+
+<% if (it.dependencies.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.dependencies.forEach(function(d){ %>
+- <%= d.kind %>: `<%= d.from.kind %>:<%= d.from.fullyQualifiedName %>` → `<%= d.to.kind %>:<%= d.to.fullyQualifiedName %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="dependencies" -->
+
+<!-- DETERMINISTIC_START id="processing-sequence-table" -->
+## 処理詳細 — 実行シーケンス表
+
+<% if (!it.flowSequenceRows || it.flowSequenceRows.length === 0) { %>
+(処理シーケンスを構成できる要素なし)
+<% } else { %>
+| 順 | 要素名 | 種別 | 概要 |
+|---|---|---|---|
+<% it.flowSequenceRows.forEach(function(r){ %>
+| <%= r.order %> | `<%= r.name %>`<%= r.label ? " ("+r.label+")" : "" %> | <%= r.kind %> | <%~ r.summary %> |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="processing-sequence-table" -->
+
+<!-- AI_MANAGED_START id="processing-overview-narrative" -->
+## 処理概要 — 自然言語での説明
+
+この Flow 全体の処理の流れを 1〜2 段落で記述する。「起動条件 → 主要な分岐 → 最終的な副作用 (作成/更新/通知)」を大きな粒度で説明する (AI 生成)。
+<!-- AI_MANAGED_END id="processing-overview-narrative" -->
+
+<!-- AI_MANAGED_START id="processing-details-narrative" -->
+## 処理詳細 — 要素ごとの自然言語説明
+
+各要素が何をしているかを順に詳述する。
+
+- **`<elementName>`**: この要素が扱うデータ / 条件 / 結果を 1〜2 行で書く
+
+(AI 生成、再生成で上書き)
+<!-- AI_MANAGED_END id="processing-details-narrative" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+この Flow の役割と用途 (AI 生成、再生成で上書き)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- AI_MANAGED_START id="narrative" -->
+## この Flow は何で、なぜ存在するか
+
+この Flow が解いている業務上の課題と、なぜ Flow (Apex / Trigger ではなく) で実装したかを 2〜3 段落で記述する (AI 生成)。
+<!-- AI_MANAGED_END id="narrative" -->
+
+<!-- AI_MANAGED_START id="business-scenario" -->
+## 典型的な業務シナリオ
+
+この Flow が起動される典型ケースを「いつ / 誰の操作 / どのレコード変化」の粒度で具体例として書く (AI 生成)。
+<!-- AI_MANAGED_END id="business-scenario" -->
+
+<!-- AI_MANAGED_START id="operational-notes" -->
+## 運用上の留意点
+
+bulk 化制約 / 既存 Trigger との順序関係 / 失敗時の挙動 / 監視ポイントを記述する (AI 生成)。
+<!-- AI_MANAGED_END id="operational-notes" -->
+
+<!-- DETERMINISTIC_START id="auto-concerns" -->
+## 自動検出された懸念点 (<%= it.concerns ? it.concerns.length : 0 %>)
+
+<% if (!it.concerns || it.concerns.length === 0) { %>
+(検出なし)
+<% } else { %>
+<% it.concerns.forEach(function(c){ %>
+- **[<%= c.severity %>] <%= c.title %>**<% if (c.detail) { %> — <%= c.detail %><% } %>
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="auto-concerns" -->
+
+<!-- AI_MANAGED_START id="concerns" -->
+## 補足の懸念 (AI / 人手で追記)
+<!-- 業務的観点や運用観点での懸念を追記。AI 推測 / Phase 7-D 以降で精度向上。 -->
+<!-- AI_MANAGED_END id="concerns" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 業務文脈・運用上の留意点をここに記述。AI は上書きしません。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

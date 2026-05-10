@@ -1,0 +1,147 @@
+---
+description: sample-project のリリース資材 (release_doc) を 6 セクションで自動生成する
+argument-hint: --from <previous-release-tag> [--to <ref>] [--version <vX.Y.Z>] [--include-static-analysis <sarif>]
+---
+
+# /release-prep $ARGUMENTS
+
+## 目的
+
+Git の 2 リビジョン間の差分を意味づけし、**リリースドキュメント** を `docs/releases/<version>.md` に配置する。
+リリース事故の最大要因「手動作業の抜け」を構造的に防ぐ。
+
+## 実行手順
+
+### ステップ 1: 既知ナレッジ確認
+
+`.agents/knowledge/INDEX.md` をスキャン:
+- `decisions/` で過去のリリース判断
+- `pitfalls/` でリリース時の既知ワナ
+- `docs/releases/` の過去リリース doc
+
+### ステップ 2: change_summary を生成 (まだ無ければ)
+
+```
+/classify-diff --from <fromRef> --to <toRef>
+```
+
+生成済みなら最新の `docs/ai-augmented/change-summaries/*.json` を読む。
+
+### ステップ 3: 手動作業抽出
+
+**まずルールベース** で `extractManualSteps` を呼ぶ (sfai-core 内部で決定的):
+
+```bash
+# 内部的には sfai が呼ぶ。Claude Code からは change_summary を読み込んで結果を表示する想定。
+```
+
+**続けて** `manual-step-extractor` subagent を Task 起動して、ルールベースで拾えない手動作業を補完:
+
+```
+Task: manual-step-extractor
+Input: <change_summary.json>, <ルールベース抽出済 manual_steps[]>
+Output: 追加すべき manual_step[] (id 帯 100..199)
+```
+
+### ステップ 4: release-composer + rollback-drafter を **並列起動**
+
+1 メッセージ内で 2 つの Task ツール呼び出し:
+
+| subagent | 入力 | 出力 |
+|---|---|---|
+| release-composer | change_summary + manual_steps | release_doc 全体 (rollbackDraft は空) |
+| rollback-drafter | change_summary + manual_steps | rollbackDraft (Tracked<string[]>) |
+
+### ステップ 5: 統合 + スキーマ検証
+
+- composer 出力の `rollbackDraft` を drafter 出力で置き換え
+- ajv で `release-doc.schema.json` 適合確認
+- 失敗したら subagent 出力を修正
+
+### ステップ 6: Markdown 出力
+
+`docs/releases/<version>.md` に以下構造で書き出す:
+
+```markdown
+# Release <version>
+
+> 自動生成 (sfai release-prep): <createdAt>
+> ⚠ ロールバック手順は ドラフト です。実行前に必ず人手で精査してください。
+
+<!-- DETERMINISTIC_START id="targets" -->
+## 1. リリース対象
+- ...
+<!-- DETERMINISTIC_END id="targets" -->
+
+<!-- DETERMINISTIC_START id="manual-steps" -->
+## 2. 手動作業チェックリスト
+
+### Pre-Release
+- [ ] **<title>** (target: `<entity>`, ロール: <role>, 所要: <min>分)
+  - 手順: ...
+  - 確認: ...
+
+### During-Release
+...
+
+### Post-Release
+...
+<!-- DETERMINISTIC_END id="manual-steps" -->
+
+<!-- AI_MANAGED_START id="checks" -->
+## 3. 事前確認 / 4. 事後確認 (AI ドラフト)
+...
+<!-- AI_MANAGED_END id="checks" -->
+
+<!-- AI_MANAGED_START id="go-no-go" -->
+## 5. Go / No-Go 判断材料 (AI ドラフト、人手承認前提)
+- 判定: <verdict>
+- 根拠: ...
+<!-- AI_MANAGED_END id="go-no-go" -->
+
+<!-- AI_MANAGED_START id="rollback-draft" -->
+## 6. ロールバック手順 (⚠ ドラフト、人手精査必須)
+...
+<!-- AI_MANAGED_END id="rollback-draft" -->
+
+<!-- HUMAN_MANAGED_START id="customer-comm" -->
+## 7. 顧客周知文 (テンプレート + 人手仕上げ)
+<!-- HUMAN_MANAGED_END id="customer-comm" -->
+```
+
+JSON も `docs/releases/<version>.json` として配置 (機械可読バックアップ)。
+
+### ステップ 7: 手動作業レジストリ更新
+
+`ops/registry/manual-steps-registry.md` に新規 manual_step を追記 (重複検出して dedupe)。
+
+### ステップ 8: メトリクス記録
+
+```bash
+sfai metrics record --model claude-sonnet-4-6 --command /release-prep --in <est> --out <est>
+```
+
+## 出力フォーマットの厳守
+
+- HUMAN_MANAGED ブロックは AI 上書き禁止
+- ロールバック手順には必ず ⚠ 警告を含める
+- 顧客周知文は **テンプレート埋め込み** で自由生成しない
+- AI 推測の値には source: ai と promptHash を必ず付与
+
+## 大型リリース対応
+
+- 100+ ファイル変更時はカテゴリ別代表サンプルで manual_step を抽出
+- truncate された旨を release_doc 冒頭に記載
+- 詳細は本サイクルでは扱わず Phase 7 で
+
+## 禁則
+
+- **ロールバック手順を実行しない**: ドラフト生成のみ
+- **顧客周知文の自由生成禁止**: テンプレート埋め込み方式
+- **手動作業の見逃しを許容しない**: 過剰検出 > 見逃し
+- **HUMAN_MANAGED ブロックの上書き禁止**
+
+## 関連
+
+- decisions/[Phase 4 計画](../../.agents/knowledge/decisions/2026-05-07-phase-4-plan.md)
+- decisions/[source 列必須化](../../.agents/knowledge/decisions/2026-05-07-source-column-three-layer-boundary.md)

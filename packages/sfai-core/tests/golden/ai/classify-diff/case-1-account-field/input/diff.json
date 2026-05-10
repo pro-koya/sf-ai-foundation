@@ -1,0 +1,15 @@
+{
+  "fromRef": "main",
+  "toRef": "feat/account-industry",
+  "files": [
+    {
+      "path": "force-app/main/default/objects/Account/fields/Industry.field-meta.xml",
+      "changeKind": "modified",
+      "metadataType": "CustomField",
+      "fullyQualifiedName": "Account.Industry",
+      "category": "data_model",
+      "addedLines": 5,
+      "removedLines": 1
+    }
+  ]
+}

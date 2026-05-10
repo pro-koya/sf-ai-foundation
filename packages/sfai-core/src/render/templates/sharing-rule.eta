@@ -1,0 +1,50 @@
+# SharingRule: <%= it.sr.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.sr.fullyQualifiedName %>`
+- Object: `<%= it.sr.object %>`
+- Kind: <%= it.sr.kind === "criteriaBased" ? "条件ベース (criteriaBased)" : "オーナーベース (ownerBased)" %>
+<% if (it.sr.label) { %>- Label: <%= it.sr.label %><% } %>
+- Access Level: `<%= it.sr.accessLevel %>`
+- Shared To: `<%= it.sr.sharedTo.type %>`<%= it.sr.sharedTo.target ? ` → ${it.sr.sharedTo.target}` : "" %>
+<% if (it.sr.ownerSource) { %>- Owner Source: `<%= it.sr.ownerSource %>`<% } %>
+<% if (it.sr.description) { %>- Description: <%= it.sr.description %><% } %>
+- Source: `<%= it.sr.sourcePath %>`
+- Content hash: `<%= it.sr.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="conditions" -->
+## 条件
+
+<% if (it.sr.kind === "criteriaBased") { %>
+<% if (it.sr.criteriaItems.length === 0) { %>
+(条件なし — 全レコードが対象)
+<% } else { %>
+<% if (it.sr.criteriaBooleanFilter) { %>**Boolean filter:** `<%= it.sr.criteriaBooleanFilter %>`<% } %>
+
+| # | フィールド | 演算子 | 値 |
+|---|---|---|---|
+<% it.sr.criteriaItems.forEach(function(c, i){ %>
+| <%= i + 1 %> | `<%= c.field %>` | `<%= c.operation %>` | `<%= c.value %>` |
+<% }) %>
+
+**自然語**
+
+<%~ it.conditionsNatural %>
+<% } %>
+<% } else { %>
+オーナーベース共有: `<%= it.sr.ownerSource ?? "(unknown)" %>` のレコードを `<%= it.sr.sharedTo.type %>` に共有 (<%= it.sr.accessLevel %>)。
+<% } %>
+<!-- DETERMINISTIC_END id="conditions" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+この共有ルールの業務的役割 (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 過剰共有の懸念や運用上の引き継ぎ事項を人手記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

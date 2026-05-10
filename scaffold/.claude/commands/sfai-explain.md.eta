@@ -1,0 +1,72 @@
+---
+description: <%= it.projectName %> の AI_MANAGED ブロックを再生成して書き戻す
+argument-hint: <kind> <fqn> [block-id1] [block-id2] ...
+---
+
+# /sfai-explain $ARGUMENTS
+
+決定的に取得したファクト (`sfai graph query`) と Markdown 上の DETERMINISTIC ブロックだけを材料に、AI_MANAGED ブロックの内容を再生成し、`sfai explain-write` で書き戻す。
+
+## 入力
+
+```
+/sfai-explain <kind> <fqn> [block-id...]
+```
+
+- `<kind>`: `apexClass` | `apexTrigger` | `flow` | `object` | `lwc` | `auraBundle` | `flexiPage` | `visualforcePage` | `visualforceComponent` | `customApplication`
+- `<fqn>`: 完全名 (例: `AccountBalanceService` / `Order__c` / `Order_AutoCreateShipmentOnApproval`)
+- `[block-id...]`: 対象ブロック ID。省略時は kind に対応する全 ID を再生成
+
+## 実行手順
+
+1. 引数を解析し、`<kind>` が許容値か検証する
+2. 知識グラフからファクトを取得:
+   ```bash
+   sfai graph query "SELECT * FROM <table> WHERE fqn = '<fqn>'"
+   ```
+3. **explain-writer subagent を起動** し、各 block-id ごとに本文を生成させる
+   - subagent は **DETERMINISTIC ブロックの内容のみを材料** にする
+   - 既存の AI_MANAGED ブロックは読み取らない (再生成性を担保)
+   - HUMAN_MANAGED ブロックも参照しない (人間の聖域)
+4. 生成結果を一時 JSON に書き出す:
+   ```bash
+   cat > /tmp/sfai-explain-<fqn>.json <<'EOF'
+   {
+     "narrative": "...",
+     "business-scenario": "...",
+     "processing-overview-narrative": "..."
+   }
+   EOF
+   ```
+5. CLI 経由で書き戻す:
+   ```bash
+   sfai explain-write --kind <kind> --fqn <fqn> --input /tmp/sfai-explain-<fqn>.json
+   ```
+6. 結果を確認:
+   ```bash
+   cat docs/generated/<subdir>/<fqn>.md | head -60
+   ```
+
+## 各 kind の許容ブロック ID
+
+| Kind | ブロック ID |
+|---|---|
+| `apexClass` | purpose / concerns / narrative / business-scenario / key-design-decisions / processing-overview-narrative / processing-details-narrative |
+| `apexTrigger` | purpose / concerns / narrative / operational-notes / processing-overview-narrative / processing-details-narrative |
+| `flow` | purpose / concerns / narrative / business-scenario / operational-notes / processing-overview-narrative / processing-details-narrative |
+| `object` | summary / narrative / business-domain |
+| `lwc` / `auraBundle` / `flexiPage` / `visualforceComponent` | purpose |
+| `visualforcePage` / `customApplication` | purpose / narrative |
+
+## 禁則
+
+- DETERMINISTIC ブロック (件数 / 表 / Mermaid) は AI 生成の対象にしない
+- HUMAN_MANAGED ブロックには **絶対に書き込まない**
+- 知識グラフに無い情報を捏造しない (推測する場合は明示する)
+- 顧客固有情報を文中に含めない (匿名化)
+
+## 失敗時の挙動
+
+- `sfai explain-write` がマーカー数の変動を検出したらロールバックされる (Phase 8 の保全契約)
+- registry に無い ID を渡した場合は **早期エラー** で書き戻し前に失敗する
+- 該当ブロックが Markdown 上に存在しない場合は `skipped` 扱い (古い Markdown を新ブロック ID で更新しようとしたケース)

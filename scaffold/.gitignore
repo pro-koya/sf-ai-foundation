@@ -1,0 +1,34 @@
+# SF-AI-Foundation 由来の生成物 (再生成可能)
+.sfai/graph.sqlite
+.sfai/graph.sqlite-journal
+.sfai/cache/
+.sfai/onboarding-state.json
+.sfai/metrics-cache/
+
+# Claude Code セッションローカル
+.claude/local/
+.claude/sessions/
+
+# Salesforce DX
+.sf/
+.sfdx/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# ログ
+*.log
+logs/
+
+# 環境変数
+.env
+.env.local
+.env.*.local

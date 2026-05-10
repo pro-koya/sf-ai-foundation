@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "@sf-ai-foundation/sfai",
+  "version": "0.1.0",
+  "description": "Salesforce 特化の AI 駆動開発支援基盤。属人化解消・運用タスク自動化・AI 駆動開発の再現性を提供。",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/sf-ai-foundation/sf-ai-foundation",
+  "author": "SF-AI-Foundation contributors",
+  "keywords": ["salesforce", "claude-code", "knowledge-graph", "diff", "release-prep", "onboarding"],
+  "compat": {
+    "claude-code": ">=1.0.0",
+    "node": ">=20.0.0"
+  },
+  "install": {
+    "command": "npm install -g @sf-ai-foundation/sfai-core",
+    "post_install": "sfai init --bootstrap"
+  },
+  "scaffold": {
+    "source": "../scaffold",
+    "agents": "../scaffold/.claude/agents",
+    "commands": "../scaffold/.claude/commands",
+    "hooks": "../scaffold/.claude/settings.json.eta",
+    "knowledge_templates": "../scaffold/.agents/templates"
+  },
+  "profiles": {
+    "minimal": {
+      "description": "中小企業 / 試用向け。Phase 1〜2 のコア機能のみ",
+      "commands": ["onboard", "explain", "impact"]
+    },
+    "standard": {
+      "description": "通常運用向け。差分意味づけ + persona オンボーディングを含む",
+      "commands": ["onboard", "explain", "impact", "classify-diff", "change-summary"]
+    },
+    "full": {
+      "description": "大企業 / ベンダー向け。リリース準備 + DX MCP アダプタを含む",
+      "commands": ["onboard", "explain", "impact", "classify-diff", "change-summary", "release-prep", "manual-steps"]
+    }
+  },
+  "notes": [
+    "Plugin 仕様は Claude Code の現行版に依存します。Git clone + sfai init --bootstrap が主導入経路です。",
+    "DX MCP アダプタは Phase 6 では stub 実装、Phase 7 で MCP GA 後に本実装予定です。",
+    "Antigravity 互換は scaffold/AGENTS.md.eta + prompts/ の汎用 Markdown 形式で確保しています (現状未検証)。"
+  ]
+}

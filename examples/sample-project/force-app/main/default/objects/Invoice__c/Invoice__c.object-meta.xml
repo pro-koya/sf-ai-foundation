@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Invoice</label>
+    <pluralLabel>Invoices</pluralLabel>
+    <description>サンプル: 請求書。Order__c と Customer__c に紐づく。</description>
+    <sharingModel>Private</sharingModel>
+    <nameField>
+        <label>Invoice Number</label>
+        <type>AutoNumber</type>
+        <displayFormat>INV-{0000}</displayFormat>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+</CustomObject>

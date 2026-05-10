@@ -1,0 +1,118 @@
+# ApprovalProcess: <%= it.ap.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.ap.fullyQualifiedName %>`
+- Object: `<%= it.ap.object %>`
+<% if (it.ap.label) { %>- Label: <%= it.ap.label %><% } %>
+- Active: <%= it.ap.active ? "✓ true" : "false (無効)" %>
+<% if (it.ap.recordEditability) { %>- Record Editability: <%= it.ap.recordEditability %><% } %>
+<% if (it.ap.description) { %>- Description: <%= it.ap.description %><% } %>
+- Source: `<%= it.ap.sourcePath %>`
+- Content hash: `<%= it.ap.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="entry-criteria" -->
+## エントリ条件 (<%= it.ap.entryCriteria.length %>)
+
+<% if (it.ap.entryCriteria.length === 0) { %>
+(条件なし — 常に申請可能)
+<% } else { %>
+| フィールド | 演算子 | 値 |
+|---|---|---|
+<% it.ap.entryCriteria.forEach(function(c){ %>
+| `<%= c.field %>` | `<%= c.operation %>` | `<%= c.value %>` |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="entry-criteria" -->
+
+<!-- DETERMINISTIC_START id="steps" -->
+## 承認ステップ (<%= it.ap.steps.length %>)
+
+<% if (it.ap.steps.length === 0) { %>
+(ステップなし)
+<% } else { %>
+<% it.ap.steps.forEach(function(s, i){ %>
+### Step <%= i + 1 %>: `<%= s.name %>`<%= s.label ? ` — ${s.label}` : "" %>
+
+<% if (s.description) { %>
+> <%= s.description %>
+<% } %>
+
+- 承認者タイプ: `<%= s.approverType %>`
+<% if (s.approverDetail) { %>- 承認者: `<%= s.approverDetail %>`<% } %>
+- 代理承認: <%= s.allowDelegate ? "許可" : "不可" %>
+- 条件不一致時: `<%= s.ifCriteriaNotMet %>` (<%~ it.ifNotMetLabel(s.ifCriteriaNotMet) %>)
+<% if (s.entryCriteria.length > 0) { %>
+
+**Step エントリ条件**
+
+| フィールド | 演算子 | 値 |
+|---|---|---|
+<% s.entryCriteria.forEach(function(c){ %>
+| `<%= c.field %>` | `<%= c.operation %>` | `<%= c.value %>` |
+<% }) %>
+<% } %>
+
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="steps" -->
+
+<!-- DETERMINISTIC_START id="actions" -->
+## アクション
+
+### 申請時 (<%= it.ap.initialSubmissionActions.length %>)
+<% if (it.ap.initialSubmissionActions.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.ap.initialSubmissionActions.forEach(function(a){ %>
+- `<%= a.name %>` (<%= a.type %>)
+<% }) %>
+<% } %>
+
+### 最終承認時 (<%= it.ap.finalApprovalActions.length %>)
+<% if (it.ap.finalApprovalActions.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.ap.finalApprovalActions.forEach(function(a){ %>
+- `<%= a.name %>` (<%= a.type %>)
+<% }) %>
+<% } %>
+
+### 最終却下時 (<%= it.ap.finalRejectionActions.length %>)
+<% if (it.ap.finalRejectionActions.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.ap.finalRejectionActions.forEach(function(a){ %>
+- `<%= a.name %>` (<%= a.type %>)
+<% }) %>
+<% } %>
+
+### 取り消し時 (<%= it.ap.recallActions.length %>)
+<% if (it.ap.recallActions.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.ap.recallActions.forEach(function(a){ %>
+- `<%= a.name %>` (<%= a.type %>)
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="actions" -->
+
+<!-- DETERMINISTIC_START id="diagram" -->
+## 段階承認フロー
+
+```mermaid
+<%~ it.mermaid %>
+```
+<!-- DETERMINISTIC_END id="diagram" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+この承認プロセスの業務的役割と運用 (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 実運用の引き継ぎ事項・特例承認のルール等を人手記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

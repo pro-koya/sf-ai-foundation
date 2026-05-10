@@ -1,0 +1,6 @@
+{
+  "kind": "rename",
+  "templatePath": "docs/generated/objects/NewAccount.md",
+  "oldFilePath": "docs/generated/objects/Account.md",
+  "expectExistingFile": false
+}

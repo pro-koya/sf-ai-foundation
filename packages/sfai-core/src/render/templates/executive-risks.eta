@@ -1,0 +1,56 @@
+# Executive Risk & Change Impact Board
+
+<!-- DETERMINISTIC_START id="meta" -->
+- 集計日時: <%= it.builtAt %>
+- 検出懸念の合計: <%= it.counts.total %> 件
+- 内訳: HIGH <%= it.counts.high %> / MEDIUM <%= it.counts.medium %> / INFO <%= it.counts.info %>
+<!-- DETERMINISTIC_END id="meta" -->
+
+<!-- DETERMINISTIC_START id="high" -->
+## 🔴 HIGH (<%= it.findings.high.length %>)
+
+<% if (it.findings.high.length === 0) { %>
+(該当なし)
+<% } else { %>
+<% it.findings.high.forEach(function(f){ %>
+- **<%= f.kind %>**: `<%= f.target %>` — <%= f.title %><% if (f.detail) { %>
+  └ <%= f.detail %><% } %>
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="high" -->
+
+<!-- DETERMINISTIC_START id="medium" -->
+## 🟠 MEDIUM (<%= it.findings.medium.length %>)
+
+<% if (it.findings.medium.length === 0) { %>
+(該当なし)
+<% } else { %>
+<% it.findings.medium.forEach(function(f){ %>
+- **<%= f.kind %>**: `<%= f.target %>` — <%= f.title %><% if (f.detail) { %>
+  └ <%= f.detail %><% } %>
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="medium" -->
+
+<!-- DETERMINISTIC_START id="info" -->
+## 🔵 INFO (<%= it.findings.info.length %>)
+
+<% if (it.findings.info.length === 0) { %>
+(該当なし)
+<% } else { %>
+<% it.findings.info.forEach(function(f){ %>
+- **<%= f.kind %>**: `<%= f.target %>` — <%= f.title %><% if (f.detail) { %>
+  └ <%= f.detail %><% } %>
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="info" -->
+
+<!-- AI_MANAGED_START id="executive-narrative" -->
+## 上層部・承認者向けまとめ (AI 推測)
+
+承認の可否判断材料となる総合所見。Phase 7-D 以降で精度向上。
+<!-- AI_MANAGED_END id="executive-narrative" -->
+
+<!-- HUMAN_MANAGED_START id="approver-notes" -->
+<!-- 業務観点・社内ルールに照らした補足 (AI は上書きしません)。 -->
+<!-- HUMAN_MANAGED_END id="approver-notes" -->

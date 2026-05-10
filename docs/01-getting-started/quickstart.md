@@ -1,0 +1,228 @@
+# Quickstart — sfai を初めて使う
+
+> 想定読者: Salesforce DX プロジェクトに **sfai を導入する利用者**
+> 所要時間: **30 分以内**
+
+---
+
+## 0. 前提
+
+- macOS / Linux (Windows は Phase 7 で正式対応予定)
+- Node.js **20 以上** (`node --version`)
+- Salesforce CLI **(`sf`) グローバルインストール済み** (`sf --version`)
+- Claude Code (デスクトップ or CLI) が動く環境
+
+---
+
+## 1. sfai-core のインストール
+
+(現在は OSS 公開前なので、リポジトリから直接ビルド)
+
+```bash
+git clone https://github.com/sf-ai-foundation/sf-ai-foundation
+cd sf-ai-foundation
+npm install
+npm run build
+```
+
+ビルドすると `packages/sfai-core/dist/cli.js` が `sfai` 本体になる。
+グローバルから呼びたい場合:
+
+```bash
+npm link --workspace @sf-ai-foundation/sfai-core
+which sfai
+sfai version
+```
+
+---
+
+## 2. Salesforce DX プロジェクトの準備
+
+すでに `sfdx-project.json` があるプロジェクトなら **そのまま使えます**。
+
+無い場合は最寄りのプロジェクトに移動するか、サンプルから始める:
+
+```bash
+cp -r /path/to/sf-ai-foundation/examples/sample-project ./my-sfai-trial
+cd my-sfai-trial
+```
+
+(自分の Dev Edition org からメタデータを取得する手順は [`dev-edition-setup.md`](./dev-edition-setup.md) 参照)
+
+---
+
+## 3. `sfai init --bootstrap` で 1 コマンド完了 (推奨)
+
+```bash
+sfai init --bootstrap --profile minimal --project-name my-trial --language ja
+```
+
+これだけで scaffold 展開 + `graph build` + `render` が完了する。
+個別実行したい場合は `--bootstrap` を外して `sfai init` のみにし、後から `sfai graph build` `sfai render` を別途叩く。
+
+展開される構成:
+
+```
+my-trial/
+├── CLAUDE.md            ← Claude Code 用の憲法 (eta 展開済)
+├── AGENTS.md            ← 自律ループ指示書
+├── .claude/
+│   ├── settings.json    ← hooks + 権限
+│   ├── commands/        ← /onboard, /explain, /impact
+│   └── agents/          ← graph-querier, object-documenter, ...
+├── .agents/
+│   ├── knowledge/       ← INDEX.md + decisions/pitfalls/wins/improvements/retrospectives/
+│   └── templates/       ← decision.md, pitfall.md, ...
+├── .sfai/
+│   └── secrets-rules.yaml ← マスキングルール (デフォルト + カスタム可)
+└── .gitignore
+```
+
+プロファイル選択:
+- `minimal`: コア 3 コマンドのみ (Phase 1 構造化)
+- `standard`: + 差分分類 + persona 別 onboarding (Phase 3 以降)
+- `full`: + リリース準備 + DX MCP アダプタ (Phase 4-6 で順次)
+
+---
+
+## 4. 知識グラフ構築 (--bootstrap で実行済の場合は不要)
+
+`--bootstrap` を使った場合は既に完了しているのでスキップ可。個別に走らせるなら:
+
+```bash
+sfai graph build
+```
+
+成功すると `.sfai/graph.sqlite` が生成される。出力例:
+
+```
+[sfai] graph build complete: objects=12 fields=145 flows=8 apex=23
+```
+
+トラブルシュート:
+- `objects=0` → `force-app/` の場所を確認、または `sfdx-project.json` の `packageDirectories` を確認
+- 大規模 org で時間がかかる → 初回はフルビルド (5,000 オブジェクトで 10 秒目安)、以降は `--incremental`
+
+---
+
+## 5. 日常運用: `sfai sync` 1 コマンドで再構築
+
+`force-app/` を編集した後の再構築は `sfai sync` 1 つで OK:
+
+```bash
+sfai sync
+# 内部で graph build --incremental + render を実行
+```
+
+完全再ビルドが必要なら `sfai sync --full-rebuild`。
+
+---
+
+## 6. グラフへの SQL クエリで検証
+
+```bash
+sfai graph query "SELECT fqn, label FROM objects ORDER BY fqn LIMIT 10"
+sfai graph query "SELECT object, COUNT(*) AS cnt FROM fields GROUP BY object ORDER BY cnt DESC LIMIT 5"
+```
+
+---
+
+## 7. 派生ドキュメントを描画 (個別)
+
+`sync` で全描画されるが、個別にしたい場合:
+
+```bash
+sfai render             # system-index + objects 全描画
+sfai render system-index
+sfai render objects
+```
+
+出力:
+- `docs/generated/system-index.md` — プロジェクト全体像
+- `docs/generated/objects/<Name>.md` — 各オブジェクト詳細
+
+---
+
+## 7. Claude Code から使う
+
+`my-trial/` を Claude Code で開き、persona に応じて使い分け:
+
+### 全 persona 共通
+
+```
+/onboard               # new_joiner 既定
+/onboard --role reviewer
+/onboard --role release_manager
+/onboard --role customer_facing
+/explain Account
+/impact Account
+```
+
+| persona | 主用途 |
+|---|---|
+| new_joiner | 段階的に主要ドメインを理解 (30 分) |
+| reviewer | 直近 PR を 5 分で要約 + レビュー観点 5 件 |
+| release_manager | 直近 release_doc の抜け漏れ + 依存順序チェック |
+| customer_facing | 技術 → 業務翻訳 + ロール別影響整理 + 想定 FAQ |
+
+### standard 以上
+
+```
+/classify-diff --from main --to HEAD     # 7 分類で意味づけ
+/change-summary                            # PR レビュー用 Markdown 生成
+```
+
+### full のみ
+
+```
+/release-prep --from v1.0.0 --to v1.1.0   # 6 セクションのリリース doc
+/manual-steps                               # 手動作業レジストリ参照
+```
+
+---
+
+## 8. オンボーディング進捗 / FAQ 蓄積 (Phase 5)
+
+```bash
+# 進捗記録
+sfai onboard state record-step --role new_joiner --step "session-start"
+
+# 質問数カウント
+sfai onboard state increment-questions --role new_joiner
+
+# 進捗確認
+sfai onboard state show
+
+# 対話ログから FAQ 抽出 (PII マスキング込み)
+sfai onboard faq extract --input dialogs.md --topic general
+```
+
+`.sfai/context-map.yaml` を編集すれば、persona 別の読み順を利用者プロジェクトに合わせて調整できる。
+
+---
+
+## 9. メトリクスの確認
+
+```bash
+sfai metrics show --period month
+sfai metrics record --model claude-sonnet-4-6 --command /onboard --in 1500 --out 800
+```
+
+---
+
+## 10. 差分意味づけ (Phase 3)
+
+```bash
+sfai diff --from main --to HEAD --json
+sfai diff --from main --to HEAD --include-static-analysis report.sarif
+```
+
+---
+
+## 困ったとき
+
+- ビルドが失敗 → コンソールメッセージを確認、[`SECURITY.md`](../../SECURITY.md) のフローでバグ報告
+- 機密情報マスキングを調整したい → `.sfai/secrets-rules.yaml` を編集
+- 依存解析がおかしい → `sfai graph query "SELECT * FROM dependencies WHERE ..."` で生データ確認
+- AI コストが高い → minimal プロファイルへ降格、または hooks を無効化
+- バグ報告 → [`/SECURITY.md`](../../SECURITY.md) のフロー

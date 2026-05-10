@@ -1,0 +1,68 @@
+# Executive Summary — Salesforce 構築物の全体像
+
+<!-- DETERMINISTIC_START id="meta" -->
+- 集計日時: <%= it.builtAt %>
+- sfai version: <%= it.sfaiVersion %>
+- Salesforce API version: <%= it.salesforceApiVersion %>
+<!-- DETERMINISTIC_END id="meta" -->
+
+<!-- DETERMINISTIC_START id="footprint" -->
+## 構築規模 (上層部・承認者向け概観)
+
+| 区分 | 件数 |
+|---|---|
+| カスタム + 標準オブジェクト | <%= it.counts.objects %> |
+| フィールド | <%= it.counts.fields %> |
+| 入力規則 (Validation Rule) | <%= it.counts.validationRules %> |
+| Flow | <%= it.counts.flows %> |
+| Apex クラス | <%= it.counts.apexClasses %> |
+| Apex トリガー | <%= it.counts.apexTriggers %> |
+| 権限セット | <%= it.counts.permissionSets %> |
+| プロファイル | <%= it.counts.profiles %> |
+
+### カスタムオブジェクト
+<% if (it.customObjects.length === 0) { %>
+(カスタムオブジェクトなし)
+<% } else { %>
+<% it.customObjects.forEach(function(o){ %>
+- `<%= o %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="footprint" -->
+
+<!-- DETERMINISTIC_START id="quality" -->
+## 品質指標
+
+- Apex テストクラス数: <%= it.apexTestRatio.tests %>
+- Apex 非テストクラス数: <%= it.apexTestRatio.nonTests %>
+- テスト/非テスト比: <%= it.apexTestRatio.ratio %>
+<% if (it.apexTestRatio.ratio < 0.5 && it.apexTestRatio.nonTests > 0) { %>
+> ⚠️ テストクラス比率が 50% 未満です。リリース判断時はテストカバレッジレポート (Code Analyzer / Apex Test Result) を併読してください。
+<% } %>
+<!-- DETERMINISTIC_END id="quality" -->
+
+<!-- DETERMINISTIC_START id="trigger-map" -->
+## オブジェクト別トリガー配置
+
+<% if (it.triggersByObject.length === 0) { %>
+(トリガーなし)
+<% } else { %>
+| オブジェクト | トリガー |
+|---|---|
+<% it.triggersByObject.forEach(function(g){ %>
+| `<%= g.object %>` | <%= g.triggers.map(t=>"`"+t+"`").join(", ") %> |
+<% }) %>
+
+> 1 オブジェクトに複数トリガーがある場合は、ハンドラパターンへの集約余地を技術担当と確認してください (一般的なベストプラクティス)。
+<% } %>
+<!-- DETERMINISTIC_END id="trigger-map" -->
+
+<!-- AI_MANAGED_START id="narrative" -->
+## 上層部向けナラティブ (AI 生成、再生成で上書き)
+
+承認判断に必要な変更点・リスク・依存関係の総括。Phase 7-D で精度向上。
+<!-- AI_MANAGED_END id="narrative" -->
+
+<!-- HUMAN_MANAGED_START id="approver-notes" -->
+<!-- 承認者・上長向けの補足 (社内固有の判断材料)。AI は上書きしません。 -->
+<!-- HUMAN_MANAGED_END id="approver-notes" -->

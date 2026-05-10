@@ -1,0 +1,147 @@
+# sample-project — AI 自律ループの行動指針
+
+> このファイルは [SF-AI-Foundation](https://github.com/sf-ai-foundation/sf-ai-foundation) によって生成されました。
+> このプロジェクトに参加する全ての AI エージェント (Claude Code、Antigravity、Codex 等) はこの指針に従ってください。
+
+---
+
+## 0. 大前提
+
+sample-project は Salesforce 開発プロジェクトです。
+**目的は、Salesforce に携わるあなた / チームの「余白と豊かさ」を生み出すこと。**
+コードを書くのが目的ではなく、運用負荷を減らして本質的な仕事に時間を使えるようにすることが目的です。
+
+---
+
+## 1. AI が回す自律ループ
+
+```
+1. 要件整理   ── 顧客 / チームからの依頼を「誰の何を解決するか」に翻訳
+2. 計画立案   ── 代替案 2 つ以上、ADR を decisions/ へ
+3. 実行       ── sfai CLI と知識グラフを活用、決定的処理を AI に肩代わりさせない
+4. レビュー   ── CRITICAL/HIGH/MEDIUM 分類、つまずきは pitfalls/ へ、効いた工夫は wins/ へ
+5. 修正       ── CRITICAL は即修正、HIGH は原則修正
+6. 再実装     ── 設計判断が誤っていたら計画立案へ戻る勇気
+7. 整理       ── 不要削除、命名見直し、ドキュメント同期、improvements/ へ
+8. 課題提起   ── retrospectives/ に振り返り、次サイクルの種を出す
+                ↓
+              次サイクルへ
+```
+
+各ステップ詳細は本セクション末尾に。
+
+---
+
+## 2. ナレッジ蓄積ルール
+
+### 4 種類のナレッジ
+
+| 種類 | パス | 何を書くか |
+|---|---|---|
+| decisions | `.agents/knowledge/decisions/` | 設計判断・採用案・却下理由・トレードオフ |
+| pitfalls | `.agents/knowledge/pitfalls/` | つまずき・不具合・誤解しやすい点 |
+| wins | `.agents/knowledge/wins/` | 効いた工夫・再利用したい知見 |
+| improvements | `.agents/knowledge/improvements/` | 「次はこうしたい」「ここを改善した」 |
+| retrospectives | `.agents/knowledge/retrospectives/` | サイクル単位の振り返り (時系列) |
+
+### 命名
+
+- decisions / improvements / wins / pitfalls: `YYYY-MM-DD-<short-slug>.md`
+- retrospectives: `YYYY-MM-DD-<cycle-slug>.md`
+
+### テンプレート
+
+`.agents/templates/` を必ずコピーして使うこと。
+
+### INDEX
+
+新規ファイル追加時、必ず `.agents/knowledge/INDEX.md` に 1 行サマリを追記する。
+
+### 衝突時
+
+古い知見と矛盾しても **削除しない**。`Status: Superseded by <new-file>` を冒頭に追記し、新ファイルに `Supersedes: <old-file>` を書く。
+
+---
+
+## 3. 各ステップの責務
+
+### 1. 要件整理
+- 依頼の本質を一文で翻訳 (「何を作るか」ではなく「誰の何を解決するか」)
+- 既存ナレッジの確認は **絶対省略しない**
+- 不明点は **推測せず人間に問う**
+
+### 2. 計画立案
+- 代替案を最低 2 つ
+- 採用案・却下理由を decisions/ に記録
+- 設計 3 原則と禁則の照合
+
+### 3. 実行
+- 小さなコミット単位
+- `sfai` CLI と知識グラフを活用
+- 決定的処理は CLI、判断は AI、業務文脈は人手 — の境界を守る
+
+### 4. レビュー (自己レビュー)
+- CRITICAL: セキュリティ・データ消失・禁則違反 → 即修正
+- HIGH: 設計 3 原則違反・スコープクリープ
+- MEDIUM: コード臭・重複
+- pitfalls / wins への素材抽出を必ず行う
+
+### 5-6. 修正・再実装
+- 局所修正で済むなら局所
+- 設計判断ごと誤っていたなら戻る勇気
+
+### 7. 整理
+- 不要削除
+- ドキュメント同期 (`sfai render` 再実行を含む)
+
+### 8. 課題提起
+- retrospectives/ に Keep / Problem / Try
+- 次サイクルの種を最低 1 件
+
+---
+
+## 4. 並列・委譲
+
+### subagent を使うとき
+- 大量ファイル走査、深い依存解析、領域専門レビュー
+- 並列実行可能なとき (1 メッセージで複数起動)
+
+### 使わないとき
+- 軽い会話的タスク
+- 主エージェントがコンテキストを持ち続けるべきタスク
+
+### 委譲時
+- subagent には自己完結したブリーフィングを渡す
+- 出力は検証してから採用
+
+---
+
+## 5. 人間との接し方
+
+- **推測せず聞く**: 業務文脈・優先度・顧客固有ルールは推測しない
+- **判断材料を渡してから問う**: トレードオフを提示し、推奨を述べてから「よろしいですか?」
+- **重要判断は記録**: 人間の決定は decisions/ に必ず残す
+
+---
+
+## 6. 禁則
+
+- 決定的処理 (XML パース、差分計算) を AI に肩代わりさせない
+- HUMAN_MANAGED ブロックを書き換えない
+- subagent を「便利だから」で乱用しない
+- 「動いたから OK」で整理ステップを飛ばさない
+- 顧客名・顧客固有ロジックをナレッジに書き込まない
+
+詳細は [`CLAUDE.md`](./CLAUDE.md) と [SF-AI-Foundation の禁則 13 か条](https://github.com/sf-ai-foundation/sf-ai-foundation) 参照。
+
+---
+
+## 7. このファイルの育て方
+
+- 個別事例は本書ではなく `.agents/knowledge/` へ
+- ループ構造を変えるときは decisions/ に記録してから本書を更新
+- 30KB を超えたら分割を検討
+
+---
+
+**最終的に問うべきこと: そのサイクルは、誰かの余白を 1 mm でも増やしたか?**

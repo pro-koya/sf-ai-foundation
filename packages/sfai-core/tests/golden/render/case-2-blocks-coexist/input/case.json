@@ -1,0 +1,5 @@
+{
+  "kind": "merge",
+  "templatePath": "docs/generated/objects/Account.md",
+  "expectExistingFile": true
+}

@@ -1,0 +1,37 @@
+# <%= it.title %>
+
+<!-- DETERMINISTIC_START id="meta" -->
+- Built at: <%= it.builtAt %>
+- Triggers: <%= it.triggerCount %>
+- Flows: <%= it.flowCount %>
+- Apex Classes: <%= it.apexCount %>
+- Objects: <%= it.objectCount %>
+<!-- DETERMINISTIC_END id="meta" -->
+
+<!-- DETERMINISTIC_START id="diagram" -->
+## システム全体の起点 → オブジェクト関係
+
+```mermaid
+<%~ it.diagram %>
+```
+<!-- DETERMINISTIC_END id="diagram" -->
+
+<!-- DETERMINISTIC_START id="er-diagram" -->
+## ER 図 (オブジェクト関係性)
+
+<% if (!it.erDiagram || it.erDiagram === "") { %>
+(referenceTo を持つフィールドが検出されませんでした)
+<% } else { %>
+```mermaid
+<%~ it.erDiagram %>
+```
+<% } %>
+<!-- DETERMINISTIC_END id="er-diagram" -->
+
+<!-- AI_MANAGED_START id="narrative" -->
+このシステム全体の流れと注目すべき経路 (AI 推測、再生成で上書き)。
+<!-- AI_MANAGED_END id="narrative" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 主要 KPI や運用上の留意点をここに記述。AI は上書きしません。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

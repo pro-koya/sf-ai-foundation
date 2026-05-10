@@ -1,0 +1,37 @@
+# CustomMetadata: <%= it.cmr.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.cmr.fullyQualifiedName %>`
+- Type: `<%= it.cmr.type %>`
+- Record: `<%= it.cmr.recordName %>`
+<% if (it.cmr.label) { %>- Label: <%= it.cmr.label %><% } %>
+<% if (it.cmr.protected !== undefined) { %>- Protected: <%= it.cmr.protected ? "✓" : "—" %><% } %>
+- Source: `<%= it.cmr.sourcePath %>`
+- Content hash: `<%= it.cmr.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="values" -->
+## 値 (<%= it.cmr.values.length %>)
+
+<% if (it.cmr.values.length === 0) { %>
+(値なし)
+<% } else { %>
+| フィールド | 値 |
+|---|---|
+<% it.cmr.values.forEach(function(v){ %>
+| `<%= v.field %>` | `<%= v.value %>` |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="values" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+このレコードの業務的意味と運用 (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- どのコードから読まれるか、変更時の注意事項を人手記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

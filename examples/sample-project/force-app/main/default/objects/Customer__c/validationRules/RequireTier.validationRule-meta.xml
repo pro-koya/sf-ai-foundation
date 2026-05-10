@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RequireTier</fullName>
+    <active>true</active>
+    <description>Tier__c が空欄の場合は登録不可</description>
+    <errorConditionFormula>ISBLANK(TEXT(Tier__c))</errorConditionFormula>
+    <errorMessage>Tier は必須項目です</errorMessage>
+</ValidationRule>

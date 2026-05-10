@@ -1,0 +1,47 @@
+# FlexiPage: <%= it.fp.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.fp.fullyQualifiedName %>`
+<% if (it.fp.masterLabel) { %>- Master Label: <%= it.fp.masterLabel %><% } %>
+<% if (it.fp.type) { %>- Type: `<%= it.fp.type %>`<% } %>
+<% if (it.fp.sobjectType) { %>- SObject: `<%= it.fp.sobjectType %>`<% } %>
+<% if (it.fp.pageTemplate) { %>- Template: `<%= it.fp.pageTemplate %>`<% } %>
+<% if (it.fp.description) { %>- Description: <%= it.fp.description %><% } %>
+- Source: `<%= it.fp.sourcePath %>`
+- Content hash: `<%= it.fp.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="regions" -->
+## Regions (<%= it.fp.regions.length %>)
+
+<% if (it.fp.regions.length === 0) { %>
+(リージョンなし)
+<% } else { %>
+<% it.fp.regions.forEach(function(r){ %>
+### Region: `<%= r.name %>`<%= r.type ? ` (${r.type})` : "" %>
+
+<% if (r.items.length === 0) { %>
+(項目なし)
+<% } else { %>
+| 項目 | 種別 | 内容 |
+|---|---|---|
+<% r.items.forEach(function(it){ %>
+| <%= it.componentName ? "Component" : "Field" %> | <%= it.componentName ? "コンポーネント" : "フィールド" %> | `<%= it.componentName || it.fieldName %>` |
+<% }) %>
+<% } %>
+
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="regions" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+このページの業務的位置づけ (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 想定ユーザ・配置先タブやアプリの説明を人手記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

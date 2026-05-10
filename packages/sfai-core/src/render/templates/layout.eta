@@ -1,0 +1,68 @@
+# Layout: <%= it.layout.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.layout.fullyQualifiedName %>`
+- Object: `<%= it.layout.object %>`
+- Layout Name: <%= it.layout.layoutName %>
+- Source: `<%= it.layout.sourcePath %>`
+- Content hash: `<%= it.layout.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="sections" -->
+## セクション (<%= it.layout.sections.length %>)
+
+<% if (it.layout.sections.length === 0) { %>
+(セクションなし)
+<% } else { %>
+<% it.layout.sections.forEach(function(s, i){ %>
+### Section <%= i + 1 %>: <%= s.label %><%= s.columnsStyle ? ` _(${s.columnsStyle})_` : "" %>
+
+<% if (s.items.length === 0) { %>
+(項目なし)
+<% } else { %>
+| 列 | フィールド | 動作 |
+|---|---|---|
+<% s.items.forEach(function(it){ %>
+| <%= it.column %> | `<%= it.field %>` | <%= it.behavior %> |
+<% }) %>
+<% } %>
+
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="sections" -->
+
+<!-- DETERMINISTIC_START id="related-lists" -->
+## 関連リスト (<%= it.layout.relatedLists.length %>)
+
+<% if (it.layout.relatedLists.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.layout.relatedLists.forEach(function(rl){ %>
+- `<%= rl.relatedList %>`<% if (rl.fields.length > 0) { %> — フィールド: <%= rl.fields.map(function(f){ return "`" + f + "`"; }).join(", ") %><% } %>
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="related-lists" -->
+
+<!-- DETERMINISTIC_START id="quick-actions" -->
+## クイックアクション (<%= it.layout.quickActions.length %>)
+
+<% if (it.layout.quickActions.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.layout.quickActions.forEach(function(q){ %>
+- `<%= q %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="quick-actions" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+このレイアウトの業務的役割 (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 想定ユーザ・操作の流れを人手記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

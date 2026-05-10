@@ -1,0 +1,10 @@
+{
+  "kind": "corruption",
+  "subCases": [
+    { "name": "orphan_start_marker", "expectedCode": "orphan_start_marker" },
+    { "name": "orphan_end_marker", "expectedCode": "orphan_end_marker" },
+    { "name": "marker_mismatch", "expectedCode": "marker_mismatch" },
+    { "name": "duplicate_id", "expectedCode": "duplicate_id" },
+    { "name": "nested_markers", "expectedCode": "nested_markers" }
+  ]
+}

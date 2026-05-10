@@ -1,0 +1,47 @@
+# Aura: <%= it.aura.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.aura.fullyQualifiedName %>`
+- Bundle 種別: <%= it.aura.bundleKind %>
+<% if (it.aura.apiVersion) { %>- API Version: <%= it.aura.apiVersion %><% } %>
+<% if (it.aura.description) { %>- Description: <%= it.aura.description %><% } %>
+- 構成: <%~ it.compositionLine %>
+- Source: `<%= it.aura.sourcePath %>`
+- Content hash: `<%= it.aura.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="attributes" -->
+## attribute (<%= it.aura.attributes.length %>)
+
+<% if (it.aura.attributes.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.aura.attributes.forEach(function(a){ %>
+- `<%= a %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="attributes" -->
+
+<!-- DETERMINISTIC_START id="handlers" -->
+## handler (<%= it.aura.handlers.length %>)
+
+<% if (it.aura.handlers.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.aura.handlers.forEach(function(h){ %>
+- `<%= h %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="handlers" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+この Aura コンポーネントの業務的役割と LWC への移行可否 (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- LWC 移行計画や互換性の制約を人手記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

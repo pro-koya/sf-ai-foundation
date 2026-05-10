@@ -1,0 +1,8 @@
+{
+  "expectedCategory": "data_model",
+  "expectedEntity": "Account.Industry",
+  "expectedKeyPhrases": ["picklist", "Account"],
+  "minExactMatchRate": 0.8,
+  "minSchemaConformance": 1.0,
+  "note": "実 AI 統合は Phase 5 以降。現状は producer をモックして枠組みを検証する。"
+}

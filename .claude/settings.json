@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_comment": "SF-AI-Foundation: Claude Code 環境設定。Phase 2 以降で hooks を追加する。",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)"
+    ]
+  },
+  "env": {
+    "SFAI_PROJECT_ROOT": "${workspaceFolder}"
+  },
+  "hooks": {
+    "_note_phase_2": "Phase 2 で sfai graph build --incremental を PostToolUse に登録予定"
+  }
+}

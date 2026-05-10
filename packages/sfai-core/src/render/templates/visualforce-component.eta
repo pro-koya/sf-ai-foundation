@@ -1,0 +1,52 @@
+# Visualforce Component: <%= it.vfc.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.vfc.fullyQualifiedName %>`
+<% if (it.vfc.label) { %>- Label: <%= it.vfc.label %><% } %>
+<% if (it.vfc.apiVersion) { %>- API Version: <%= it.vfc.apiVersion %><% } %>
+<% if (it.vfc.controller) { %>- Controller: `<%= it.vfc.controller %>`<% } %>
+- Markup ファイル: <%= it.vfc.hasMarkup ? "✓ あり" : "(なし)" %>
+<% if (it.vfc.description) { %>- Description: <%= it.vfc.description %><% } %>
+- Source: `<%= it.vfc.sourcePath %>`
+- Content hash: `<%= it.vfc.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="attributes" -->
+## 公開属性 (<%= it.vfc.attributes ? it.vfc.attributes.length : 0 %>)
+
+<% if (!it.vfc.attributes || it.vfc.attributes.length === 0) { %>
+(`<apex:attribute>` 検出なし)
+<% } else { %>
+| name | type | required | description |
+|---|---|---|---|
+<% it.vfc.attributes.forEach(function(a){ %>
+| `<%= a.name %>` | <%= a.type ? "`"+a.type+"`" : "—" %> | <%= a.required ? "✓" : "—" %> | <%= a.description || "—" %> |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="attributes" -->
+
+<!-- DETERMINISTIC_START id="markup-tags" -->
+## Markup タグ件数 (<%= it.vfc.markupCounts ? it.vfc.markupCounts.length : 0 %>)
+
+<% if (!it.vfc.markupCounts || it.vfc.markupCounts.length === 0) { %>
+(検出 markup なし)
+<% } else { %>
+| タグ | 出現回数 |
+|---|---|
+<% it.vfc.markupCounts.forEach(function(m){ %>
+| `<%= m.tag %>` | <%= m.count %> |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="markup-tags" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+このコンポーネントの再利用シーン (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- どのページから呼ばれるか、運用上の留意点を人手で記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

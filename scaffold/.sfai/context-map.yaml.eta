@@ -1,0 +1,56 @@
+# <%= it.projectName %> — オンボーディング context-map
+# Phase 5 で /onboard --role <persona> が参照する読み順制御。
+# 利用者プロジェクトに合わせて domains を編集してください。
+# 詳細: /AGENTS.md, /IMPLEMENTATION_GUIDE.md Phase 5
+
+project:
+  name: <%= it.projectName %>
+  domains:
+    # 例: 営業ドメイン
+    - id: sales
+      description: 営業関連 (商談・受注・顧客)
+      primary_objects: [Account, Order__c]
+      key_docs:
+        - docs/generated/objects/Account.md
+        - docs/human/business-notes/sales-process.md
+    # 例: 経理・与信ドメイン
+    - id: finance
+      description: 経理・与信・請求
+      primary_objects: [Account, Invoice__c, Claim__c]
+      key_docs:
+        - docs/generated/objects/Invoice__c.md
+        - docs/human/business-notes/credit-policy.md
+    # ↓ プロジェクトの実ドメインに合わせて追加・削除してください
+
+personas:
+  new_joiner:
+    goal: 2 週間で主要ドメインを理解する
+    read_order:
+      - docs/generated/system-index.md
+      - docs/human/business-notes/overview.md
+      - "domains:*"             # 全ドメインを順次
+    depth: summary_first
+    primary_agent: onboarding-guide
+
+  reviewer:
+    goal: PR を適切にレビューする
+    read_order:
+      - docs/ai-augmented/change-summaries/latest.md
+      - ops/registry/manual-steps-registry.md
+    depth: detail_on_demand
+    primary_agent: review-assistant
+
+  release_manager:
+    goal: リリース準備の抜け漏れを防ぐ
+    read_order:
+      - docs/releases/latest.md
+      - ops/registry/manual-steps-registry.md
+    depth: checklist_first
+    primary_agent: release-advisor
+
+  customer_facing:
+    goal: 顧客視点で影響を整理
+    read_order:
+      - docs/ai-augmented/change-summaries/latest.md
+    depth: business_impact_first
+    primary_agent: customer-impact-explainer

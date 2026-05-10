@@ -1,0 +1,23 @@
+# RecordType: <%= it.rt.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.rt.fullyQualifiedName %>`
+- Object: `<%= it.rt.object %>`
+<% if (it.rt.label) { %>- Label: <%= it.rt.label %><% } %>
+- Active: <%= it.rt.active ? "✓" : "—" %>
+<% if (it.rt.description) { %>- Description: <%= it.rt.description %><% } %>
+- Source: `<%= it.rt.sourcePath %>`
+- Content hash: `<%= it.rt.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+このレコードタイプの役割と業務文脈 (AI 推測、再生成で上書き)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 業務文脈・運用上の留意点をここに記述。AI は上書きしません。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

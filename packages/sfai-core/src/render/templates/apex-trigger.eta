@@ -1,0 +1,143 @@
+# ApexTrigger: <%= it.trg.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.trg.fullyQualifiedName %>`
+- Object: `<%= it.trg.object %>`
+- Events: <%= (it.trg.events || []).join(', ') %>
+- API Version: <%= it.trg.apiVersion %>
+- Source: `<%= it.trg.sourcePath %>`
+- Content hash: `<%= it.trg.contentHash %>`
+<% if (it.trg.body) { %>
+- try/catch: <%= it.trg.body.hasTryCatch ? "✓" : "—" %>
+- HTTP コールアウト: <%= it.trg.body.hasCallout ? "✓" : "—" %>
+<% } %>
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="data-operations" -->
+## データ操作
+
+### SOQL (<%= it.trg.body ? it.trg.body.soqlQueries.length : 0 %>)
+
+<% if (!it.trg.body || it.trg.body.soqlQueries.length === 0) { %>
+(検出 SOQL なし)
+<% } else { %>
+<% it.trg.body.soqlQueries.forEach(function(q){ %>
+- 対象 `<%= q.primaryObject || "(unknown)" %>`: `<%= q.raw %>`
+<% }) %>
+<% } %>
+
+### DML (<%= it.trg.body ? it.trg.body.dmlOperations.length : 0 %>)
+
+<% if (!it.trg.body || it.trg.body.dmlOperations.length === 0) { %>
+(検出 DML なし)
+<% } else { %>
+| 種別 | 対象 | 経路 |
+|---|---|---|
+<% it.trg.body.dmlOperations.forEach(function(d){ %>
+| <%= d.kind %> | `<%= d.target %>` | <%= d.viaDatabaseClass ? "Database クラス" : "DML 文" %> |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="data-operations" -->
+
+<!-- DETERMINISTIC_START id="call-graph" -->
+## 呼び出し関係
+
+### 他クラス参照 (<%= it.trg.body ? it.trg.body.classReferences.length : 0 %>)
+
+<% if (!it.trg.body || it.trg.body.classReferences.length === 0) { %>
+(検出参照なし)
+<% } else { %>
+<% it.trg.body.classReferences.forEach(function(r){ %>
+- `<%= r.className %>.<%= r.memberName %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="call-graph" -->
+
+<!-- DETERMINISTIC_START id="trigger-flow" -->
+## 起点別 処理フロー (Mermaid)
+
+<% if (it.flowDiagram) { %>
+```mermaid
+<%~ it.flowDiagram %>
+```
+<% } else { %>
+(後続クラス情報が不足している場合は単純化したダイアグラムのみ表示)
+<% } %>
+<!-- DETERMINISTIC_END id="trigger-flow" -->
+
+<!-- DETERMINISTIC_START id="dependencies" -->
+## Dependencies (<%= it.dependencies.length %>)
+
+<% if (it.dependencies.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.dependencies.forEach(function(d){ %>
+- <%= d.kind %>: `<%= d.from.kind %>:<%= d.from.fullyQualifiedName %>` → `<%= d.to.kind %>:<%= d.to.fullyQualifiedName %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="dependencies" -->
+
+<!-- DETERMINISTIC_START id="processing-summary-table" -->
+## 処理概要 — 統合サマリ
+
+<% if (!it.triggerProcessingSummary) { %>
+(処理サマリを生成できませんでした)
+<% } else { %>
+| Events | SOQL | DML | 分岐 | ループ | try | 委譲先 |
+|---|---|---|---|---|---|---|
+| <%= it.triggerProcessingSummary.events.join(" / ") %> | <%= it.triggerProcessingSummary.soqlCount %> | <%= it.triggerProcessingSummary.dmlCount %> | <%= it.triggerProcessingSummary.branchCount %> | <%= it.triggerProcessingSummary.loopCount %> | <%= it.triggerProcessingSummary.tryCount %> | <%= it.triggerProcessingSummary.delegations.length === 0 ? "—" : it.triggerProcessingSummary.delegations.map(function(d){ return "`"+d+"`"; }).join(", ") %> |
+<% } %>
+<!-- DETERMINISTIC_END id="processing-summary-table" -->
+
+<!-- AI_MANAGED_START id="processing-overview-narrative" -->
+## 処理概要 — 自然言語での説明
+
+このトリガーが発火したときに何が起きるかを 1〜2 段落で記述する。「Trigger.new に対して何を判定し、どのハンドラに委譲し、最終的にどのデータを変更するか」を概要レベルで説明する (AI 生成)。
+<!-- AI_MANAGED_END id="processing-overview-narrative" -->
+
+<!-- AI_MANAGED_START id="processing-details-narrative" -->
+## 処理詳細 — イベント / 分岐 / 委譲ごとの説明
+
+イベント別 (beforeInsert / afterUpdate 等) または分岐ごとに何をしているかを詳述する (AI 生成)。
+<!-- AI_MANAGED_END id="processing-details-narrative" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+このトリガーの役割と発火タイミング (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- AI_MANAGED_START id="narrative" -->
+## このトリガーは何で、なぜ存在するか
+
+このトリガーが解いている業務上の課題と、なぜトリガーで実装する必要があるか (Flow / Apex Service との使い分け含む) を 2〜3 段落で記述する (AI 生成)。
+<!-- AI_MANAGED_END id="narrative" -->
+
+<!-- AI_MANAGED_START id="operational-notes" -->
+## 運用上の留意点
+
+このトリガーの運用で知っておくべきこと (再帰呼び出しガード / bulk 安全性 / 順序依存 / 同オブジェクト他トリガとの関係 / 例外時の挙動) を記述する (AI 生成)。
+<!-- AI_MANAGED_END id="operational-notes" -->
+
+<!-- DETERMINISTIC_START id="auto-concerns" -->
+## 自動検出された懸念点 (<%= it.concerns ? it.concerns.length : 0 %>)
+
+<% if (!it.concerns || it.concerns.length === 0) { %>
+(検出なし)
+<% } else { %>
+<% it.concerns.forEach(function(c){ %>
+- **[<%= c.severity %>] <%= c.title %>**<% if (c.detail) { %> — <%= c.detail %><% } %>
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="auto-concerns" -->
+
+<!-- AI_MANAGED_START id="concerns" -->
+## 補足の懸念 (AI / 人手で追記)
+<!-- 自動検出に含まれない点 (業務文脈・運用観点) を追記 -->
+<!-- AI_MANAGED_END id="concerns" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 業務文脈・運用上の留意点をここに記述。AI は上書きしません。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

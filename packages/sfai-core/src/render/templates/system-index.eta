@@ -1,0 +1,52 @@
+# <%= it.title %>
+
+<!-- DETERMINISTIC_START id="overview" -->
+- 生成日時: <%= it.builtAt %>
+- sfai version: <%= it.sfaiVersion %>
+- Salesforce API version: <%= it.salesforceApiVersion %>
+- Source adapter: <%= it.sourceAdapter %>
+- Source hash: `<%= it.sourceHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="counts" -->
+| カテゴリ | 件数 |
+|---|---|
+| Objects | <%= it.counts.objects %> |
+| Fields | <%= it.counts.fields %> |
+| Validation Rules | <%= it.counts.validationRules %> |
+| Flows | <%= it.counts.flows %> |
+| Apex Classes | <%= it.counts.apexClasses %> |
+| Apex Triggers | <%= it.counts.apexTriggers %> |
+| Permission Sets | <%= it.counts.permissionSets %> |
+| Profiles | <%= it.counts.profiles %> |
+| Record Types | <%= it.counts.recordTypes %> |
+| Approval Processes | <%= it.counts.approvalProcesses %> |
+| Sharing Rules | <%= it.counts.sharingRules %> |
+| Layouts | <%= it.counts.layouts %> |
+| Custom Metadata Records | <%= it.counts.customMetadataRecords %> |
+| Named Credentials | <%= it.counts.namedCredentials %> |
+| Remote Site Settings | <%= it.counts.remoteSiteSettings %> |
+| LWC | <%= it.counts.lwcs %> |
+| Aura Bundles | <%= it.counts.auraBundles %> |
+| FlexiPages | <%= it.counts.flexiPages %> |
+| Visualforce Pages | <%= it.counts.visualforcePages %> |
+| Visualforce Components | <%= it.counts.visualforceComponents %> |
+| Lightning Apps | <%= it.counts.customApplications %> |
+| Dependencies | <%= it.counts.dependencies %> |
+<!-- DETERMINISTIC_END id="counts" -->
+
+<!-- DETERMINISTIC_START id="objects-list" -->
+## Objects (<%= it.objectsList.length %>)
+
+<% it.objectsList.forEach(function(o){ %>
+- [<%= o.label %> (<%= o.fullyQualifiedName %>)](./objects/<%= o.fullyQualifiedName %>.md)<%= o.isCustom ? " — Custom" : "" %>
+<% }) %>
+<!-- DETERMINISTIC_END id="objects-list" -->
+
+<!-- AI_MANAGED_START id="summary" -->
+本プロジェクト全体の概要 (AI 生成、再生成で上書きされます)。
+<!-- AI_MANAGED_END id="summary" -->
+
+<!-- HUMAN_MANAGED_START id="business-overview" -->
+<!-- 業務的な全体像をここに記述してください。AI は上書きしません。 -->
+<!-- HUMAN_MANAGED_END id="business-overview" -->

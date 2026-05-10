@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Customer</label>
+    <pluralLabel>Customers</pluralLabel>
+    <description>サンプル: 顧客マスタ。実プロジェクトの Account 等に相当する想定のダミー。</description>
+    <sharingModel>ReadWrite</sharingModel>
+    <nameField>
+        <label>Customer Name</label>
+        <type>Text</type>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+</CustomObject>

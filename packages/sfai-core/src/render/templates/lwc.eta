@@ -1,0 +1,118 @@
+# LWC: <%= it.lwc.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.lwc.fullyQualifiedName %>`
+<% if (it.lwc.masterLabel) { %>- Master Label: <%= it.lwc.masterLabel %><% } %>
+<% if (it.lwc.apiVersion) { %>- API Version: <%= it.lwc.apiVersion %><% } %>
+- Exposed: <%= it.lwc.isExposed ? "✓ true" : "false (内部利用)" %>
+<% if (it.lwc.targets.length > 0) { %>- Targets: <%= it.lwc.targets.map(function(t){ return "`" + t + "`"; }).join(", ") %><% } %>
+- Bundle 構成: JS<% if (it.lwc.hasHtml) { %> + HTML<% } %><% if (it.lwc.hasCss) { %> + CSS<% } %>
+<% if (it.lwc.description) { %>- Description: <%= it.lwc.description %><% } %>
+- Source: `<%= it.lwc.sourcePath %>`
+- Content hash: `<%= it.lwc.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="apex-imports" -->
+## Apex 呼び出し (<%= it.lwc.apexImports.length %>)
+
+<% if (it.lwc.apexImports.length === 0) { %>
+(なし)
+<% } else { %>
+| エイリアス | クラス | メソッド |
+|---|---|---|
+<% it.lwc.apexImports.forEach(function(a){ %>
+| `<%= a.methodAlias %>` | `<%= a.className %>` | `<%= a.methodName %>` |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="apex-imports" -->
+
+<!-- DETERMINISTIC_START id="public-api" -->
+## 公開プロパティ (@api) (<%= it.lwc.publicProperties.length %>)
+
+<% if (it.lwc.publicProperties.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.lwc.publicProperties.forEach(function(p){ %>
+- `<%= p %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="public-api" -->
+
+<!-- DETERMINISTIC_START id="wires" -->
+## @wire 一覧 (<%= it.lwc.wires.length %>)
+
+<% if (it.lwc.wires.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.lwc.wires.forEach(function(w){ %>
+- `<%= w.target %>`<% if (w.bindingProperty) { %> → `<%= w.bindingProperty %>`<% } %>
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="wires" -->
+
+<!-- DETERMINISTIC_START id="events" -->
+## 発火する CustomEvent (<%= it.lwc.customEvents.length %>)
+
+<% if (it.lwc.customEvents.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.lwc.customEvents.forEach(function(e){ %>
+- `<%= e %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="events" -->
+
+<!-- DETERMINISTIC_START id="components" -->
+## 子コンポーネント / 標準コンポーネント
+
+### 子 LWC (<%= it.lwc.childComponents.length %>)
+<% if (it.lwc.childComponents.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.lwc.childComponents.forEach(function(c){ %>
+- `<%= c %>`
+<% }) %>
+<% } %>
+
+### 標準コンポーネント (<%= it.lwc.standardComponents.length %>)
+<% if (it.lwc.standardComponents.length === 0) { %>
+(なし)
+<% } else { %>
+| タグ | 出現回数 |
+|---|---|
+<% it.lwc.standardComponents.forEach(function(c){ %>
+| `<%= c.tag %>` | <%= c.count %> |
+<% }) %>
+<% } %>
+
+### LWC ディレクティブ
+<% if (it.lwc.directives.length === 0) { %>
+(なし)
+<% } else { %>
+<%= it.lwc.directives.map(function(d){ return "`" + d + "`"; }).join(", ") %>
+<% } %>
+<!-- DETERMINISTIC_END id="components" -->
+
+<!-- DETERMINISTIC_START id="labels" -->
+## Custom Label 参照 (<%= it.lwc.labelImports.length %>)
+
+<% if (it.lwc.labelImports.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.lwc.labelImports.forEach(function(l){ %>
+- `<%= l %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="labels" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+このコンポーネントの業務的役割と画面遷移上の位置 (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 想定ユーザ・前提画面・運用上の留意点を人手記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

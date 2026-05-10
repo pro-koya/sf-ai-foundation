@@ -1,0 +1,33 @@
+# Node / TypeScript
+node_modules/
+dist/
+*.tsbuildinfo
+.npm/
+.pnpm-store/
+
+# 知識グラフ (再生成可能な中間正本)
+.sfai/graph.sqlite
+.sfai/graph.sqlite-journal
+.sfai/cache/
+
+# オンボーディング状態 (ローカル)
+.sfai/onboarding-state.json
+
+# Claude Code セッションローカル
+.claude/local/
+.claude/sessions/
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# ログ
+*.log
+logs/
+
+# 環境変数
+.env
+.env.local
+.env.*.local

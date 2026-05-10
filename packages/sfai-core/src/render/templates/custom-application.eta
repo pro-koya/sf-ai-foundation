@@ -1,0 +1,44 @@
+# Lightning App: <%= it.app.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.app.fullyQualifiedName %>`
+<% if (it.app.label) { %>- Label: <%= it.app.label %><% } %>
+<% if (it.app.navType) { %>- Nav Type: `<%= it.app.navType %>`<% } %>
+<% if (it.app.formFactors && it.app.formFactors.length > 0) { %>- Form Factors: <%= it.app.formFactors.map(function(f){ return "`"+f+"`"; }).join(", ") %><% } %>
+<% if (it.app.utilityBar) { %>- Utility Bar: `<%= it.app.utilityBar %>`<% } %>
+<% if (it.app.brandColor) { %>- Brand Color: `<%= it.app.brandColor %>`<% } %>
+<% if (it.app.logo) { %>- Logo: `<%= it.app.logo %>`<% } %>
+<% if (it.app.description) { %>- Description: <%= it.app.description %><% } %>
+- Source: `<%= it.app.sourcePath %>`
+- Content hash: `<%= it.app.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="tabs" -->
+## 配置されている Tab (<%= it.app.tabs ? it.app.tabs.length : 0 %>)
+
+<% if (!it.app.tabs || it.app.tabs.length === 0) { %>
+(タブなし)
+<% } else { %>
+<% it.app.tabs.forEach(function(t){ %>
+- `<%= t %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="tabs" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+この Lightning App が想定するユーザロールと業務シーン (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- AI_MANAGED_START id="narrative" -->
+## この Lightning App は何で、誰のためにあるか
+
+このアプリが想定するユーザペルソナ (営業 / カスタマーサポート / 経理 等) と、彼らが日々どう使うかを 2〜3 段落で記述する (AI 生成)。
+<!-- AI_MANAGED_END id="narrative" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 想定ユーザ・配布範囲・利用シーンを人手で記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

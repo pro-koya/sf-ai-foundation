@@ -1,0 +1,107 @@
+---
+description: sample-project の Git 差分を 7 分類で意味づけし、change_summary を生成する
+argument-hint: [--from <ref>] [--to <ref>] [--include-static-analysis <sarif>]
+---
+
+# /classify-diff $ARGUMENTS
+
+## 実行手順
+
+### ステップ 1: 既知ナレッジ確認
+
+`.agents/knowledge/INDEX.md` をスキャンし、以下を確認:
+- `decisions/` で関連エンティティの過去判断
+- `pitfalls/` で類似差分の既知ワナ
+- `wins/` で再利用すべきパターン
+
+### ステップ 2: 決定的差分の取得
+
+```bash
+sfai diff --from <fromRef> --to <toRef> --json --path-prefix force-app/
+```
+
+`<fromRef>` `<toRef>` は引数 `$ARGUMENTS` から抽出 (デフォルト: `--from origin/main --to HEAD`)。
+
+出力 JSON の `files` 配列を category でグループ化:
+- `data_model`, `automation`, `permission`, `ui`, `logic`, `operational`, `manual`, `unknown`
+
+### ステップ 3: 並列分類器の起動 (Task ツール)
+
+各カテゴリのファイルが 1 件以上ある場合、対応する subagent を **並列で 1 メッセージ内に複数 Task 呼び出し** で起動:
+
+| カテゴリ | subagent | tools |
+|---|---|---|
+| data_model | data-model-classifier | Read, Bash |
+| automation | automation-classifier | Read, Bash |
+| permission | permission-classifier | Read, Bash |
+| ui | ui-classifier | Read, Bash |
+| logic | logic-classifier | Read, Bash |
+
+各 subagent には対応するファイルリストのみを渡す (他カテゴリは扱わない原則)。
+
+### ステップ 4: 結果統合
+
+各 subagent の応答 (`CategorySection`) を集約し、`ChangeSummary` 全体を組み立てる:
+
+```typescript
+{
+  id: { value: "cs-<date>-<short-hash>", source: "deterministic" },
+  createdAt: { value: <ISO 8601>, source: "deterministic" },
+  fromRef: { value: <fromRef>, source: "deterministic" },
+  toRef: { value: <toRef>, source: "deterministic" },
+  staticAnalysisFindings: { value: [...], source: "deterministic" },  // ← --include-static-analysis があれば
+  categories: [<各分類器の結果>],
+  humanAnnotations: {
+    businessContext: { value: "", source: "human" },
+    customerCommunicationNeeded: { value: false, source: "human" }
+  }
+}
+```
+
+### ステップ 5: スキーマ検証
+
+```bash
+echo '<JSON>' | sfai validate --change-summary --target -
+```
+
+**ajv 検証で source 列未指定が弾かれる**。失敗したら subagent 出力を修正。
+
+### ステップ 6: 出力
+
+`docs/ai-augmented/change-summaries/<date>-<short-id>.md` に Markdown 化して保存。
+さらに JSON は `docs/ai-augmented/change-summaries/<date>-<short-id>.json`。
+
+### ステップ 7: AI コスト記録
+
+`sfai metrics record` でこのサイクルの token 使用を記録 (各 subagent 終了時にも個別記録推奨)。
+
+## 出力例
+
+```markdown
+## 差分サマリ: <fromRef>..<toRef>
+
+- 生成: <timestamp>
+- 変更ファイル: 12 件 (+340 / -85)
+- カテゴリ別: data_model=4, automation=2, logic=5, operational=1
+
+### data_model
+- `Account.Industry` (modified, small)
+  - レビュー観点: picklist 値の追加が既存レコードに影響しないか確認 _(AI 推測)_
+  - 業務影響: 顧客分類用途、ダッシュボードで使用される可能性 _(AI 推測)_
+- ...
+
+### 手動作業 (要 check)
+- `Account.Industry`: ピックリスト値追加 → 既存レコード補正検討
+- ...
+```
+
+## 大型差分対応
+
+- `sfai diff --limit 1000` で取得時にトリミング (`truncated: true` がフラグ)
+- 1000 ファイル超なら **カテゴリ別代表サンプル** だけ subagent に渡す (Phase 3-7 で詳細化)
+
+## 禁則
+
+- 業務文脈の **捏造禁止** (HUMAN_MANAGED 領域から引用 or 推測時は曖昧さ語を含める)
+- 各分類器の **責務範囲外を扱わない** (例: data-model-classifier は Flow/Trigger を扱わない)
+- 一致率 CI を意識: **temperature=0** で同一プロンプト同一入力なら同一出力 (再現性ガバナンス層 4)

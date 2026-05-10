@@ -1,0 +1,76 @@
+# Visualforce Page: <%= it.vfp.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.vfp.fullyQualifiedName %>`
+<% if (it.vfp.label) { %>- Label: <%= it.vfp.label %><% } %>
+<% if (it.vfp.apiVersion) { %>- API Version: <%= it.vfp.apiVersion %><% } %>
+<% if (it.vfp.controller) { %>- Controller: `<%= it.vfp.controller %>`<% } %>
+<% if (it.vfp.standardController) { %>- Standard Controller: `<%= it.vfp.standardController %>`<% } %>
+<% if (it.vfp.renderAs) { %>- Render As: `<%= it.vfp.renderAs %>`<% } %>
+<% if (it.vfp.availableInTouch !== undefined) { %>- Available In Touch: <%= it.vfp.availableInTouch ? "✓" : "—" %><% } %>
+- Markup ファイル: <%= it.vfp.hasMarkup ? "✓ あり" : "(なし)" %>
+<% if (it.vfp.description) { %>- Description: <%= it.vfp.description %><% } %>
+- Source: `<%= it.vfp.sourcePath %>`
+- Content hash: `<%= it.vfp.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="extensions" -->
+## Apex Controller / Extensions
+
+<% if (!it.vfp.controller && (!it.vfp.extensions || it.vfp.extensions.length === 0) && !it.vfp.standardController) { %>
+(controller / extensions / standardController いずれも未指定)
+<% } else { %>
+<% if (it.vfp.controller) { %>- Controller: `<%= it.vfp.controller %>`
+<% } %>
+<% if (it.vfp.standardController) { %>- Standard Controller: `<%= it.vfp.standardController %>`
+<% } %>
+<% if (it.vfp.extensions && it.vfp.extensions.length > 0) { %>- Extensions:
+<% it.vfp.extensions.forEach(function(e){ %>  - `<%= e %>`
+<% }) %>
+<% } %>
+<% } %>
+<!-- DETERMINISTIC_END id="extensions" -->
+
+<!-- DETERMINISTIC_START id="markup-tags" -->
+## Markup タグ件数 (<%= it.vfp.markupCounts ? it.vfp.markupCounts.length : 0 %>)
+
+<% if (!it.vfp.markupCounts || it.vfp.markupCounts.length === 0) { %>
+(検出 markup なし)
+<% } else { %>
+| タグ | 出現回数 |
+|---|---|
+<% it.vfp.markupCounts.forEach(function(m){ %>
+| `<%= m.tag %>` | <%= m.count %> |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="markup-tags" -->
+
+<!-- DETERMINISTIC_START id="method-references" -->
+## メソッド参照 (`{!...}`) (<%= it.vfp.methodReferences ? it.vfp.methodReferences.length : 0 %>)
+
+<% if (!it.vfp.methodReferences || it.vfp.methodReferences.length === 0) { %>
+(検出参照なし)
+<% } else { %>
+<% it.vfp.methodReferences.forEach(function(r){ %>
+- `<%= r %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="method-references" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+このページの業務的役割と利用シーン (AI 推測、再生成で上書き)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- AI_MANAGED_START id="narrative" -->
+## このページは何で、なぜ存在するか
+
+このページが解いている業務上の課題 (例: PDF 帳票生成、印刷用整形、レガシー入力 UI) と、なぜ Visualforce で実装されているかを 2〜3 段落で記述する (AI 生成)。
+<!-- AI_MANAGED_END id="narrative" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 想定ユーザ・出力先・運用上の留意点を人手で記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

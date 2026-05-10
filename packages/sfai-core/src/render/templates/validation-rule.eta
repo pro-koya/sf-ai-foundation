@@ -1,0 +1,55 @@
+# ValidationRule: <%= it.vr.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.vr.fullyQualifiedName %>`
+- Object: `<%= it.vr.object %>`
+- Active: <%= it.vr.active ? "✓ true" : "false (無効)" %>
+<% if (it.vr.errorDisplayField) { %>- Error Display Field: `<%= it.vr.errorDisplayField %>`<% } %>
+- Source: `<%= it.vr.sourcePath %>`
+- Content hash: `<%= it.vr.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="rule" -->
+## 条件式
+
+<% if (it.vr.errorConditionFormula) { %>
+**自然語**
+
+<%~ it.formulaNatural %>
+
+**原文**
+
+```
+<%= it.vr.errorConditionFormula %>
+```
+<% } else { %>
+(条件式が取得できませんでした)
+<% } %>
+
+## エラーメッセージ
+
+<% if (it.vr.errorMessage) { %>
+> <%= it.vr.errorMessage %>
+<% } else { %>
+(エラーメッセージが取得できませんでした)
+<% } %>
+<!-- DETERMINISTIC_END id="rule" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+このバリデーションが守るビジネスルール (AI 推測、業務用語)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- AI_MANAGED_START id="concerns" -->
+## 気になる点 (AI 推測 / Phase 7-D で精度向上)
+<!-- - active=false なら無効化中 → 復活忘れ -->
+<!-- - 条件式の冗長さ / Picklist 値ハードコード -->
+<!-- - 国際化 (errorMessage 多言語対応) -->
+<!-- AI_MANAGED_END id="concerns" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- なぜこのルールが必要か、業務上の意図を人手記述。AI は上書きしません。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

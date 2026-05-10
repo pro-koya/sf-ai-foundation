@@ -1,0 +1,80 @@
+# PermissionSet: <%= it.ps.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.ps.fullyQualifiedName %>`
+- Label: <%= it.ps.label %>
+<% if (it.ps.license) { %>- License: <%= it.ps.license %><% } %>
+<% if (it.ps.description) { %>- Description: <%= it.ps.description %><% } %>
+- Source: `<%= it.ps.sourcePath %>`
+- Content hash: `<%= it.ps.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- DETERMINISTIC_START id="object-permissions" -->
+## オブジェクト権限 (<%= it.ps.body ? it.ps.body.objectPermissions.length : 0 %>)
+
+<% if (!it.ps.body || it.ps.body.objectPermissions.length === 0) { %>
+(なし)
+<% } else { %>
+| オブジェクト | C | R | U | D | View All | Modify All |
+|---|---|---|---|---|---|---|
+<% it.ps.body.objectPermissions.forEach(function(p){ %>
+| `<%= p.object %>` | <%= p.create ? "✓" : "—" %> | <%= p.read ? "✓" : "—" %> | <%= p.edit ? "✓" : "—" %> | <%= p.delete ? "✓" : "—" %> | <%= p.viewAll ? "✓" : "—" %> | <%= p.modifyAll ? "✓" : "—" %> |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="object-permissions" -->
+
+<!-- DETERMINISTIC_START id="field-permissions" -->
+## フィールド権限 (<%= it.ps.body ? it.ps.body.fieldPermissions.length : 0 %>)
+
+<% if (!it.ps.body || it.ps.body.fieldPermissions.length === 0) { %>
+(なし)
+<% } else { %>
+| フィールド | Read | Edit |
+|---|---|---|
+<% it.ps.body.fieldPermissions.forEach(function(p){ %>
+| `<%= p.field %>` | <%= p.readable ? "✓" : "—" %> | <%= p.editable ? "✓" : "—" %> |
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="field-permissions" -->
+
+<!-- DETERMINISTIC_START id="class-accesses" -->
+## Apex クラス アクセス (<%= it.ps.body ? it.ps.body.classAccesses.length : 0 %>)
+
+<% if (!it.ps.body || it.ps.body.classAccesses.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.ps.body.classAccesses.forEach(function(c){ %>
+- `<%= c.apexClass %>` <%= c.enabled ? "✓ enabled" : "✗ disabled" %>
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="class-accesses" -->
+
+<!-- DETERMINISTIC_START id="user-permissions" -->
+## ユーザ権限 (システム権限) (<%= it.ps.body ? it.ps.body.userPermissions.length : 0 %>)
+
+<% if (!it.ps.body || it.ps.body.userPermissions.length === 0) { %>
+(なし)
+<% } else { %>
+<% it.ps.body.userPermissions.forEach(function(u){ %>
+- `<%= u %>`
+<% }) %>
+<% } %>
+<!-- DETERMINISTIC_END id="user-permissions" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+この PermissionSet の業務的役割 (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- AI_MANAGED_START id="concerns" -->
+## 気になる点 (AI 推測)
+<!-- - 未割当 (assignment 0 件) -->
+<!-- - 過剰権限の可能性 -->
+<!-- AI_MANAGED_END id="concerns" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 対象業務ロール・想定ユーザを人手記述。AI は上書きしません。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->

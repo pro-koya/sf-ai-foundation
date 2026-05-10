@@ -1,0 +1,23 @@
+# RemoteSiteSetting: <%= it.rss.fullyQualifiedName %>
+
+<!-- DETERMINISTIC_START id="quick-summary" -->
+> <%~ it.quickSummary %>
+<!-- DETERMINISTIC_END id="quick-summary" -->
+
+<!-- DETERMINISTIC_START id="overview" -->
+- API Name: `<%= it.rss.fullyQualifiedName %>`
+<% if (it.rss.url) { %>- URL: `<%= it.rss.url %>`<% } %>
+- Active: <%= it.rss.active ? "✓ true" : "false" %>
+- Disable Protocol Security: <%= it.rss.disableProtocolSecurity ? "⚠ true (HTTP 許容)" : "false" %>
+<% if (it.rss.description) { %>- Description: <%= it.rss.description %><% } %>
+- Source: `<%= it.rss.sourcePath %>`
+- Content hash: `<%= it.rss.contentHash %>`
+<!-- DETERMINISTIC_END id="overview" -->
+
+<!-- AI_MANAGED_START id="purpose" -->
+この Remote Site Setting の利用用途 (AI 推測)。
+<!-- AI_MANAGED_END id="purpose" -->
+
+<!-- HUMAN_MANAGED_START id="business-context" -->
+<!-- 連携先システムや運用窓口を人手記述。 -->
+<!-- HUMAN_MANAGED_END id="business-context" -->
