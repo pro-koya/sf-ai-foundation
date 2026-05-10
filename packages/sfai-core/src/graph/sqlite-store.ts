@@ -299,6 +299,23 @@ DELETE FROM meta;
 
 export interface SqliteStoreOptions {
   readonly dbPath: string;
+  /** read-only モード。CLI の `sfai graph query` 等、外部入力を扱う経路で必ず true を指定する */
+  readonly readonly?: boolean;
+}
+
+const ALLOWED_TABLES_FOR_MIGRATE: ReadonlySet<string> = new Set([
+  "flows",
+  "apex_classes",
+  "apex_triggers",
+  "permission_sets",
+  "profiles",
+]);
+const SAFE_IDENTIFIER_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
+
+function assertSafeIdentifier(name: string, kind: "table" | "column" | "type"): void {
+  if (!SAFE_IDENTIFIER_PATTERN.test(name)) {
+    throw new Error(`Unsafe ${kind} identifier rejected: ${name}`);
+  }
 }
 
 function addColumnIfMissing(
@@ -307,21 +324,68 @@ function addColumnIfMissing(
   column: string,
   type: string,
 ): void {
+  // 防御的バリデーション (現在の呼び出しはハードコード文字列だが、将来の事故を防ぐため)
+  if (!ALLOWED_TABLES_FOR_MIGRATE.has(table)) {
+    throw new Error(`Table not allowed for migrate: ${table}`);
+  }
+  assertSafeIdentifier(table, "table");
+  assertSafeIdentifier(column, "column");
+  // type は SQLite の型 (TEXT/INTEGER/REAL/BLOB) のみ許可
+  const upperType = type.trim().toUpperCase();
+  if (!["TEXT", "INTEGER", "REAL", "BLOB", "NUMERIC"].includes(upperType)) {
+    throw new Error(`Unsafe column type rejected: ${type}`);
+  }
   const rows = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;
   if (rows.some((r) => r.name === column)) return;
-  db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+  db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${upperType}`);
+}
+
+/**
+ * 外部入力 (CLI 引数, AI 経由) の SQL を実行する前に、
+ * SELECT / WITH (CTE) 以外の構文を拒否する。
+ * better-sqlite3 の `readonly: true` と併せた多層防御。
+ */
+export function isSafeReadOnlyQuery(sql: string): boolean {
+  // コメントを除去 (-- 行末コメント / / * ... * / ブロックコメント)
+  const stripped = sql
+    .replace(/--.*$/gm, "")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .trim();
+  if (stripped.length === 0) return false;
+
+  // 末尾以外のセミコロンを禁止 (multi-statement の防止)
+  const semiIndex = stripped.indexOf(";");
+  if (semiIndex !== -1 && semiIndex !== stripped.length - 1) return false;
+  const body = semiIndex === stripped.length - 1 ? stripped.slice(0, -1).trim() : stripped;
+
+  // 先頭トークンが SELECT または WITH のみ許可
+  const firstToken = body.split(/\s+/)[0]?.toLowerCase() ?? "";
+  if (firstToken !== "select" && firstToken !== "with") return false;
+
+  // 危険キーワードを単語境界で検出
+  const dangerous =
+    /\b(attach|detach|insert|update|delete|drop|alter|create|replace|pragma|vacuum|reindex|savepoint|begin|commit|rollback)\b/i;
+  if (dangerous.test(body)) return false;
+
+  return true;
 }
 
 export class SqliteGraphStore {
   readonly #db: Database.Database;
+  readonly #readonly: boolean;
 
   constructor(options: SqliteStoreOptions) {
-    mkdirSync(dirname(options.dbPath), { recursive: true });
-    this.#db = new Database(options.dbPath);
-    this.#db.pragma("journal_mode = WAL");
+    this.#readonly = options.readonly === true;
+    if (!this.#readonly) {
+      mkdirSync(dirname(options.dbPath), { recursive: true });
+    }
+    this.#db = new Database(options.dbPath, this.#readonly ? { readonly: true } : {});
     this.#db.pragma("foreign_keys = ON");
-    this.#db.exec(SCHEMA_DDL);
-    this.#migrate();
+    if (!this.#readonly) {
+      this.#db.pragma("journal_mode = WAL");
+      this.#db.exec(SCHEMA_DDL);
+      this.#migrate();
+    }
   }
 
   #migrate(): void {
@@ -337,6 +401,19 @@ export class SqliteGraphStore {
   }
 
   query<T = unknown>(sql: string, params: readonly unknown[] = []): readonly T[] {
+    return this.#db.prepare(sql).all(...params) as T[];
+  }
+
+  /**
+   * 外部入力由来の SQL を実行する。SELECT / WITH のみ許可、危険キーワードを拒否。
+   * `readonly: true` で開いた接続でのみ呼び出すことを推奨 (二重防御)。
+   */
+  queryUntrusted<T = unknown>(sql: string, params: readonly unknown[] = []): readonly T[] {
+    if (!isSafeReadOnlyQuery(sql)) {
+      throw new Error(
+        "[sqlite-store] Untrusted query rejected: only single SELECT / WITH statements are allowed (no ATTACH, INSERT, UPDATE, DELETE, DROP, PRAGMA, multi-statements, etc.).",
+      );
+    }
     return this.#db.prepare(sql).all(...params) as T[];
   }
 

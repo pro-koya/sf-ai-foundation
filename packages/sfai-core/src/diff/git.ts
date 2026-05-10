@@ -10,6 +10,41 @@ export class GitInvocationError extends Error {
   }
 }
 
+/**
+ * git のリビジョン指定子として安全な文字のみを許可するバリデータ。
+ * `--upload-pack=...` や `--exec=...` 等の git option としての解釈を防ぐ。
+ *
+ * Salesforce プロジェクトで使われる典型的な ref:
+ *   - branch: main, feature/xyz, release-2026-05
+ *   - tag:    v0.2.0, v1.0.0-rc.1
+ *   - sha:    a1b2c3d, abc...def
+ *   - range:  main..HEAD, HEAD~2, origin/main
+ */
+const SAFE_GIT_REF = /^[A-Za-z0-9._/:^~@{}[\]\\-]+$/;
+
+export function assertSafeGitRef(ref: string, label: string): void {
+  if (ref.length === 0 || ref.length > 256) {
+    throw new GitInvocationError(`Invalid git ref ${label}: empty or too long`, "");
+  }
+  // 先頭が '-' の引数は git option として解釈される危険がある
+  if (ref.startsWith("-")) {
+    throw new GitInvocationError(
+      `Invalid git ref ${label}: starts with '-' (would be parsed as a git option)`,
+      "",
+    );
+  }
+  if (!SAFE_GIT_REF.test(ref)) {
+    throw new GitInvocationError(
+      `Invalid git ref ${label}: contains characters outside the allowed set`,
+      "",
+    );
+  }
+  // git の dangerous option 名を ref として渡されないよう念押し
+  if (/^(upload-pack|receive-pack|exec|config|c|C)=/i.test(ref)) {
+    throw new GitInvocationError(`Invalid git ref ${label}: matches a git option pattern`, "");
+  }
+}
+
 interface GitNameStatusEntry {
   readonly status: string;
   readonly path: string;
@@ -36,6 +71,8 @@ export function diffNameStatus(
   toRef: string,
   cwd: string,
 ): readonly GitNameStatusEntry[] {
+  assertSafeGitRef(fromRef, "fromRef");
+  assertSafeGitRef(toRef, "toRef");
   const out = runGit(["diff", "--name-status", "-M", fromRef, toRef], cwd);
   const entries: GitNameStatusEntry[] = [];
   for (const rawLine of out.split("\n")) {
@@ -64,6 +101,8 @@ export function diffNumstat(
   toRef: string,
   cwd: string,
 ): ReadonlyMap<string, { readonly added: number; readonly removed: number }> {
+  assertSafeGitRef(fromRef, "fromRef");
+  assertSafeGitRef(toRef, "toRef");
   const out = runGit(["diff", "--numstat", "-M", fromRef, toRef], cwd);
   const result = new Map<string, { readonly added: number; readonly removed: number }>();
   for (const rawLine of out.split("\n")) {

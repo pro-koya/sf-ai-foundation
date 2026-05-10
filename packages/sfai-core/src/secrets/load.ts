@@ -14,6 +14,64 @@ export class SecretsRulesError extends Error {
   }
 }
 
+/** ユーザ提供正規表現の最大長 (パターン文字列) */
+const MAX_PATTERN_LENGTH = 200;
+/** マッチング時の総時間ガード (ms)。これを超えるパターンは ReDoS 候補として拒否 */
+const PATTERN_BENCHMARK_TIMEOUT_MS = 50;
+/** ReDoS の典型形を持つパターンを早期検出する */
+function looksLikeRedosPattern(pattern: string): boolean {
+  // ネストした量指定子: (a+)+ / (a*)+ / (a+)* / (.+)+ / (\w+)+ など
+  // (...)+/* / (...){n,} 直後にさらに +/*/{n,} が続くパターン
+  if (/\([^)]*[+*][^)]*\)\s*[+*]/.test(pattern)) return true;
+  if (/\([^)]*[+*][^)]*\)\{\d+,?\d*\}/.test(pattern)) return true;
+  // 重複した代替分岐: (a|a)+ / (a|ab)* など (簡易)
+  if (/\(([^|()]+)\|\1\)[+*]/.test(pattern)) return true;
+  // 代替分岐内の overlap (a|a*) の典型形
+  if (/\([^|()]*\|[^|()]*\*\)[+*]/.test(pattern)) return true;
+  return false;
+}
+
+/**
+ * 与えられた正規表現が catastrophic backtracking を起こさないか軽量ベンチマーク。
+ * `aaaa...!` のような攻撃用入力を生成して 50ms 以内に終わるか確認する。
+ * 終わらない場合 ReDoS 候補とみなす。
+ */
+function passesRedosBenchmark(regex: RegExp): boolean {
+  const adversarial = `${"a".repeat(40)}!`;
+  const start = Date.now();
+  try {
+    regex.test(adversarial);
+  } catch {
+    return false;
+  }
+  return Date.now() - start <= PATTERN_BENCHMARK_TIMEOUT_MS;
+}
+
+function compileSafeRegex(pattern: string, ruleId: string): RegExp {
+  if (pattern.length > MAX_PATTERN_LENGTH) {
+    throw new SecretsRulesError(
+      `Pattern in rule "${ruleId}" exceeds max length ${MAX_PATTERN_LENGTH} (got ${pattern.length})`,
+    );
+  }
+  if (looksLikeRedosPattern(pattern)) {
+    throw new SecretsRulesError(
+      `Pattern in rule "${ruleId}" looks like a catastrophic-backtracking ReDoS pattern (nested quantifiers detected). Rewrite without nested + or *.`,
+    );
+  }
+  let regex: RegExp;
+  try {
+    regex = new RegExp(pattern, "g");
+  } catch (err) {
+    throw new SecretsRulesError(`Invalid regex in rule "${ruleId}": ${(err as Error).message}`);
+  }
+  if (!passesRedosBenchmark(regex)) {
+    throw new SecretsRulesError(
+      `Pattern in rule "${ruleId}" took too long on a benign input (>${PATTERN_BENCHMARK_TIMEOUT_MS}ms). Possible ReDoS — rewrite the regex.`,
+    );
+  }
+  return regex;
+}
+
 export interface LoadOptions {
   readonly rootPath?: string;
   readonly rulesFile?: string;
@@ -74,12 +132,7 @@ function normalizeRules(parsed: unknown): readonly SecretRule[] {
     if (!VALID_LEVELS.includes(level as SensitivityLevel)) continue;
     if (!(VALID_MASKS as readonly string[]).includes(mask)) continue;
 
-    let regex: RegExp;
-    try {
-      regex = new RegExp(pattern, "g");
-    } catch (err) {
-      throw new SecretsRulesError(`Invalid regex in rule "${id}": ${(err as Error).message}`);
-    }
+    const regex = compileSafeRegex(pattern, id);
 
     result.push({
       id,

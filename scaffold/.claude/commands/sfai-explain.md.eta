@@ -20,10 +20,19 @@ argument-hint: <kind> <fqn> [block-id1] [block-id2] ...
 ## 実行手順
 
 1. 引数を解析し、`<kind>` が許容値か検証する
-2. 知識グラフからファクトを取得:
+2. 知識グラフからファクトを取得 (`sfai graph query` は SELECT/WITH のみ・読み取り専用接続)。
+   `<fqn>` は **必ずシングルクオートをエスケープしないままシェル文字列補間で渡さない**。
+   FQN を引用符でくくる際は、FQN 内に `'` が現れない前提を必ずチェックしてから:
    ```bash
-   sfai graph query "SELECT * FROM <table> WHERE fqn = '<fqn>'"
+   # 推奨: FQN は英数 _ . - のみで構成される (CLI 側で同パターンを強制)
+   FQN_SAFE="<fqn>"
+   case "$FQN_SAFE" in
+     *[!A-Za-z0-9_.-]*) echo "fqn に許可外文字が含まれます: $FQN_SAFE" >&2; exit 2 ;;
+   esac
+   sfai graph query "SELECT * FROM <table> WHERE fqn = '$FQN_SAFE'"
    ```
+   `sfai graph query` は CRIT-1 対策として **readonly 接続 + SELECT allowlist** を強制しており、
+   ATTACH/INSERT/UPDATE/DELETE/DROP/PRAGMA 等は CLI 側で拒否される。
 3. **explain-writer subagent を起動** し、各 block-id ごとに本文を生成させる
    - subagent は **DETERMINISTIC ブロックの内容のみを材料** にする
    - 既存の AI_MANAGED ブロックは読み取らない (再生成性を担保)

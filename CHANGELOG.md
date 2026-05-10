@@ -2,6 +2,50 @@
 
 すべての注目すべき変更は本ファイルに記録される (SemVer 準拠)。
 
+## [0.2.1] - 2026-05-11 (セキュリティ Hotfix / v0.3.0 Week 0)
+
+> 機密性の高い実プロジェクトへの導入前監査で検出された **CRITICAL 1 + HIGH 5 + MEDIUM 5 + 推奨 1** の計 12 件を解消。
+> v0.3.0 (内部検証実証) 着手前に必須の安全化として、Phase スコープ規律 § 3.2 に従い v0.3.0 Week 0 の範疇で対処。新 Phase は立てていない。
+
+### Security — CRITICAL
+
+- **CRIT-1 (`sfai graph query` の任意 SQL 実行)**:
+  - `packages/sfai-core/src/graph/sqlite-store.ts` に `isSafeReadOnlyQuery()` allowlist と `queryUntrusted()` メソッドを追加
+  - `cmdGraphQuery` を `new Database(dbPath, { readonly: true })` + SELECT/WITH allowlist の **二重防御** で実行
+  - ATTACH DATABASE / multi-statement / コメント隠蔽 INSERT / WITH 内危険構文を全て拒否
+
+### Security — HIGH
+
+- **HIGH-1 (シークレットマスキング未適用)**: `secrets/apply.ts:maskGraphSensitiveFields` を新設、`graph/builder.ts` で `validateGraph` 直前に適用。対象は ValidationRule.errorConditionFormula / errorMessage / CustomMetadataRecord.label / values[].value
+- **HIGH-2 (secrets-rules.yaml の ReDoS)**: `secrets/load.ts:compileSafeRegex` で pattern.length 上限 / nested quantifiers 静的検出 / 50ms 実行ベンチマークの三層防御
+- **HIGH-3+4 (パストラバーサル)**: `util/path-guard.ts` 新設 (`resolveWithinRoot` / `assertWithinRoot`)。`cli.ts` の `--input` x2、`--target` x1、`explain/index.ts:resolveMarkdownPath` の `fqn` 経路に適用
+- **HIGH-5 (git ref インジェクション)**: `diff/git.ts:assertSafeGitRef` で `-` 始まり拒否 + 文字許容パターン + git option 名パターンの明示拒否
+
+### Security — MEDIUM
+
+- **MED-1**: `fast-xml-parser` を `^4.5.0` → `^5.7.3` (CVE 解消)
+- **MED-2**: `explain/index.ts:sanitizeBlockBody` で `MARKER_FRAGMENT_PATTERN` を strip し、AI 出力経由のブロック構造攻撃を無害化
+- **MED-3**: `scaffold/.claude/commands/sfai-explain.md.eta` に shell-side FQN 文字検証 (`case ... in *[!A-Za-z0-9_.-]*`) を追加
+- **MED-4**: `util/walk.ts` を `lstatSync` + `isSymbolicLink()` skip に変更し、`force-app/` 外部への symlink 経由のメタデータ混入を防止
+- **MED-5**: `.gitignore` に `.claude/settings.local.json` を追加 (将来の絶対パス漏洩防止)
+
+### Security — Defense in Depth
+
+- `graph/parse-xml.ts` の `XMLParser` に `processEntities: false` を明示 (XXE 防御の表明)
+- `sqlite-store.ts:assertSafeIdentifier` + `ALLOWED_TABLES_FOR_MIGRATE` で migrate 経路の SQL identifier を allowlist 化
+
+### Verified
+
+- 256 テスト全 pass を維持 (1 件のテストは MED-2 の新挙動に合わせて更新)
+- `security-reviewer` agent による独立再監査で **CONDITIONAL GO → GO** 判定
+- `npm audit`: production 依存の脆弱性 0 件 (残存 5 件は dev-only vitest/vite/esbuild)
+
+### 規律遵守の記録
+
+本リリースは [Phase スコープ規律 ADR](./.agents/knowledge/decisions/2026-05-10-scope-discipline-and-phase-restructure.md) と [v0.3.0 着手 ADR](./.agents/knowledge/decisions/2026-05-10-v0.3.0-internal-validation-plan.md) の Week 0 タスク B (pitfalls 解消) として処理した。**新 Phase は立てず、v0.3.0 内で責任を持って対処** という規律 §3.2 を初実例として実行した。
+
+---
+
 ## [0.2.0] - 2026-05-10 (Pre-release / 内部検証 拡充フェーズ完了)
 
 > **本リリースは 2026-05-08 〜 05-09 に「Phase 7〜15」として連鎖実装された 9 個の派生 Phase を、本来 1 つの Phase として完結すべきだった「ドキュメント完全化 + AI 文面生成基盤」テーマとして統合したもの**である ([scope-discipline-and-phase-restructure ADR](./.agents/knowledge/decisions/2026-05-10-scope-discipline-and-phase-restructure.md))。

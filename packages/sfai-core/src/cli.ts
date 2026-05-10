@@ -30,6 +30,7 @@ import {
 } from "./render/index.js";
 import { parseSarifFile } from "./sarif/index.js";
 import { loadGraphSchema, validateGraph } from "./schema/validate.js";
+import { PathGuardError, assertWithinRoot, resolveWithinRoot } from "./util/path-guard.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const BUNDLED_SCAFFOLD = resolve(here, "scaffold");
@@ -167,8 +168,16 @@ async function cmdGraphQuery(args: ParsedArgs): Promise<number> {
     console.error('Usage: sfai graph query "<SQL>"');
     return 2;
   }
-  const store = new SqliteGraphStore({ dbPath });
-  const rows = store.query(sql);
+  // 外部入力 SQL は readonly モード + SELECT allowlist の二重防御で実行する
+  const store = new SqliteGraphStore({ dbPath, readonly: true });
+  let rows: readonly unknown[];
+  try {
+    rows = store.queryUntrusted(sql);
+  } catch (err) {
+    console.error(`[sfai] graph query rejected: ${(err as Error).message}`);
+    store.close();
+    return 2;
+  }
   store.close();
   console.log(JSON.stringify(rows, null, 2));
   return 0;
@@ -402,7 +411,14 @@ async function cmdOnboardFaqExtract(args: ParsedArgs): Promise<number> {
     );
     return 2;
   }
-  const content = readFileSync(resolve(root, inputFile), "utf8");
+  let inputAbs: string;
+  try {
+    inputAbs = resolveWithinRoot(root, inputFile, "--input");
+  } catch (err) {
+    console.error(`[sfai] ${(err as Error).message}`);
+    return 2;
+  }
+  const content = readFileSync(inputAbs, "utf8");
   const candidates = extractFaq(content, { minOccurrences: Number.isNaN(minOcc) ? 1 : minOcc });
   const md = renderFaqMarkdown(topic, candidates);
   console.log(md);
@@ -415,7 +431,27 @@ async function cmdValidate(args: ParsedArgs): Promise<number> {
     console.error("Usage: sfai validate --target <path-to-json-graph>");
     return 2;
   }
-  const data = JSON.parse(readFileSync(resolve(process.cwd(), targetPath), "utf8"));
+  let resolvedTarget: string;
+  try {
+    resolvedTarget = resolveWithinRoot(process.cwd(), targetPath, "--target");
+  } catch (err) {
+    console.error(`[sfai] ${(err as Error).message}`);
+    return 2;
+  }
+  let raw: string;
+  try {
+    raw = readFileSync(resolvedTarget, "utf8");
+  } catch (err) {
+    console.error(`[sfai] cannot read --target: ${(err as Error).message}`);
+    return 1;
+  }
+  let data: unknown;
+  try {
+    data = JSON.parse(raw);
+  } catch (err) {
+    console.error(`[sfai] --target is not valid JSON: ${(err as Error).message}`);
+    return 1;
+  }
   try {
     validateGraph(data);
     console.log("[sfai] validate: OK");
@@ -585,7 +621,13 @@ async function cmdExplainWrite(args: ParsedArgs): Promise<number> {
   }
   const kind = kindRaw as ExplainKind;
 
-  const inputAbs = resolve(projectRoot, inputPath);
+  let inputAbs: string;
+  try {
+    inputAbs = resolveWithinRoot(projectRoot, inputPath, "--input");
+  } catch (err) {
+    console.error(`[sfai] ${(err as Error).message}`);
+    return 2;
+  }
   if (!existsSync(inputAbs)) {
     console.error(`[sfai] input file not found: ${inputAbs}`);
     return 1;

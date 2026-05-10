@@ -7,6 +7,9 @@ const parser = new XMLParser({
   parseTagValue: false,
   isArray: () => false,
   trimValues: true,
+  // XXE / 外部エンティティ解決を明示的に無効化 (再監査推奨対応)。
+  // fast-xml-parser 5.x は純粋 JS パーサーで実害は無いが、防御的に明示する。
+  processEntities: false,
 });
 
 export function parseXml(xml: string): Record<string, unknown> {

@@ -16,6 +16,8 @@ dist/
 # Claude Code セッションローカル
 .claude/local/
 .claude/sessions/
+# 開発者個別の設定 (絶対パスを含むため共有禁止)
+.claude/settings.local.json
 
 # OS / Editor
 .DS_Store

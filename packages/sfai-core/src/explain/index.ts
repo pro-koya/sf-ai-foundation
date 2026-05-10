@@ -10,7 +10,26 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { mkdirSync } from "node:fs";
 import { replaceBlockContent } from "../merge/parser.js";
+import { assertWithinRoot } from "../util/path-guard.js";
 import { ALLOWED_BLOCK_IDS, validateBlockIds } from "./block-registry.js";
+
+/**
+ * fqn として安全な文字のみを許可する。
+ * Salesforce の FQN は通常 `[A-Za-z0-9_]+(\.[A-Za-z0-9_]+)*` で表現される。
+ * `../` 等のパス区切りやスラッシュは禁止 (writes outside projectRoot 防止)。
+ */
+const SAFE_FQN_PATTERN = /^[A-Za-z0-9_]+(?:[._-][A-Za-z0-9_]+)*$/;
+
+function assertSafeFqn(fqn: string): void {
+  if (fqn.length === 0 || fqn.length > 256) {
+    throw new Error(`Invalid fqn: empty or too long`);
+  }
+  if (!SAFE_FQN_PATTERN.test(fqn)) {
+    throw new Error(
+      `Invalid fqn "${fqn}": only [A-Za-z0-9_.-] allowed. Path-traversal attempts are rejected.`,
+    );
+  }
+}
 
 export {
   ALLOWED_BLOCK_IDS,
@@ -76,9 +95,14 @@ const KIND_TO_SUBDIR: Record<ExplainKind, string> = {
 };
 
 export function resolveMarkdownPath(target: ExplainTarget): string {
+  // fqn を介したパストラバーサルを拒否
+  assertSafeFqn(target.fqn);
   const out = target.outputDir ?? "docs/generated";
   const sub = KIND_TO_SUBDIR[target.kind];
-  return resolve(target.projectRoot, out, sub, `${target.fqn}.md`);
+  const resolved = resolve(target.projectRoot, out, sub, `${target.fqn}.md`);
+  // 念押しの境界チェック (outputDir が `../` を含むケース等)
+  assertWithinRoot(target.projectRoot, resolved, "explain markdown path");
+  return resolved;
 }
 
 export function applyExplain(target: ExplainTarget, input: ExplainInput): ExplainResult {
@@ -126,9 +150,21 @@ export function applyExplain(target: ExplainTarget, input: ExplainInput): Explai
   return { markdownPath, updated: updatedIds, skipped: skippedIds };
 }
 
-/** ブロック中身を安全な形に整える (markdown 文字列の前後空白を整理、改行終端) */
+/**
+ * AI 出力のマーカー断片を除去 (MED-2 対策)。
+ * AI が `<!-- AI_MANAGED_END -->` 等を生成した場合、ensureMarkerInvariants の
+ * カウントが偶数で並べば素通りしてブロック構造を壊しうる。明示的に剥がす。
+ */
+const MARKER_FRAGMENT_PATTERN =
+  /<!--\s*(DETERMINISTIC|AI_MANAGED|HUMAN_MANAGED)_(START|END)(?:\s+id="[^"]*")?\s*-->/g;
+
+/** ブロック中身を安全な形に整える (markdown 文字列の前後空白を整理、マーカー除去) */
 function sanitizeBlockBody(body: string): string {
-  return body.replace(/\r\n/g, "\n").replace(/\s+$/g, "").replace(/^\s+/g, "");
+  return body
+    .replace(/\r\n/g, "\n")
+    .replace(MARKER_FRAGMENT_PATTERN, "")
+    .replace(/\s+$/g, "")
+    .replace(/^\s+/g, "");
 }
 
 function ensureMarkerInvariants(before: string, after: string): void {

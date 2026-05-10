@@ -71,6 +71,14 @@
 
 ---
 
+## Wins
+
+<!-- 新規追加時はこの下に `- [YYYY-MM-DD: タイトル](wins/file.md) — 1 行サマリ` を追加 -->
+
+- **[2026-05-11: 機密プロジェクト導入前の事前監査と Phase 内対処](wins/2026-05-11-pre-deployment-security-hardening.md)** — 3 系統並列監査で 12 件 (CRIT 1 / HIGH 5 / MED 5 / 推奨 1) を検出 → 半日で全件修正 → 再監査 GO 判定。Phase スコープ規律 §3.2 の **初実例**: 新 Phase を立てず v0.3.0 Week 0 内で吸収
+
+---
+
 ## Pitfalls
 
 <!-- 新規追加時はこの下に `- [YYYY-MM-DD: タイトル](pitfalls/file.md) — 1 行サマリ` を追加 -->

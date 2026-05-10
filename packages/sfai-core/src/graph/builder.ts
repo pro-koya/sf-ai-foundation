@@ -1,4 +1,6 @@
 import { validateGraph } from "../schema/validate.js";
+import { maskGraphSensitiveFields } from "../secrets/apply.js";
+import { loadSecretsRules } from "../secrets/load.js";
 import type {
   ApexClass,
   ApexTrigger,
@@ -172,8 +174,16 @@ export async function buildGraph(
     tags: [],
   };
 
-  validateGraph(graph);
-  return graph;
+  // SQLite / Markdown / AI プロンプトに流す前にマスキングを適用 (CRITICAL: HIGH-1)
+  // 機密性の高い自由文フィールド (ValidationRule formula / message, CustomMetadata values) のみ対象。
+  // 構造的識別子 (FQN / 各種 hash / path) は対象外。
+  const rules = loadSecretsRules(
+    options.projectRoot !== undefined ? { rootPath: options.projectRoot } : {},
+  );
+  const maskedGraph = maskGraphSensitiveFields(graph, rules);
+
+  validateGraph(maskedGraph);
+  return maskedGraph;
 }
 
 /**
