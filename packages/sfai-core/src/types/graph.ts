@@ -26,7 +26,10 @@ export type EntityKind =
   | "remoteSiteSetting"
   | "lwc"
   | "auraBundle"
-  | "flexiPage";
+  | "flexiPage"
+  | "visualforcePage"
+  | "visualforceComponent"
+  | "customApplication";
 
 export type DependencyKind =
   | "references"
@@ -60,7 +63,16 @@ export interface SObject {
   readonly pluralLabel?: string;
   readonly description?: string;
   readonly isCustom: boolean;
-  readonly sharingModel?: "Private" | "Read" | "ReadWrite" | "ControlledByParent" | "FullAccess";
+  readonly sharingModel?:
+    | "Private"
+    | "Read"
+    | "ReadSelect"
+    | "ReadWrite"
+    | "ReadWriteTransfer"
+    | "FullAccess"
+    | "ControlledByParent"
+    | "ControlledByCampaign"
+    | "ControlledByLeadOrContact";
   readonly sourcePath: string;
   readonly contentHash: string;
 }
@@ -461,7 +473,7 @@ export interface LwcStandardComponentCount {
 
 // ===== Aura Component Bundle (Phase 11-B) =====
 
-export type AuraBundleKind = "Component" | "Application" | "Event";
+export type AuraBundleKind = "Component" | "Application" | "Event" | "Interface" | "Tokens";
 
 export interface AuraBundle {
   readonly fullyQualifiedName: string;
@@ -566,7 +578,7 @@ export interface CustomApplication {
 
 // ===== SharingRule (Phase 9-B3) =====
 
-export type SharingRuleKind = "criteriaBased" | "ownerBased";
+export type SharingRuleKind = "criteriaBased" | "ownerBased" | "territoryBased";
 export type SharingAccessLevel = "Read" | "Edit" | "ReadWrite";
 
 export interface SharingRule {
