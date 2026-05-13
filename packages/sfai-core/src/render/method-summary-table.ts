@@ -164,17 +164,7 @@ interface CallSite {
 
 // `<identifier>(...)` 系のパターンを stmt テキストから抽出
 const CALL_REGEX = /(?:([A-Za-z_$][\w$.]*)\s*\.\s*)?([A-Za-z_$][\w$]*)\s*\(/g;
-const RESERVED = new Set([
-  "if",
-  "for",
-  "while",
-  "switch",
-  "return",
-  "throw",
-  "catch",
-  "new",
-  "do",
-]);
+const RESERVED = new Set(["if", "for", "while", "switch", "return", "throw", "catch", "new", "do"]);
 
 function collectCallSites(nodes: readonly ApexControlFlowNode[]): readonly CallSite[] {
   const out: CallSite[] = [];

@@ -1,7 +1,7 @@
 // Flow の Mermaid フローチャート生成 (Phase 8-B3 / Phase 9-A1 ノード詳細表)
 // 要素 (FlowElementInfo) と接続 (FlowEdgeInfo) を有向グラフとして描画する。
 
-import type { FlowBodyInfo, FlowElementInfo, FlowEdgeInfo } from "../types/graph.js";
+import type { FlowBodyInfo, FlowEdgeInfo, FlowElementInfo } from "../types/graph.js";
 import type { MermaidFlowchart, NodeDetail } from "./method-flowchart.js";
 
 const KIND_TO_SHAPE: Record<FlowElementInfo["kind"], (label: string) => string> = {

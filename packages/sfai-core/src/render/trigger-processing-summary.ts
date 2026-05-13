@@ -1,11 +1,7 @@
 // Trigger 処理サマリ表 builder (Phase 13-C)
 // Trigger は通常 1 メソッド (= execute) 相当なので、controlFlows を統合して 1 行にまとめる。
 
-import type {
-  ApexBodyInfo,
-  ApexControlFlowNode,
-  ApexTrigger,
-} from "../types/graph.js";
+import type { ApexBodyInfo, ApexControlFlowNode, ApexTrigger } from "../types/graph.js";
 
 export interface TriggerProcessingSummary {
   readonly events: readonly string[];

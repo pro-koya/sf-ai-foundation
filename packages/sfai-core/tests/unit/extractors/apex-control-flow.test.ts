@@ -98,7 +98,9 @@ describe("parseStatements - if/else", () => {
   });
 
   it("else if は elseNodes 内の if としてネストされる", () => {
-    const out = parseStatements("if (a) { return 1; } else if (b) { return 2; } else { return 3; }");
+    const out = parseStatements(
+      "if (a) { return 1; } else if (b) { return 2; } else { return 3; }",
+    );
     const node = out[0];
     expect(node?.kind).toBe("if");
     if (node?.kind === "if") {

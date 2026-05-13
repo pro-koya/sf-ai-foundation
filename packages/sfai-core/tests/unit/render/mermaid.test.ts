@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildSystemOverviewMermaid,
-  buildTriggerMermaid,
-} from "../../../src/render/mermaid.js";
+import { buildSystemOverviewMermaid, buildTriggerMermaid } from "../../../src/render/mermaid.js";
 import type { ApexClass, ApexTrigger, KnowledgeGraph } from "../../../src/types/graph.js";
 
 const baseMeta: KnowledgeGraph["meta"] = {

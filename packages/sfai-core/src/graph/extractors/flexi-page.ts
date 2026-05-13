@@ -1,11 +1,7 @@
 // FlexiPage 取り込み (Phase 11-C)
 // Lightning App Builder のレコード/アプリ/ホームページ。
 
-import type {
-  FlexiPage,
-  FlexiPageItemInfo,
-  FlexiPageRegionInfo,
-} from "../../types/graph.js";
+import type { FlexiPage, FlexiPageItemInfo, FlexiPageRegionInfo } from "../../types/graph.js";
 import { asArray, asString, parseXml } from "../parse-xml.js";
 import type { ExtractContext } from "./types.js";
 

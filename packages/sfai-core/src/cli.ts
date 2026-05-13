@@ -652,10 +652,7 @@ async function cmdExplainWrite(args: ParsedArgs): Promise<number> {
     blocks[k] = v;
   }
 
-  const result = applyExplain(
-    { kind, fqn, projectRoot, outputDir },
-    { blocks },
-  );
+  const result = applyExplain({ kind, fqn, projectRoot, outputDir }, { blocks });
   console.log(
     `[sfai] explain-write: updated=${result.updated.length} skipped=${result.skipped.length} → ${result.markdownPath}`,
   );

@@ -4,12 +4,7 @@ import {
   concernsForFlow,
   concernsForTrigger,
 } from "../../../src/render/concerns.js";
-import type {
-  ApexClass,
-  ApexTrigger,
-  Flow,
-  KnowledgeGraph,
-} from "../../../src/types/graph.js";
+import type { ApexClass, ApexTrigger, Flow, KnowledgeGraph } from "../../../src/types/graph.js";
 
 const baseGraph: KnowledgeGraph = {
   meta: {

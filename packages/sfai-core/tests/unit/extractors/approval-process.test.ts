@@ -58,7 +58,8 @@ describe("extractApprovalProcess", () => {
     descriptor: {
       type: "ApprovalProcess",
       fullyQualifiedName: "Order__c.HighValueApproval",
-      sourcePath: "force-app/main/default/approvalProcesses/Order__c.HighValueApproval.approvalProcess-meta.xml",
+      sourcePath:
+        "force-app/main/default/approvalProcesses/Order__c.HighValueApproval.approvalProcess-meta.xml",
       contentHash: "h",
     },
     content: SAMPLE,

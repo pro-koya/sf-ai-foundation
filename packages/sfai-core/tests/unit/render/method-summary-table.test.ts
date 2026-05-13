@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { buildMethodSummaryTable } from "../../../src/render/method-summary-table.js";
 import { buildIntraClassCallGraph } from "../../../src/render/intra-class-call-graph.js";
+import { buildMethodSummaryTable } from "../../../src/render/method-summary-table.js";
 import type { ApexClass } from "../../../src/types/graph.js";
 
 const cls: ApexClass = {
@@ -111,7 +111,7 @@ describe("buildIntraClassCallGraph", () => {
     const mermaid = buildIntraClassCallGraph(rows);
     expect(mermaid.startsWith("flowchart LR")).toBe(true);
     expect(mermaid).toContain("recalculate --> computeRiskTier");
-    expect(mermaid).toContain("recalculate[\"recalculate (static)\"]");
+    expect(mermaid).toContain('recalculate["recalculate (static)"]');
   });
 
   it("呼び出しが無ければ空文字を返す", () => {

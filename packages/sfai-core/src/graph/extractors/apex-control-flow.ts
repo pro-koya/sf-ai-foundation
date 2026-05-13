@@ -52,7 +52,12 @@ export function extractMethodControlFlows(rawContent: string): readonly MethodCo
     const returnType = (match[2] ?? "").trim().replace(/\s+/g, " ");
     const name = match[3] ?? "";
     const params = (match[4] ?? "").trim();
-    if (returnType === "" || name === "" || isControlFlowKeyword(returnType) || isReservedName(name)) {
+    if (
+      returnType === "" ||
+      name === "" ||
+      isControlFlowKeyword(returnType) ||
+      isReservedName(name)
+    ) {
       match = re.exec(stripped);
       continue;
     }
@@ -372,8 +377,7 @@ function parseTry(text: string, idx: number, out: ControlFlowNode[]): number {
   return cursor - idx;
 }
 
-const DML_VERB_REGEX =
-  /^\s*(insert|update|delete|upsert|undelete|merge)\s+([a-zA-Z_]\w*)/i;
+const DML_VERB_REGEX = /^\s*(insert|update|delete|upsert|undelete|merge)\s+([a-zA-Z_]\w*)/i;
 const DATABASE_DML_REGEX =
   /^\s*Database\.(insert|update|delete|upsert|undelete|merge)\s*\(\s*([\w.]+)/i;
 const SOQL_INLINE_REGEX = /\[\s*(SELECT[\s\S]+?\bFROM\s+\w+[\s\S]*?)\]/i;

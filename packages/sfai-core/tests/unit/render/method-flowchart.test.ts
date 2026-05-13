@@ -11,10 +11,7 @@ function flowFor(code: string, methodName: string) {
 
 describe("buildMethodFlowchart - 基本", () => {
   it("空メソッドは Start → End", () => {
-    const f = flowFor(
-      "public class C { public void run() { } }",
-      "run",
-    );
+    const f = flowFor("public class C { public void run() { } }", "run");
     const m = buildMethodFlowchart(f).mermaid;
     expect(m.startsWith("flowchart TD")).toBe(true);
     expect(m).toContain("n_start([run])");
@@ -23,10 +20,7 @@ describe("buildMethodFlowchart - 基本", () => {
   });
 
   it("単純文を順次接続する", () => {
-    const f = flowFor(
-      "public class C { public void run() { Integer a = 1; insert acc; } }",
-      "run",
-    );
+    const f = flowFor("public class C { public void run() { Integer a = 1; insert acc; } }", "run");
     const m = buildMethodFlowchart(f).mermaid;
     expect(m).toContain('"Integer a = 1"');
     expect(m).toContain("DML insert: acc");

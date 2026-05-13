@@ -17,8 +17,17 @@
 export type FormulaNode =
   | { readonly kind: "call"; readonly name: string; readonly args: readonly FormulaNode[] }
   | { readonly kind: "field"; readonly path: string }
-  | { readonly kind: "literal"; readonly type: "string" | "number" | "bool" | "null"; readonly raw: string }
-  | { readonly kind: "binary"; readonly op: string; readonly left: FormulaNode; readonly right: FormulaNode }
+  | {
+      readonly kind: "literal";
+      readonly type: "string" | "number" | "bool" | "null";
+      readonly raw: string;
+    }
+  | {
+      readonly kind: "binary";
+      readonly op: string;
+      readonly left: FormulaNode;
+      readonly right: FormulaNode;
+    }
   | { readonly kind: "unary"; readonly op: string; readonly operand: FormulaNode };
 
 interface ParseResult {
@@ -301,9 +310,7 @@ function renderCall(node: Extract<FormulaNode, { kind: "call" }>, indent: number
     case "NULLVALUE":
     case "BLANKVALUE":
       if (node.args[0] && node.args[1]) {
-        return [
-          `(${renderNodeInline(node.args[0])} が空なら ${renderNodeInline(node.args[1])})`,
-        ];
+        return [`(${renderNodeInline(node.args[0])} が空なら ${renderNodeInline(node.args[1])})`];
       }
       break;
     case "CONTAINS":
@@ -315,9 +322,7 @@ function renderCall(node: Extract<FormulaNode, { kind: "call" }>, indent: number
       break;
     case "BEGINS":
       if (node.args[0] && node.args[1]) {
-        return [
-          `${renderNodeInline(node.args[0])} が ${renderNodeInline(node.args[1])} で始まる`,
-        ];
+        return [`${renderNodeInline(node.args[0])} が ${renderNodeInline(node.args[1])} で始まる`];
       }
       break;
     case "IF":
@@ -340,17 +345,13 @@ function renderCall(node: Extract<FormulaNode, { kind: "call" }>, indent: number
   return [`${node.name}(${argsRendered})`];
 }
 
-function renderConjunction(
-  args: readonly FormulaNode[],
-  label: string,
-  indent: number,
-): string[] {
+function renderConjunction(args: readonly FormulaNode[], label: string, indent: number): string[] {
   if (args.length === 0) return [`(空の ${label})`];
   if (args.length === 1 && args[0]) return renderNode(args[0], indent);
   const lines: string[] = [`以下を ${label} 満たす:`];
   for (const a of args) {
     const sub = renderNode(a, indent + 1);
-    lines.push(`${"  ".repeat(indent)}- ${sub.join("\n" + "  ".repeat(indent + 1))}`);
+    lines.push(`${"  ".repeat(indent)}- ${sub.join(`\n${"  ".repeat(indent + 1)}`)}`);
   }
   return lines;
 }

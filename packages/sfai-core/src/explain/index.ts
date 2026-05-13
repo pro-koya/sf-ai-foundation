@@ -7,8 +7,8 @@
 //   - replaceBlockContent (merge/parser.ts) を経由するので、未知の id は単に無視される
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
 import { mkdirSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { replaceBlockContent } from "../merge/parser.js";
 import { assertWithinRoot } from "../util/path-guard.js";
 import { ALLOWED_BLOCK_IDS, validateBlockIds } from "./block-registry.js";
@@ -22,7 +22,7 @@ const SAFE_FQN_PATTERN = /^[A-Za-z0-9_]+(?:[._-][A-Za-z0-9_]+)*$/;
 
 function assertSafeFqn(fqn: string): void {
   if (fqn.length === 0 || fqn.length > 256) {
-    throw new Error(`Invalid fqn: empty or too long`);
+    throw new Error("Invalid fqn: empty or too long");
   }
   if (!SAFE_FQN_PATTERN.test(fqn)) {
     throw new Error(
@@ -179,9 +179,7 @@ function ensureMarkerInvariants(before: string, after: string): void {
   ];
   for (const m of markers) {
     if (startCount(before, m) !== startCount(after, m)) {
-      throw new Error(
-        `マーカー ${m} の数が変化しました。安全のため書き戻しを中止します。`,
-      );
+      throw new Error(`マーカー ${m} の数が変化しました。安全のため書き戻しを中止します。`);
     }
   }
 }

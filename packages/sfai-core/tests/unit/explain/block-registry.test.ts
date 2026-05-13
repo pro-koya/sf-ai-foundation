@@ -109,11 +109,7 @@ describe("applyExplain — 拡張 kind / registry 検証", () => {
         },
       },
     );
-    expect([...result.updated].sort()).toEqual([
-      "business-domain",
-      "narrative",
-      "summary",
-    ]);
+    expect([...result.updated].sort()).toEqual(["business-domain", "narrative", "summary"]);
     expect(result.skipped).toEqual([]);
   });
 

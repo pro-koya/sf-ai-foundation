@@ -57,7 +57,10 @@ describe("applyExplain", () => {
       { kind: "apexClass", fqn: "Foo", projectRoot: root },
       { blocks: { purpose: "X" } },
     );
-    const out = readFileSync(resolveMarkdownPath({ kind: "apexClass", fqn: "Foo", projectRoot: root }), "utf8");
+    const out = readFileSync(
+      resolveMarkdownPath({ kind: "apexClass", fqn: "Foo", projectRoot: root }),
+      "utf8",
+    );
     expect(out).toContain("ここは人間が書く。AI は触らない。");
   });
 
@@ -66,7 +69,10 @@ describe("applyExplain", () => {
       { kind: "apexClass", fqn: "Foo", projectRoot: root },
       { blocks: { purpose: "X" } },
     );
-    const out = readFileSync(resolveMarkdownPath({ kind: "apexClass", fqn: "Foo", projectRoot: root }), "utf8");
+    const out = readFileSync(
+      resolveMarkdownPath({ kind: "apexClass", fqn: "Foo", projectRoot: root }),
+      "utf8",
+    );
     expect(out).toContain("- API Name: `Foo`");
   });
 
@@ -89,8 +95,8 @@ describe("applyExplain", () => {
     expect(out).toContain("攻撃文");
     expect(out).not.toContain('id="hijack"');
     // 元の AI_MANAGED マーカー数 (purpose + concerns = 2 ペア) が保たれている
-    const startCount = out.split('<!-- AI_MANAGED_START').length - 1;
-    const endCount = out.split('<!-- AI_MANAGED_END').length - 1;
+    const startCount = out.split("<!-- AI_MANAGED_START").length - 1;
+    const endCount = out.split("<!-- AI_MANAGED_END").length - 1;
     expect(startCount).toBe(2);
     expect(endCount).toBe(2);
   });
@@ -130,12 +136,18 @@ describe("applyExplain", () => {
       { kind: "apexClass", fqn: "Foo", projectRoot: root },
       { blocks: { purpose: "X" } },
     );
-    const first = readFileSync(resolveMarkdownPath({ kind: "apexClass", fqn: "Foo", projectRoot: root }), "utf8");
+    const first = readFileSync(
+      resolveMarkdownPath({ kind: "apexClass", fqn: "Foo", projectRoot: root }),
+      "utf8",
+    );
     applyExplain(
       { kind: "apexClass", fqn: "Foo", projectRoot: root },
       { blocks: { purpose: "X" } },
     );
-    const second = readFileSync(resolveMarkdownPath({ kind: "apexClass", fqn: "Foo", projectRoot: root }), "utf8");
+    const second = readFileSync(
+      resolveMarkdownPath({ kind: "apexClass", fqn: "Foo", projectRoot: root }),
+      "utf8",
+    );
     expect(first).toBe(second);
   });
 });

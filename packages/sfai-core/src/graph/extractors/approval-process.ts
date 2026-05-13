@@ -17,7 +17,8 @@ export function extractApprovalProcess({
 
   // FQN は <Object>.<ProcessName>。Object 名は最初のドット以前。
   const dot = descriptor.fullyQualifiedName.indexOf(".");
-  const object = dot > 0 ? descriptor.fullyQualifiedName.slice(0, dot) : descriptor.fullyQualifiedName;
+  const object =
+    dot > 0 ? descriptor.fullyQualifiedName.slice(0, dot) : descriptor.fullyQualifiedName;
 
   return {
     fullyQualifiedName: descriptor.fullyQualifiedName,

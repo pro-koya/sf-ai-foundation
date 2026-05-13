@@ -65,7 +65,7 @@ export function summaryForApex(cls: ApexClass, graph: KnowledgeGraph): string {
     const topRefs = uniqueClassNames(body.classReferences).slice(0, 3);
     if (topRefs.length > 0) {
       const refLine = topRefs.map((n) => `\`${n}\``).join(", ");
-      const more = refCount > topRefs.length ? ` ほか` : "";
+      const more = refCount > topRefs.length ? " ほか" : "";
       lines.push(`主な呼び出し先: ${refLine}${more}。`);
     }
   }
@@ -98,7 +98,8 @@ export function summaryForApexTrigger(trg: ApexTrigger, graph: KnowledgeGraph): 
 export function summaryForFlow(flow: Flow): string {
   const elements = flow.body?.elements ?? [];
   const kindCounts = countByKind(elements);
-  const triggering = flow.triggeringObject !== undefined ? `\`${flow.triggeringObject}\`` : flow.type;
+  const triggering =
+    flow.triggeringObject !== undefined ? `\`${flow.triggeringObject}\`` : flow.type;
 
   const headline = `**${flow.status} な ${flow.type}** (起点: ${triggering})。`;
   const summaryParts: string[] = [];
@@ -190,8 +191,10 @@ export function summaryForProfile(pf: Profile): string {
   const body = pf.body;
   if (body !== undefined) {
     const counts: string[] = [];
-    if (body.objectPermissions.length > 0) counts.push(`オブジェクト権限 ${body.objectPermissions.length}`);
-    if (body.fieldPermissions.length > 0) counts.push(`フィールド権限 ${body.fieldPermissions.length}`);
+    if (body.objectPermissions.length > 0)
+      counts.push(`オブジェクト権限 ${body.objectPermissions.length}`);
+    if (body.fieldPermissions.length > 0)
+      counts.push(`フィールド権限 ${body.fieldPermissions.length}`);
     if (body.classAccesses.length > 0) counts.push(`Apex クラス ${body.classAccesses.length}`);
     if (body.userPermissions.length > 0) counts.push(`ユーザ権限 ${body.userPermissions.length}`);
     if (counts.length > 0) lines.push(`内訳: ${counts.join(" / ")}。`);
@@ -223,7 +226,7 @@ export function summaryForApprovalProcess(ap: ApprovalProcess): string {
       .map((s, i) => `${i + 1}. ${s.label ?? s.name}`)
       .slice(0, 3)
       .join(" → ");
-    const more = stepCount > 3 ? " → ...": "";
+    const more = stepCount > 3 ? " → ..." : "";
     lines.push(`段階: ${stepLabels}${more}。`);
   }
   if (ap.description !== undefined) {
@@ -293,7 +296,9 @@ export function summaryForNamedCredential(nc: NamedCredential): string {
   const protocol = nc.protocol !== undefined ? `\`${nc.protocol}\`` : "プロトコル未指定";
   lines.push(`**外部連携 NamedCredential** (${protocol})。`);
   if (nc.endpoint !== undefined) lines.push(`Endpoint: \`${nc.endpoint}\`。`);
-  lines.push(nc.hasSecret ? "⚠ シークレット情報あり (値は本書に出力しない)。" : "シークレット情報なし。");
+  lines.push(
+    nc.hasSecret ? "⚠ シークレット情報あり (値は本書に出力しない)。" : "シークレット情報なし。",
+  );
   return lines.join(" ");
 }
 
@@ -325,7 +330,10 @@ export function summaryForLwc(lwc: LightningWebComponent): string {
   if (counts.length > 0) lines.push(`内訳: ${counts.join(" / ")}。`);
 
   if (lwc.targets.length > 0) {
-    const top = lwc.targets.slice(0, 3).map((t) => `\`${t}\``).join(", ");
+    const top = lwc.targets
+      .slice(0, 3)
+      .map((t) => `\`${t}\``)
+      .join(", ");
     const more = lwc.targets.length > 3 ? " ほか" : "";
     lines.push(`Targets: ${top}${more}。`);
   }
@@ -405,7 +413,7 @@ export function summaryForVisualforcePage(vfp: VisualforcePage): string {
 
 export function summaryForVisualforceComponent(vfc: VisualforceComponent): string {
   const lines: string[] = [];
-  lines.push(`**Visualforce Component**。`);
+  lines.push("**Visualforce Component**。");
   if (vfc.controller !== undefined) {
     lines.push(`Controller: \`${vfc.controller}\`。`);
   }
@@ -427,7 +435,10 @@ export function summaryForCustomApplication(app: CustomApplication): string {
   const navLabel = app.navType !== undefined ? `\`${app.navType}\`` : "ナビゲーション未指定";
   lines.push(`**Lightning App** (${navLabel})。`);
   if (app.tabs.length > 0) {
-    const top = app.tabs.slice(0, 3).map((t) => `\`${t}\``).join(", ");
+    const top = app.tabs
+      .slice(0, 3)
+      .map((t) => `\`${t}\``)
+      .join(", ");
     const more = app.tabs.length > 3 ? ` ほか (計 ${app.tabs.length})` : "";
     lines.push(`Tab: ${top}${more}。`);
   }

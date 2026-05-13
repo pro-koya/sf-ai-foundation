@@ -239,9 +239,7 @@ describe("summaryForLwc", () => {
       targets: ["lightning__RecordPage"],
       hasHtml: true,
       hasCss: true,
-      apexImports: [
-        { methodAlias: "getClaim", className: "ClaimService", methodName: "getClaim" },
-      ],
+      apexImports: [{ methodAlias: "getClaim", className: "ClaimService", methodName: "getClaim" }],
       labelImports: [],
       publicProperties: ["recordId", "hideHeader"],
       wires: [{ target: "getClaim", bindingProperty: "wiredClaim" }],
@@ -350,7 +348,10 @@ describe("summaryForFlexiPage", () => {
         {
           name: "main",
           type: "Region",
-          items: [{ componentName: "c:claimDashboard" }, { componentName: "flexipage:relatedListContainer" }],
+          items: [
+            { componentName: "c:claimDashboard" },
+            { componentName: "flexipage:relatedListContainer" },
+          ],
         },
       ],
       sourcePath: "x.flexipage-meta.xml",

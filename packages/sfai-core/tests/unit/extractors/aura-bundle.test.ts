@@ -37,10 +37,7 @@ describe("extractAuraBundle", () => {
     writeFileSync(join(bundleDir, "ClaimSummaryController.js"), "({})");
     writeFileSync(join(bundleDir, "ClaimSummaryHelper.js"), "({})");
 
-    const sourcePath = relative(
-      tmpRoot,
-      join(bundleDir, "ClaimSummary.cmp-meta.xml"),
-    );
+    const sourcePath = relative(tmpRoot, join(bundleDir, "ClaimSummary.cmp-meta.xml"));
 
     const out = extractAuraBundle({
       descriptor: {
@@ -67,15 +64,9 @@ describe("extractAuraBundle", () => {
   it(".app-meta.xml なら Application として扱う", () => {
     const appMeta = META_XML;
     writeFileSync(join(bundleDir, "ClaimSummary.app-meta.xml"), appMeta);
-    writeFileSync(
-      join(bundleDir, "ClaimSummary.app"),
-      `<aura:application></aura:application>`,
-    );
+    writeFileSync(join(bundleDir, "ClaimSummary.app"), "<aura:application></aura:application>");
 
-    const sourcePath = relative(
-      tmpRoot,
-      join(bundleDir, "ClaimSummary.app-meta.xml"),
-    );
+    const sourcePath = relative(tmpRoot, join(bundleDir, "ClaimSummary.app-meta.xml"));
 
     const out = extractAuraBundle({
       descriptor: {

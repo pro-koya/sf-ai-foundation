@@ -35,9 +35,7 @@ describe("buildTriggerProcessingSummary", () => {
                   {
                     kind: "for",
                     header: "Order__c o : Trigger.new",
-                    body: [
-                      { kind: "stmt", text: "OrderHandler.handle(o);" },
-                    ],
+                    body: [{ kind: "stmt", text: "OrderHandler.handle(o);" }],
                   },
                 ],
                 elseNodes: [],

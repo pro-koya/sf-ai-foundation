@@ -17,9 +17,7 @@ const FLOW_NODE = {
   decisions: [
     {
       name: "Is_VIP",
-      rules: [
-        { name: "yes", label: "VIP", connector: { targetReference: "Assign_Owner" } },
-      ],
+      rules: [{ name: "yes", label: "VIP", connector: { targetReference: "Assign_Owner" } }],
       defaultConnector: { targetReference: "Update_Account" },
       defaultConnectorLabel: "Not VIP",
     },

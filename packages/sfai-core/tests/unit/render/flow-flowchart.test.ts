@@ -19,7 +19,12 @@ describe("buildFlowFlowchart", () => {
   it("各要素に対応する details が返る", () => {
     const body = {
       elements: [
-        { name: "Lookup_Order", kind: "recordLookup" as const, label: "Order を取得", target: "Order__c" },
+        {
+          name: "Lookup_Order",
+          kind: "recordLookup" as const,
+          label: "Order を取得",
+          target: "Order__c",
+        },
         { name: "Is_Approved", kind: "decision" as const },
       ],
       subflows: [],

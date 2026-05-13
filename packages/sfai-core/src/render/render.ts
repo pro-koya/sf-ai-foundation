@@ -10,28 +10,27 @@ import { dirname, join } from "node:path";
 import { mergeRender } from "../merge/index.js";
 import type { KnowledgeGraph, SObject } from "../types/graph.js";
 import type { MergeWarning } from "../types/render.js";
-import { archiveDeleted } from "./archive.js";
 import { buildApprovalMermaid } from "./approval-mermaid.js";
+import { archiveDeleted } from "./archive.js";
 import { concernsForApex, concernsForFlow, concernsForTrigger } from "./concerns.js";
+import { buildErDiagram } from "./er-diagram.js";
 import { renderEta } from "./eta-engine.js";
 import { buildFlowFlowchart } from "./flow-flowchart.js";
-import { formulaToNaturalLanguage } from "./formula.js";
-import { buildErDiagram } from "./er-diagram.js";
 import { buildFlowSequenceTable } from "./flow-sequence-table.js";
+import { formulaToNaturalLanguage } from "./formula.js";
 import { buildIntraClassCallGraph } from "./intra-class-call-graph.js";
-import { buildMethodSummaryTable } from "./method-summary-table.js";
 import { buildSystemOverviewMermaid, buildTriggerMermaid } from "./mermaid.js";
-import { buildTriggerProcessingSummary } from "./trigger-processing-summary.js";
 import { buildMethodFlowchart } from "./method-flowchart.js";
+import { buildMethodSummaryTable } from "./method-summary-table.js";
 import {
   summaryForApex,
   summaryForApexTrigger,
   summaryForApprovalProcess,
   summaryForAuraBundle,
   summaryForCustomApplication,
-  summaryForFlow,
   summaryForCustomMetadataRecord,
   summaryForFlexiPage,
+  summaryForFlow,
   summaryForLayout,
   summaryForLwc,
   summaryForNamedCredential,
@@ -44,6 +43,7 @@ import {
   summaryForVisualforceComponent,
   summaryForVisualforcePage,
 } from "./summary.js";
+import { buildTriggerProcessingSummary } from "./trigger-processing-summary.js";
 
 export type RenderTargetName =
   | "system-index"
@@ -310,13 +310,10 @@ export function renderValidationRules(graph: KnowledgeGraph, outputDir: string):
 }
 
 export function renderRecordTypes(graph: KnowledgeGraph, outputDir: string): RenderResult {
-  return renderEntities(
-    graph.recordTypes,
-    outputDir,
-    "record-types",
-    "record-type.eta",
-    (rt) => ({ rt, quickSummary: summaryForRecordType(rt) }),
-  );
+  return renderEntities(graph.recordTypes, outputDir, "record-types", "record-type.eta", (rt) => ({
+    rt,
+    quickSummary: summaryForRecordType(rt),
+  }));
 }
 
 export function renderApprovalProcesses(graph: KnowledgeGraph, outputDir: string): RenderResult {
@@ -335,13 +332,10 @@ export function renderApprovalProcesses(graph: KnowledgeGraph, outputDir: string
 }
 
 export function renderLayouts(graph: KnowledgeGraph, outputDir: string): RenderResult {
-  return renderEntities(
-    graph.layouts,
-    outputDir,
-    "layouts",
-    "layout.eta",
-    (layout) => ({ layout, quickSummary: summaryForLayout(layout) }),
-  );
+  return renderEntities(graph.layouts, outputDir, "layouts", "layout.eta", (layout) => ({
+    layout,
+    quickSummary: summaryForLayout(layout),
+  }));
 }
 
 export function renderCustomMetadataRecords(
@@ -378,33 +372,24 @@ export function renderRemoteSiteSettings(graph: KnowledgeGraph, outputDir: strin
 }
 
 export function renderLwcs(graph: KnowledgeGraph, outputDir: string): RenderResult {
-  return renderEntities(
-    graph.lwcs,
-    outputDir,
-    "lwc",
-    "lwc.eta",
-    (lwc) => ({ lwc, quickSummary: summaryForLwc(lwc) }),
-  );
+  return renderEntities(graph.lwcs, outputDir, "lwc", "lwc.eta", (lwc) => ({
+    lwc,
+    quickSummary: summaryForLwc(lwc),
+  }));
 }
 
 export function renderAuraBundles(graph: KnowledgeGraph, outputDir: string): RenderResult {
-  return renderEntities(
-    graph.auraBundles,
-    outputDir,
-    "aura",
-    "aura-bundle.eta",
-    (aura) => ({ aura, quickSummary: summaryForAuraBundle(aura) }),
-  );
+  return renderEntities(graph.auraBundles, outputDir, "aura", "aura-bundle.eta", (aura) => ({
+    aura,
+    quickSummary: summaryForAuraBundle(aura),
+  }));
 }
 
 export function renderFlexiPages(graph: KnowledgeGraph, outputDir: string): RenderResult {
-  return renderEntities(
-    graph.flexiPages,
-    outputDir,
-    "flexi-pages",
-    "flexi-page.eta",
-    (fp) => ({ fp, quickSummary: summaryForFlexiPage(fp) }),
-  );
+  return renderEntities(graph.flexiPages, outputDir, "flexi-pages", "flexi-page.eta", (fp) => ({
+    fp,
+    quickSummary: summaryForFlexiPage(fp),
+  }));
 }
 
 export function renderVisualforcePages(graph: KnowledgeGraph, outputDir: string): RenderResult {
@@ -430,10 +415,7 @@ export function renderVisualforceComponents(
   );
 }
 
-export function renderCustomApplications(
-  graph: KnowledgeGraph,
-  outputDir: string,
-): RenderResult {
+export function renderCustomApplications(graph: KnowledgeGraph, outputDir: string): RenderResult {
   return renderEntities(
     graph.customApplications,
     outputDir,
@@ -548,10 +530,7 @@ export function renderAll(graph: KnowledgeGraph, outputDir: string): RenderResul
   };
 }
 
-export function renderExecutiveSummary(
-  graph: KnowledgeGraph,
-  outputDir: string,
-): RenderResult {
+export function renderExecutiveSummary(graph: KnowledgeGraph, outputDir: string): RenderResult {
   const data = {
     builtAt: graph.meta.builtAt,
     sfaiVersion: graph.meta.sfaiVersion,
@@ -620,7 +599,9 @@ export function renderExecutiveRisks(graph: KnowledgeGraph, outputDir: string): 
   return { written: [outPath], archived: [], warnings: merged.warnings };
 }
 
-function groupTriggersByObject(graph: KnowledgeGraph): readonly { object: string; triggers: readonly string[] }[] {
+function groupTriggersByObject(
+  graph: KnowledgeGraph,
+): readonly { object: string; triggers: readonly string[] }[] {
   const map = new Map<string, string[]>();
   for (const t of graph.apexTriggers) {
     const list = map.get(t.object) ?? [];
@@ -628,11 +609,18 @@ function groupTriggersByObject(graph: KnowledgeGraph): readonly { object: string
     map.set(t.object, list);
   }
   return [...map.entries()]
-    .map(([object, triggers]) => ({ object, triggers: triggers.toSorted((a, b) => a.localeCompare(b)) }))
+    .map(([object, triggers]) => ({
+      object,
+      triggers: triggers.toSorted((a, b) => a.localeCompare(b)),
+    }))
     .toSorted((a, b) => a.object.localeCompare(b.object));
 }
 
-function computeTestRatio(graph: KnowledgeGraph): { tests: number; nonTests: number; ratio: number } {
+function computeTestRatio(graph: KnowledgeGraph): {
+  tests: number;
+  nonTests: number;
+  ratio: number;
+} {
   const tests = graph.apexClasses.filter((c) => c.isTest).length;
   const nonTests = graph.apexClasses.length - tests;
   const ratio = nonTests === 0 ? 0 : Math.round((tests / nonTests) * 100) / 100;

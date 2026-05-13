@@ -71,7 +71,11 @@ export function concernsForTrigger(trg: ApexTrigger, graph: KnowledgeGraph): rea
     });
   }
 
-  if (trg.body !== undefined && trg.body.classReferences.length === 0 && (trg.body.methods.length === 0)) {
+  if (
+    trg.body !== undefined &&
+    trg.body.classReferences.length === 0 &&
+    trg.body.methods.length === 0
+  ) {
     out.push({
       severity: "MEDIUM",
       title: "トリガー本体にクラス委譲が見られない",

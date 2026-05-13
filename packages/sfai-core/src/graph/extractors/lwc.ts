@@ -73,8 +73,7 @@ function extractTargets(node: Record<string, unknown>): readonly string[] {
   return out;
 }
 
-const APEX_IMPORT_REGEX =
-  /import\s+(\w+)\s+from\s+['"]@salesforce\/apex\/([\w$]+)\.([\w$]+)['"]/g;
+const APEX_IMPORT_REGEX = /import\s+(\w+)\s+from\s+['"]@salesforce\/apex\/([\w$]+)\.([\w$]+)['"]/g;
 
 function extractApexImports(js: string): readonly LwcApexImportInfo[] {
   const out: LwcApexImportInfo[] = [];
@@ -117,8 +116,7 @@ function extractPublicProperties(js: string): readonly string[] {
   return [...new Set(out)].toSorted((a, b) => a.localeCompare(b));
 }
 
-const WIRE_DECORATOR_REGEX =
-  /@wire\s*\(\s*([\w$]+)(?:[^)]*)\)\s*([\w$]+)\s*[(;=]/g;
+const WIRE_DECORATOR_REGEX = /@wire\s*\(\s*([\w$]+)(?:[^)]*)\)\s*([\w$]+)\s*[(;=]/g;
 
 function extractWires(js: string): readonly LwcWireInfo[] {
   const out: LwcWireInfo[] = [];
@@ -178,7 +176,8 @@ function extractStandardComponents(html: string): readonly LwcStandardComponentC
     .toSorted((a, b) => a.tag.localeCompare(b.tag));
 }
 
-const LWC_DIRECTIVE_REGEX = /\b(lwc:if|lwc:elseif|lwc:else|lwc:for-each|lwc:dom|lwc:slot-bind|for:each|if:true|if:false)\b/g;
+const LWC_DIRECTIVE_REGEX =
+  /\b(lwc:if|lwc:elseif|lwc:else|lwc:for-each|lwc:dom|lwc:slot-bind|for:each|if:true|if:false)\b/g;
 
 function extractDirectives(html: string): readonly string[] {
   const out: string[] = [];

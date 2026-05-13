@@ -29,14 +29,16 @@ const SOQL_FROM_REGEX = /FROM\s+(\w+)/i;
 const DML_VERB_REGEX =
   /(?:^|[\s;{])\s*(insert|update|delete|upsert|undelete|merge)\s+([a-zA-Z_]\w*)/gi;
 
-const DATABASE_DML_REGEX = /Database\.(insert|update|delete|upsert|undelete|merge)\s*\(\s*([\w.]+)/gi;
+const DATABASE_DML_REGEX =
+  /Database\.(insert|update|delete|upsert|undelete|merge)\s*\(\s*([\w.]+)/gi;
 
 const CLASS_REF_REGEX = /\b([A-Z][\w]*)\.([\w]+)\s*\(/g;
 // new ClassName(...) — handler パターン (`new XHandler().run()`) を検出する
 const NEW_INSTANCE_REGEX = /\bnew\s+([A-Z][\w]*)\s*\(/g;
 
 const TRY_REGEX = /\btry\s*\{/;
-const CALLOUT_REGEX = /\bnew\s+HttpRequest\s*\(|@HttpGet\b|@HttpPost\b|@HttpPut\b|@HttpDelete\b|@HttpPatch\b/;
+const CALLOUT_REGEX =
+  /\bnew\s+HttpRequest\s*\(|@HttpGet\b|@HttpPost\b|@HttpPut\b|@HttpDelete\b|@HttpPatch\b/;
 
 /** コメント・文字列リテラルを除去して解析対象を整える */
 export function stripApexNoise(content: string): string {
@@ -85,7 +87,12 @@ function extractMethods(stripped: string, raw: string): readonly ApexMethodInfo[
     const name = match[4] ?? "";
     const parameters = (match[5] ?? "").trim();
     // 戻り値が void は許容する。control-flow キーワード (if/while/for/switch...) のみを排除。
-    if (returnType === "" || name === "" || isControlFlowKeyword(returnType) || isReservedKeyword(name)) {
+    if (
+      returnType === "" ||
+      name === "" ||
+      isControlFlowKeyword(returnType) ||
+      isReservedKeyword(name)
+    ) {
       match = re.exec(stripped);
       continue;
     }

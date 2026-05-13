@@ -84,9 +84,13 @@ function buildSummary(el: FlowElementInfo): string {
     case "assignment":
       return "変数代入";
     case "actionCall":
-      return el.target !== undefined ? `アクション \`${el.target}\` 呼び出し` : "アクション呼び出し";
+      return el.target !== undefined
+        ? `アクション \`${el.target}\` 呼び出し`
+        : "アクション呼び出し";
     case "subflow":
-      return el.target !== undefined ? `サブフロー \`${el.target}\` 呼び出し` : "サブフロー呼び出し";
+      return el.target !== undefined
+        ? `サブフロー \`${el.target}\` 呼び出し`
+        : "サブフロー呼び出し";
     case "screen":
       return "画面表示";
     case "wait":

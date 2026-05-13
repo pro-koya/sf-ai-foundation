@@ -72,10 +72,7 @@ describe("extractLwc", () => {
     writeFileSync(join(bundleDir, "claimDashboard.html"), HTML_SOURCE);
     writeFileSync(join(bundleDir, "claimDashboard.css"), "/* css */");
 
-    const sourcePath = relative(
-      tmpRoot,
-      join(bundleDir, "claimDashboard.js-meta.xml"),
-    );
+    const sourcePath = relative(tmpRoot, join(bundleDir, "claimDashboard.js-meta.xml"));
 
     const out = extractLwc({
       descriptor: {
@@ -92,10 +89,7 @@ describe("extractLwc", () => {
     expect(out?.apiVersion).toBe("62.0");
     expect(out?.isExposed).toBe(true);
     expect(out?.masterLabel).toBe("Claim Dashboard");
-    expect(out?.targets).toEqual([
-      "lightning__RecordPage",
-      "lightning__AppPage",
-    ]);
+    expect(out?.targets).toEqual(["lightning__RecordPage", "lightning__AppPage"]);
     expect(out?.hasHtml).toBe(true);
     expect(out?.hasCss).toBe(true);
 
@@ -120,10 +114,7 @@ describe("extractLwc", () => {
   it("HTML/CSS/JS が無くてもメタだけで描画できる (ベストエフォート)", () => {
     writeFileSync(join(bundleDir, "claimDashboard.js-meta.xml"), META_XML);
 
-    const sourcePath = relative(
-      tmpRoot,
-      join(bundleDir, "claimDashboard.js-meta.xml"),
-    );
+    const sourcePath = relative(tmpRoot, join(bundleDir, "claimDashboard.js-meta.xml"));
 
     const out = extractLwc({
       descriptor: {

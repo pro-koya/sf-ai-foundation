@@ -11,9 +11,7 @@ import type {
 import { asString, parseXml } from "../parse-xml.js";
 import type { ExtractContext } from "./types.js";
 
-export function extractVisualforceComponent(
-  ctx: ExtractContext,
-): VisualforceComponent | undefined {
+export function extractVisualforceComponent(ctx: ExtractContext): VisualforceComponent | undefined {
   const { descriptor, content, projectRoot } = ctx;
   const root = parseXml(content);
   const node = (root.ApexComponent ?? {}) as Record<string, unknown>;

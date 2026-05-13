@@ -6,9 +6,7 @@ import type { CustomApplication } from "../../types/graph.js";
 import { asArray, asString, parseXml } from "../parse-xml.js";
 import type { ExtractContext } from "./types.js";
 
-export function extractCustomApplication(
-  ctx: ExtractContext,
-): CustomApplication | undefined {
+export function extractCustomApplication(ctx: ExtractContext): CustomApplication | undefined {
   const { descriptor, content } = ctx;
   const root = parseXml(content);
   const node = (root.CustomApplication ?? {}) as Record<string, unknown>;

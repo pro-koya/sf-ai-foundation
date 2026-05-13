@@ -5,10 +5,7 @@
 import type { ApexBodyInfo, ApexClass, ApexTrigger, KnowledgeGraph } from "../types/graph.js";
 
 /** 1 つのトリガーから call-graph を mermaid flowchart に変換 */
-export function buildTriggerMermaid(
-  trigger: ApexTrigger,
-  graph: KnowledgeGraph,
-): string {
+export function buildTriggerMermaid(trigger: ApexTrigger, graph: KnowledgeGraph): string {
   const lines: string[] = ["flowchart LR"];
   const triggerNode = nodeId("Trigger", trigger.fullyQualifiedName);
   lines.push(`  ${triggerNode}[["Trigger: ${trigger.fullyQualifiedName}"]]`);
@@ -106,7 +103,7 @@ export function buildSystemOverviewMermaid(graph: KnowledgeGraph): string {
   }
 
   if (lines.length === 1) {
-    lines.push("  Empty[\"(対象なし)\"]");
+    lines.push('  Empty["(対象なし)"]');
   }
   return lines.join("\n");
 }
