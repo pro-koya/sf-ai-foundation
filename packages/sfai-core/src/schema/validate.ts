@@ -21,10 +21,28 @@ function loadValidator(): ReturnType<Ajv2020["compile"]> {
 export class GraphSchemaValidationError extends Error {
   readonly errors: readonly ErrorObject[];
   constructor(errors: readonly ErrorObject[]) {
-    super(`Knowledge graph failed schema validation: ${errors.length} error(s)`);
+    const summary = errors
+      .slice(0, 5)
+      .map((e) => formatAjvError(e))
+      .join("\n  - ");
+    const truncated = errors.length > 5 ? `\n  ...and ${errors.length - 5} more` : "";
+    super(
+      `Knowledge graph failed schema validation: ${errors.length} error(s)\n  - ${summary}${truncated}`,
+    );
     this.errors = errors;
     this.name = "GraphSchemaValidationError";
   }
+}
+
+function formatAjvError(err: ErrorObject): string {
+  const path = err.instancePath !== "" ? err.instancePath : "(root)";
+  const params =
+    err.params !== undefined && Object.keys(err.params).length > 0
+      ? ` [${Object.entries(err.params)
+          .map(([k, v]) => `${k}=${JSON.stringify(v)}`)
+          .join(", ")}]`
+      : "";
+  return `${path}: ${err.message ?? "validation failed"}${params}`;
 }
 
 export function validateGraph(data: unknown): void {

@@ -2,6 +2,32 @@
 
 すべての注目すべき変更は本ファイルに記録される (SemVer 準拠)。
 
+## [0.2.2] - 2026-05-13 (Windows パス互換性 + エラーメッセージ改善 / v0.3.0 Week 0)
+
+> 利用者の **Windows 環境** で `sfai init --bootstrap` がスキーマ検証エラーで落ちる事象を解消。
+> Phase 1 既知制約「Windows パス区切り対応」を v0.3.0 Week 0 で消化 (規律 §3.2 遵守、新 Phase 立てず)。
+
+### Fixed — Windows パス区切り対応 (5 箇所)
+
+OS のパス区切りを返す `path.relative()` の結果を **forward slash で扱えるよう統一**:
+
+- `packages/sfai-core/src/adapters/local/local-source-adapter.ts:describeFile` — `sourcePath` を `/` 正規化して保存 (graph データの OS 横断再現性確保)
+- `packages/sfai-core/src/init/init.ts:shouldSkipFile / isAllowedByProfile` — Windows で profile フィルタが効かず全ファイルが書かれていた
+- `packages/sfai-core/src/cli.ts:defaultProjectName` — `--project-name` 省略時に Windows でフルパスが project name 化していた
+- `packages/sfai-core/src/render/archive.ts:relativeUnderRoot` — archive 経路のセグメント分割
+- `packages/sfai-core/src/diff/classify-files.ts:classifyChangedFile / inferFqn` — git diff の差分分類
+
+### Fixed — スキーマ検証エラーの可読性
+
+`GraphSchemaValidationError` のメッセージに **どの instancePath で何が NG だったか** を最大 5 件表示するように改善。これまでは `1 error(s)` としか出ず、Windows 固有データのどこが schema に合わなかったか調査困難だった。
+
+### Verified
+
+- 256/256 テスト pass、build OK、lint OK (root)
+- Mac で空ディレクトリ `init --bootstrap` 成功確認 (回帰なし)
+
+---
+
 ## [0.2.1] - 2026-05-11 (セキュリティ Hotfix / v0.3.0 Week 0)
 
 > 機密性の高い実プロジェクトへの導入前監査で検出された **CRITICAL 1 + HIGH 5 + MEDIUM 5 + 推奨 1** の計 12 件を解消。

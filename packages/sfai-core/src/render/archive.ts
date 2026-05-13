@@ -34,5 +34,6 @@ function stripGeneratedPrefix(path: string, archiveBaseDir: string): string {
     }
   }
   // 兜のフォールバック: 最後のセグメントだけ返す (深い階層を作らない)
-  return path.split("/").at(-1) ?? path;
+  // Windows 互換: パス区切りは / または \ どちらでも受け入れる
+  return path.split(/[/\\]/).at(-1) ?? path;
 }

@@ -61,7 +61,8 @@ export async function runInit(options: InitOptions): Promise<InitResult> {
 }
 
 function shouldSkipFile(rel: string): boolean {
-  const segments = rel.split("/");
+  // Windows 互換: relative() は \\ を返すので両方の区切りを受け入れる
+  const segments = rel.split(/[/\\]/);
   const last = segments.at(-1) ?? "";
   if (SKIP_NAMES.has(last)) return true;
   if (last.startsWith(".") && last.endsWith(".bak")) return true;
@@ -73,12 +74,14 @@ function isAllowedByProfile(
   enabledCommands: readonly string[],
   enabledAgents: readonly string[],
 ): boolean {
-  if (rel.startsWith(".claude/commands/")) {
-    const name = rel.replace(".claude/commands/", "").replace(/\.md(\.eta)?$/, "");
+  // Windows 互換: rel は OS のパス区切りで来るため、判定前に forward slash に正規化
+  const normalized = rel.replaceAll("\\", "/");
+  if (normalized.startsWith(".claude/commands/")) {
+    const name = normalized.replace(".claude/commands/", "").replace(/\.md(\.eta)?$/, "");
     return enabledCommands.includes(name);
   }
-  if (rel.startsWith(".claude/agents/")) {
-    const name = rel.replace(".claude/agents/", "").replace(/\.md(\.eta)?$/, "");
+  if (normalized.startsWith(".claude/agents/")) {
+    const name = normalized.replace(".claude/agents/", "").replace(/\.md(\.eta)?$/, "");
     return enabledAgents.includes(name);
   }
   return true;

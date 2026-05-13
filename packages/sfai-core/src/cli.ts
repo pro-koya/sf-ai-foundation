@@ -574,7 +574,8 @@ async function cmdInit(args: ParsedArgs): Promise<number> {
 }
 
 function defaultProjectName(targetDir: string): string {
-  const segments = resolve(targetDir).split("/");
+  // Windows 互換: パス区切りは OS 依存。両方を受け入れる
+  const segments = resolve(targetDir).split(/[/\\]/);
   return segments.at(-1) ?? "salesforce-project";
 }
 

@@ -49,7 +49,8 @@ const EXTENSION_RULES: readonly ExtensionRule[] = [
 const META_XML_EXCLUSIONS: readonly string[] = [".cls-meta.xml", ".trigger-meta.xml"];
 
 export function classifyChangedFile(path: string): MetadataClassification {
-  const fileName = path.split("/").at(-1) ?? "";
+  // Windows 互換: git diff は通常 forward slash を返すが、防御的に両方受け入れる
+  const fileName = path.split(/[/\\]/).at(-1) ?? "";
 
   // .cls-meta.xml / .trigger-meta.xml はサイドカーで本体ではない
   for (const exclusion of META_XML_EXCLUSIONS) {
@@ -68,7 +69,8 @@ export function classifyChangedFile(path: string): MetadataClassification {
 }
 
 function inferFqn(metadataType: string, path: string, fileName: string): string | null {
-  const segments = path.split("/");
+  // Windows 互換: パス区切りは / または \ どちらでも
+  const segments = path.split(/[/\\]/);
   switch (metadataType) {
     case "CustomObject":
       return removeSuffix(fileName, ".object-meta.xml");

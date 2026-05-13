@@ -151,7 +151,9 @@ function classifyFile(
 }
 
 function describeFile(absolutePath: string, projectRoot: string): MetadataDescriptor | undefined {
-  const relativePath = relative(projectRoot, absolutePath);
+  // Windows 互換: relative() は OS のパス区切りを返すため、保存・分割前に
+  // forward slash に正規化する。これにより sourcePath が OS 間で再現可能になる。
+  const relativePath = relative(projectRoot, absolutePath).replaceAll("\\", "/");
   const segments = relativePath.split("/");
   const fileName = segments.at(-1) ?? "";
 
