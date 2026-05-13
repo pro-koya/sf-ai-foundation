@@ -86,13 +86,21 @@ describe("buildTriggerMermaid", () => {
     expect(m.startsWith("flowchart LR")).toBe(true);
     expect(m).toContain("Trigger_AccountTrigger");
     expect(m).toContain("Class_AccountService");
-    expect(m).toContain("on beforeInsert/afterInsert");
+    expect(m).toContain("beforeInsert/afterInsert");
   });
 
   it("呼び出し先クラスの SOQL/DML 対象オブジェクトをノードとして追加する", () => {
     const m = buildTriggerMermaid(trigger, graph);
     expect(m).toContain("Obj_Account");
     expect(m).toContain("SOQL/DML");
+  });
+
+  it("Object → Trigger の方向で矢印を描く (DML イベントが Trigger を発火させる)", () => {
+    const m = buildTriggerMermaid(trigger, graph);
+    // 期待: Object_Account -->|beforeInsert/afterInsert| Trigger_AccountTrigger
+    expect(m).toMatch(/Object_Account\s+-->\|beforeInsert\/afterInsert\|\s+Trigger_AccountTrigger/);
+    // 逆方向の矢印 (Trigger → Object) は存在しないこと
+    expect(m).not.toMatch(/Trigger_AccountTrigger\s+-->\|[^|]*\|\s+Object_Account/);
   });
 });
 
@@ -112,5 +120,11 @@ describe("buildSystemOverviewMermaid", () => {
     const m = buildSystemOverviewMermaid(graph);
     expect(m).toContain("Trigger_AccountTrigger");
     expect(m).toContain("Obj_Account");
+  });
+
+  it("Object → Trigger の方向 (DML イベントが Trigger を発火)", () => {
+    const m = buildSystemOverviewMermaid(graph);
+    expect(m).toMatch(/Obj_Account\s+-->\s+Trigger_AccountTrigger/);
+    expect(m).not.toMatch(/Trigger_AccountTrigger\s+-->\s+Obj_Account/);
   });
 });

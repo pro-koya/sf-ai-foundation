@@ -2,6 +2,33 @@
 
 すべての注目すべき変更は本ファイルに記録される (SemVer 準拠)。
 
+## [0.2.4] - 2026-05-13 (Trigger / Flow Mermaid 矢印方向修正 / v0.3.0 Week 0)
+
+> 利用者フィードバック: Trigger Mermaid で `Trigger → Object` という意味的に逆向きの矢印になっていた事象を解消。SObject の DML イベントが Trigger を発火させる関係を表現するため **Object → Trigger** に統一。
+
+### Fixed — Mermaid フローチャートの矢印方向
+
+| 描画関数 | 修正内容 |
+|---|---|
+| `buildTriggerMermaid` (Trigger 単体描画) | `Trigger → Object` を **`Object → Trigger`** に反転。ラベルは `\|beforeInsert/afterInsert\|` の形に整理 |
+| `buildSystemOverviewMermaid` (Trigger ループ) | 同上 |
+| `buildSystemOverviewMermaid` (record-triggered Flow ループ) | `Flow → Object` を **`Object → Flow`** に反転 |
+
+### Added — 回帰防止テスト
+
+- Object → Trigger 方向で矢印が描かれることを assert
+- 逆方向 (Trigger → Object) が **存在しない** ことも assert
+
+### Verified
+
+- 258/258 テスト pass (2 件追加)、build OK、lint OK
+
+### Note
+
+その他の Mermaid 描画 (Approval Process / Flow 内部要素 / Apex メソッド制御フロー / クラス内呼び出しグラフ) は方向が論理的に正しいことを確認済 (修正なし)。
+
+---
+
 ## [0.2.3] - 2026-05-13 (Schema enum 拡充 / v0.3.0 Week 0)
 
 > v0.2.2 で詳細表示された Salesforce enum 漏れを解消。実環境で出現する公式値を網羅。

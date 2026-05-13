@@ -11,7 +11,8 @@ export function buildTriggerMermaid(trigger: ApexTrigger, graph: KnowledgeGraph)
   lines.push(`  ${triggerNode}[["Trigger: ${trigger.fullyQualifiedName}"]]`);
   const objectNode = nodeId("Object", trigger.object);
   lines.push(`  ${objectNode}{{"SObject: ${trigger.object}"}}`);
-  lines.push(`  ${triggerNode} -->|on ${trigger.events.join("/")}|${objectNode}`);
+  // SObject の DML イベントが Trigger を発火させる関係を表現するため Object → Trigger 方向。
+  lines.push(`  ${objectNode} -->|${trigger.events.join("/")}| ${triggerNode}`);
 
   if (trigger.body) {
     appendBodyEdges(lines, triggerNode, trigger.body, graph, new Set([trigger.fullyQualifiedName]));
@@ -83,7 +84,8 @@ export function buildSystemOverviewMermaid(graph: KnowledgeGraph): string {
       lines.push(`  ${objNode}{{"${trg.object}"}}`);
       seen.add(objNode);
     }
-    lines.push(`  ${trgNode} --> ${objNode}`);
+    // Object DML イベントが Trigger を発火させる関係: Object → Trigger
+    lines.push(`  ${objNode} --> ${trgNode}`);
   }
 
   for (const flow of graph.flows) {
@@ -98,7 +100,8 @@ export function buildSystemOverviewMermaid(graph: KnowledgeGraph): string {
         lines.push(`  ${objNode}{{"${flow.triggeringObject}"}}`);
         seen.add(objNode);
       }
-      lines.push(`  ${node} --> ${objNode}`);
+      // Record-triggered Flow: SObject の DML イベントが Flow を発火させる: Object → Flow
+      lines.push(`  ${objNode} --> ${node}`);
     }
   }
 
