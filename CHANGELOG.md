@@ -2,6 +2,35 @@
 
 すべての注目すべき変更は本ファイルに記録される (SemVer 準拠)。
 
+## [0.2.3] - 2026-05-13 (Schema enum 拡充 / v0.3.0 Week 0)
+
+> v0.2.2 で詳細表示された Salesforce enum 漏れを解消。実環境で出現する公式値を網羅。
+> 規律 §3.2 遵守 (新 Phase 立てず v0.3.0 Week 0 内で対処)。
+
+### Fixed — Schema enum を Salesforce 公式値で拡充
+
+| フィールド | 追加した値 (公式 Metadata API 仕様) |
+|---|---|
+| `SObject.sharingModel` | `ReadSelect`, `ReadWriteTransfer`, `ControlledByCampaign`, `ControlledByLeadOrContact` |
+| `EntityRef.kind` | `visualforcePage`, `visualforceComponent`, `customApplication` |
+| `SharingRule.kind` | `territoryBased` |
+| `AuraBundle.bundleKind` | `Interface`, `Tokens` |
+
+`packages/sfai-core/src/schema/graph.schema.json` の enum と `packages/sfai-core/src/types/graph.ts`
+の TypeScript union を両方更新 (同期維持)。
+
+### Verified
+
+- 256/256 テスト pass、build OK、lint OK
+- Salesforce Metadata API v62 公式仕様との突き合わせ済み
+
+### Community
+
+- `.github/PULL_REQUEST_TEMPLATE.md` + `ISSUE_TEMPLATE/*` 追加 (第三者貢献を促進)
+- main ブランチ保護を有効化 (PR + CI pass 必須、admin 例外)
+
+---
+
 ## [0.2.2] - 2026-05-13 (Windows パス互換性 + エラーメッセージ改善 / v0.3.0 Week 0)
 
 > 利用者の **Windows 環境** で `sfai init --bootstrap` がスキーマ検証エラーで落ちる事象を解消。
