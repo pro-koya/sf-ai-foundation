@@ -70,6 +70,7 @@
 - **[2026-05-10: v0.3.0 (内部検証 実証フェーズ) 着手計画](decisions/2026-05-10-v0.3.0-internal-validation-plan.md)** — 規律確立後の最初の Phase。北極星「現参画プロジェクトで価値が届くか実証」/ DoD 5 項目中 3 項目達成 / Out of Scope 明示 (技術拡張は禁止) / Week 0 で SOQL 検出漏れ解消 + 計測フォーマット合意 + ベースライン計測 / 4 週週次運用後に DoD 評価
 - **[2026-05-13: 製品ビジョン拡張 — 運用 AI 化から AI 駆動開発ライフサイクル全体へ](decisions/2026-05-13-product-vision-expansion-ai-driven-development.md)** ✅ active — 北極星をライフサイクル全体に拡張、メインペルソナ **コンサル / SIer**、4 つの柱、L3 を「要件構造化支援」に弱め、コンテキスト層は独立軸 + `context_sources` API、OSS 理由 3 つ、商標 **yohakuforce** (CLI: `yohaku`) で sfai から改名、AI プロバイダ抽象化 (Claude / OpenAI / Antigravity 選択可)、商業展開なし
 - **[2026-05-13: 長期ロードマップ (v0.3 〜 v1.0)](decisions/2026-05-13-long-term-roadmap-draft.md)** ✅ active — 10 バージョン段階計画、**1 バージョン = 1 North Star**、v0.4 で改名移行 + AI プロバイダ抽象 + context_sources API、L6 を L5 前に配置、L5 を v0.9 (支援) + v0.10 (本格) の 2 段、v1.0 は yohakuforce で OSS 公開・商業化なし
+- **[2026-05-15: Claude Plugin Marketplace 登録方針と準備状況](decisions/2026-05-15-claude-plugin-marketplace-registration.md)** ✅ active — Marketplace は GA 前のためv0.3.0 は GitHub 直接配布を一次経路とし登録は v0.4.0 以降に延期。不足要素と準備事項を記録
 
 ---
 
