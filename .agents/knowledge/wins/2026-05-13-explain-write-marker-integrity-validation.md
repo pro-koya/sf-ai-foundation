@@ -9,7 +9,7 @@ tags: [v0.3.0, week-0, explain-write, marker-integrity, baseline]
 
 ## 何が効いたか
 
-`sfai explain-write --kind apexClass --fqn MX_OpportunityTriggerHandler --input <json>` を実プロジェクトへの初回実利用で実行し、AI_MANAGED 7 ブロックを一括書き戻して `updated=7 skipped=0` でロールバックなく完走した。マーカー (`<!-- AI_MANAGED_START id="..." -->` / `<!-- AI_MANAGED_END id="..." -->`) は破壊されず、DETERMINISTIC / HUMAN_MANAGED は無傷だった。
+`sfai explain-write --kind apexClass --fqn ExampleApexTriggerHandler --input <json>` を実プロジェクトへの初回実利用で実行し、AI_MANAGED 7 ブロックを一括書き戻して `updated=7 skipped=0` でロールバックなく完走した。マーカー (`<!-- AI_MANAGED_START id="..." -->` / `<!-- AI_MANAGED_END id="..." -->`) は破壊されず、DETERMINISTIC / HUMAN_MANAGED は無傷だった。
 
 ## なぜ効いたか
 

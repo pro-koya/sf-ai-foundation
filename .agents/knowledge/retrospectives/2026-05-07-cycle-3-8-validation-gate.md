@@ -10,7 +10,7 @@ tags: [phase-3, cycle-3-8, validation-gate, sfai-trial, classify-diff]
 
 ## サイクル要約
 
-利用者の現役プロジェクト相当 (`/Users/koya1104/Desktop/sfai-trial` — Dev Edition retrieve 後の本格的な Salesforce DX ソース) で、`sfai diff` + 並列 classifier subagent + change_summary スキーマ検証 の 一連を実行。**検証ゲート通過**。
+利用者の現役プロジェクト相当 (`~/Desktop/sfai-trial` — Dev Edition retrieve 後の本格的な Salesforce DX ソース) で、`sfai diff` + 並列 classifier subagent + change_summary スキーマ検証 の 一連を実行。**検証ゲート通過**。
 
 ## 実行内容
 

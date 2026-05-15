@@ -41,7 +41,7 @@ tags: [v0.3.0, user-requested, v0.4.0-candidate, sfai-explain, ux, bulk-executio
 - `--dry-run`: 対象一覧と推定トークン量だけ出す (実書き戻しはしない)
 - `--filter <glob>`: `--kind apexClass --filter 'MX_*'` のようにサブ集合指定
 - `--skip-fresh`: 既に AI_MANAGED が埋まっているものはスキップ
-- 進捗表示: `[12/47] MX_OpportunityTriggerHandler ... ok (updated=7)`
+- 進捗表示: `[12/47] ExampleApexTriggerHandler ... ok (updated=7)`
 - 途中失敗時の再開: `--resume` で前回の中断地点から続行
 
 ## 変更内容 (案)

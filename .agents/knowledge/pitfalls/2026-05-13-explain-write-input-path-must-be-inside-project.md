@@ -10,7 +10,7 @@ tags: [v0.3.0, week-0, explain-write, skill-doc, path-validation]
 
 ## 何が起きたか
 
-初回実利用 (2026-05-13) で `/tmp/sfai-explain-input.json` を `--input` に渡したところ、`sfai explain-write --kind apexClass --fqn MX_OpportunityTriggerHandler --input /tmp/...` がパス制約エラーで失敗した。`.sfai/tmp-explain.json` 等プロジェクトルート内に置き直すと `updated=7 skipped=0` で成功した。
+初回実利用 (2026-05-13) で `/tmp/sfai-explain-input.json` を `--input` に渡したところ、`sfai explain-write --kind apexClass --fqn ExampleApexTriggerHandler --input /tmp/...` がパス制約エラーで失敗した。`.sfai/tmp-explain.json` 等プロジェクトルート内に置き直すと `updated=7 skipped=0` で成功した。
 
 ## 根本原因
 
@@ -18,7 +18,7 @@ tags: [v0.3.0, week-0, explain-write, skill-doc, path-validation]
 
 ## どう気づいたか
 
-Week 0 ベースライン計測のため `/sfai-explain apexClass MX_OpportunityTriggerHandler` を実行した際、Claude Code エージェントが `/tmp/` を選び、explain-write が拒否したことで顕在化。スキル定義に書かれていなかったため、回避は試行錯誤で学習する形になった。
+Week 0 ベースライン計測のため `/sfai-explain apexClass ExampleApexTriggerHandler` を実行した際、Claude Code エージェントが `/tmp/` を選び、explain-write が拒否したことで顕在化。スキル定義に書かれていなかったため、回避は試行錯誤で学習する形になった。
 
 ## 回避策・修正
 

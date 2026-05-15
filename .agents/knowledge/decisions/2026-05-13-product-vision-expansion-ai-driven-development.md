@@ -119,7 +119,7 @@ sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサ
 
 **Before**: 汎用 LLM + Salesforce ドキュメント (公式)
 - "Salesforce の使い方は知っているが、あなたの組織のことは知らない AI"
-- 例: 一般的な Apex のベストプラクティスは答えられるが、`MX_OpportunityTriggerHandler` の業務的役割は知らない
+- 例: 一般的な Apex のベストプラクティスは答えられるが、`ExampleApexTriggerHandler` の業務的役割は知らない
 
 **After**: sfai 知識グラフ + AI エージェントルール + 組織コンテキスト
 - "あなたの組織の特性とビジネスロジックに精通した AI"
