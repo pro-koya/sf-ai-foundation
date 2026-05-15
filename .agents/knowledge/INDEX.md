@@ -68,6 +68,8 @@
 - [2026-05-09: Phase 15 完了](decisions/2026-05-09-phase-15-completion.md) — 5 エンティティ × 21 ブロックを AI 推論で書き戻し成功、`sfai sync` 再実行で全保全、Phase 8 purpose も無傷、`method-summary-table` の SOQL 検出漏れを pitfalls に記録、コード変更ゼロ
 - **[2026-05-10: Phase スコープ規律の確立とリリース計画の整流化](decisions/2026-05-10-scope-discipline-and-phase-restructure.md)** — Phase 7〜15 の連鎖追加 (9 個) を反省し、`AGENTS.md` § 3 として Phase スコープ規律を恒久ルール化、旧 Phase 7〜15 を v0.2.0 として統合、本来の北極星「内部検証実証」を v0.3.0 として独立、禁則 14 (Phase 増殖禁止) 追加、内部検証 DoD (5 項目中 3 項目達成) を明示。**今後の Phase 追加は本 ADR の閾値に従う**
 - **[2026-05-10: v0.3.0 (内部検証 実証フェーズ) 着手計画](decisions/2026-05-10-v0.3.0-internal-validation-plan.md)** — 規律確立後の最初の Phase。北極星「現参画プロジェクトで価値が届くか実証」/ DoD 5 項目中 3 項目達成 / Out of Scope 明示 (技術拡張は禁止) / Week 0 で SOQL 検出漏れ解消 + 計測フォーマット合意 + ベースライン計測 / 4 週週次運用後に DoD 評価
+- **[2026-05-13: 製品ビジョン拡張 — 運用 AI 化から AI 駆動開発ライフサイクル全体へ](decisions/2026-05-13-product-vision-expansion-ai-driven-development.md)** ✅ active — 北極星をライフサイクル全体に拡張、メインペルソナ **コンサル / SIer**、4 つの柱、L3 を「要件構造化支援」に弱め、コンテキスト層は独立軸 + `context_sources` API、OSS 理由 3 つ、商標 **yohakuforce** (CLI: `yohaku`) で sfai から改名、AI プロバイダ抽象化 (Claude / OpenAI / Antigravity 選択可)、商業展開なし
+- **[2026-05-13: 長期ロードマップ (v0.3 〜 v1.0)](decisions/2026-05-13-long-term-roadmap-draft.md)** ✅ active — 10 バージョン段階計画、**1 バージョン = 1 North Star**、v0.4 で改名移行 + AI プロバイダ抽象 + context_sources API、L6 を L5 前に配置、L5 を v0.9 (支援) + v0.10 (本格) の 2 段、v1.0 は yohakuforce で OSS 公開・商業化なし
 
 ---
 
@@ -88,6 +90,7 @@
 - [2026-05-07: npm link 経由で sfai が silent 終了するバグ (修正済)](pitfalls/2026-05-07-symlink-isDirectInvoke-bug.md) — isDirectInvoke が symlink resolve していなかった。realpathSync で両側を resolve して比較に修正
 - [2026-05-07: 標準オブジェクトの Custom Field で FK 制約失敗 (修正済)](pitfalls/2026-05-07-foreign-key-standard-object-fields.md) — Account/fields/X__c のような典型 DX パターンで FK 失敗。親 object の stub 自動生成で解決
 - [2026-05-09: method-summary-table がインライン SOQL `[SELECT ...]` を検出しない](pitfalls/2026-05-09-method-summary-table-soql-detection.md) — `for (... : [SELECT ...])` 形式が SOQL 件数に含まれない。Phase 15 の AI 推論で発覚、Phase 16 候補
+- [2026-05-13: sfai explain-write の `--input` はプロジェクトルート外を拒否する](pitfalls/2026-05-13-explain-write-input-path-must-be-inside-project.md) — `/tmp/` パスで失敗。`.sfai/tmp-*.json` を推奨。スキル定義 Step 4 を即修正済み
 
 ---
 
@@ -97,6 +100,8 @@
 
 - [2026-05-07: ダミー Salesforce DX プロジェクトでの E2E スモークテストパターン](wins/2026-05-07-e2e-smoke-test-pattern.md) — `/tmp/sfai-smoke/` に最小構造を作って通し動作を 5 分で確認、ユニットテスト未検出バグを発見
 - [2026-05-09: explain-writer の AI 推論 end-to-end が成立した](wins/2026-05-09-explain-writer-end-to-end-validation.md) — Phase 14 の基盤 + scaffold 指針 + registry のおかげで claude-code セッションの AI 推論で 5 エンティティ × 21 ブロックを設計書化、コード変更ゼロ
+- [2026-05-13: explain-write のマーカー整合性保全が初回実利用で機能](wins/2026-05-13-explain-write-marker-integrity-validation.md) — 実プロジェクトで Apex 7 ブロック一括更新が `updated=7 skipped=0` で完走、マーカー破壊なし
+- [2026-05-13: sfai onboard context の JSON API が AI から直接消費できた](wins/2026-05-13-onboard-context-json-api.md) — `{goal, readOrder, domains, primaryAgent}` 構造化返却で追加パース不要、エージェント実行計画に直結
 
 ---
 
@@ -107,6 +112,10 @@
 - [2026-05-07: Phase 1 → Phase 2 引き継ぎ改善案 6 項目](improvements/2026-05-07-phase-1-handover-improvements.md) — extractors 分割 / SQL 型安全化 / secrets-rules YAML / CI 緑化 / ゴールデンテスト耐性
 - [2026-05-07: CLI UX 改善 — コマンド統合](improvements/2026-05-07-cli-ux-consolidation.md) — `sfai init --bootstrap` / `sfai sync` / `sfai render` 引数省略で 4→1 コマンド化
 - [2026-05-09: explain-writer 改善 4 件](improvements/2026-05-09-explain-writer-improvements.md) — ソース参照オプション / dry-run / subagent prompt 文例追加 / kind 自動判定
+- [2026-05-13: /sfai-explain に一括 / 資材カテゴリ単位の実行モードを追加](improvements/2026-05-13-sfai-explain-bulk-and-category-execution.md) — `--all` / `--kind <kind> --all` / `--dry-run` 等。利用者要望。**v0.4.0 候補** (Out of Scope)。代替: AI が逐次自走
+- [2026-05-13: system-index.md の AI_MANAGED summary を /onboard 初回で自動生成](improvements/2026-05-13-system-index-summary-bootstrap.md) — 初回オンボーディングでの全景空白を解消。**v0.4.0 候補** (新 ExplainKind 追加が Out of Scope)
+- [2026-05-13: docs/human/business-notes/ の bootstrap ガイド整備](improvements/2026-05-13-business-notes-scaffold.md) — 人手領域の空白で業務文脈が薄い AI 出力に固定化されるリスク。**v0.4.0 候補** (scaffold 拡張は Out of Scope)
+- [2026-05-13: sfai metrics に Claude Code セッションのトークン計測を統合](improvements/2026-05-13-metrics-claude-code-session-integration.md) — 現状 `/sfai-explain` 経由が計上されない (0 トークン)。**v0.4.0 候補**。v0.3.0 期間は手動記録で代替
 
 ---
 

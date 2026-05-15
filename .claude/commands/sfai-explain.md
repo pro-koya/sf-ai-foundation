@@ -81,6 +81,10 @@ argument-hint: <kind> <fullyQualifiedName> [project-root]
 
 各ブロックの本文を JSON ファイルに書き出して `sfai explain-write` を呼ぶ。
 
+> ⚠️ **`--input` のパス制約**: `sfai explain-write` は **プロジェクトルート外のパスを拒否する** (例: `/tmp/...` は失敗する)。
+> 一時 JSON は **プロジェクトルート内** に置くこと。推奨パスは `.sfai/tmp-explain-<fqn>.json` (既存 `.gitignore` の `.sfai/` に含まれるため追跡対象外)。
+> 参考: pitfalls/[2026-05-13-explain-write-input-path-must-be-inside-project](../../.agents/knowledge/pitfalls/2026-05-13-explain-write-input-path-must-be-inside-project.md)
+
 ```bash
 sfai explain-write --kind <kind> --fqn <fqn> --project-root <root> --input <tmp.json>
 ```
