@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "_comment": "SF-AI-Foundation: Claude Code 環境設定。Phase 2 以降で hooks を追加する。",
+  "_comment": "yohakuforce: Claude Code 環境設定。Phase 2 以降で hooks を追加する。",
   "permissions": {
     "allow": [
       "Read",
@@ -20,9 +20,9 @@
     ]
   },
   "env": {
-    "SFAI_PROJECT_ROOT": "${workspaceFolder}"
+    "YOHAKU_PROJECT_ROOT": "${workspaceFolder}"
   },
   "hooks": {
-    "_note_phase_2": "Phase 2 で sfai graph build --incremental を PostToolUse に登録予定"
+    "_note_phase_2": "Phase 2 で yohaku graph build --incremental を PostToolUse に登録予定"
   }
 }

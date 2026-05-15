@@ -2,7 +2,7 @@
 
 <!-- DETERMINISTIC_START id="meta" -->
 - 集計日時: 2026-05-08T01:50:54.877Z
-- sfai version: 0.0.1
+- yohaku version: 0.0.1
 - Salesforce API version: 62.0
 <!-- DETERMINISTIC_END id="meta" -->
 

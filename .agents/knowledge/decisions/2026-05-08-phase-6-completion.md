@@ -1,7 +1,7 @@
 ---
 type: decision
 date: 2026-05-08
-title: Phase 6 (Plugin 化 + アダプタ拡張) 完了 — 2 環境で `sfai init --bootstrap` 完走
+title: Phase 6 (Plugin 化 + アダプタ拡張) 完了 — 2 環境で `yohaku init --bootstrap` 完走
 status: active
 tags: [phase-6, completion, milestone, plugin, dx-mcp, sample-project]
 ---
@@ -10,7 +10,7 @@ tags: [phase-6, completion, milestone, plugin, dx-mcp, sample-project]
 
 ## 判断
 
-Phase 6 のサイクル 6-1 〜 6-7 を完了。検証ゲート (2 環境での `sfai init --bootstrap` 完走) も通過。**Phase 6 完了**。
+Phase 6 のサイクル 6-1 〜 6-7 を完了。検証ゲート (2 環境での `yohaku init --bootstrap` 完走) も通過。**Phase 6 完了**。
 
 これで **Phase 1〜6 の全機能が外部配布可能な状態** に到達 (実 npm publish は Phase 7)。
 
@@ -23,7 +23,7 @@ Phase 6 のサイクル 6-1 〜 6-7 を完了。検証ゲート (2 環境での 
 | 6-3 | docs/01-getting-started 拡充 | `quickstart.md` (Phase 3〜5 機能含めて再構成), `profiles.md` (3 profile 早見表 + AI コスト目安) |
 | 6-4 | examples/sample-project 充実 | Invoice__c (3rd object), ValidationRule, Flow, PermissionSet 追加 (合計 8 メタデータ→13 メタデータ) |
 | 6-5 | Antigravity 互換ドキュメント | `docs/02-concepts/antigravity-compatibility.md` (注記レベル、実機検証は Phase 7) |
-| 6-6 | 2 環境検証 | sfai-trial (10 obj/58 fld) + examples/sample-project (3 obj/6 fld) で `sfai init --bootstrap` 完走 |
+| 6-6 | 2 環境検証 | yohaku-trial (10 obj/58 fld) + examples/sample-project (3 obj/6 fld) で `yohaku init --bootstrap` 完走 |
 | **6-7** | 完了 ADR + retrospective | 本 ADR + retrospective |
 
 ## 検証ゲート結果 (2 環境)
@@ -31,20 +31,20 @@ Phase 6 のサイクル 6-1 〜 6-7 を完了。検証ゲート (2 環境での 
 | 環境 | 結果 | 詳細 |
 |---|---|---|
 | **examples/sample-project** | ✅ | objects=3, fields=6, flows=1, apex=1, render=4 (1 コマンドで完走) |
-| **sfai-trial (Dev Edition)** | ✅ | objects=10, fields=58, flows=1, apex=20, sfai sync + onboard context 動作 |
+| **yohaku-trial (Dev Edition)** | ✅ | objects=10, fields=58, flows=1, apex=20, yohaku sync + onboard context 動作 |
 
-`sfai init --bootstrap --profile full` で **35 ファイルの scaffold 展開 + graph build + render** が一気通貫。
+`yohaku init --bootstrap --profile full` で **35 ファイルの scaffold 展開 + graph build + render** が一気通貫。
 
 ## 主要な変化点
 
 ### CLI
 
-- `sfai graph build --source dx-mcp` が opt-in で利用可能 (実装は Phase 7 stub)
+- `yohaku graph build --source dx-mcp` が opt-in で利用可能 (実装は Phase 7 stub)
 - ヘルプに onboarding セクション追加 (Phase 5)
 
 ### scaffold
 
-- `.sfai/context-map.yaml.eta` 追加 (Phase 5)
+- `.yohaku/context-map.yaml.eta` 追加 (Phase 5)
 - 14 種 subagent + 7 種 slash command (full プロファイル)
 - 3 profile (minimal=8 ファイル, standard=20+, full=35 ファイル) で展開数が異なる
 
@@ -70,7 +70,7 @@ Phase 6 のサイクル 6-1 〜 6-7 を完了。検証ゲート (2 環境での 
 | 更新 docs ファイル | 2 (quickstart.md, profiles.md) |
 | 新規メタデータ (sample-project) | 5 (Invoice__c + 2 fields + ValidationRule + Flow + PermissionSet) |
 | 全テスト件数 | **107/107 pass** (Phase 5 末 101 → +6) |
-| sfai-trial 検証 | ✅ |
+| yohaku-trial 検証 | ✅ |
 | examples/sample-project 検証 | ✅ |
 
 ## トレードオフ
@@ -103,12 +103,12 @@ Phase 6 のサイクル 6-1 〜 6-7 を完了。検証ゲート (2 環境での 
 | Phase | 状態 | 検証ゲート |
 |---|---|---|
 | Phase 1 (知識グラフ + CLI) | ✅ 完了 | ゴールデンテスト 6 ケース |
-| Phase 2 (Claude Code 統合) | ✅ 完了 | sfai-trial で `/onboard` 完走 |
+| Phase 2 (Claude Code 統合) | ✅ 完了 | yohaku-trial で `/onboard` 完走 |
 | Phase 2.5 (UX 改善) | ✅ 完了 | 4→1 コマンド統合 E2E |
-| Phase 3 (差分意味づけ) | ✅ 完了 | sfai-trial 3 並列 classifier、44 秒 |
-| Phase 4 (リリース準備) | ✅ 完了 | sfai-trial v0.0.0→v0.1.0、4 件手動作業検出 |
-| Phase 5 (オンボーディング) | ✅ 完了 | sfai-trial 4 persona subagent + FAQ + state |
-| **Phase 6 (Plugin 化)** | ✅ 完了 | **2 環境で `sfai init --bootstrap` 完走** |
+| Phase 3 (差分意味づけ) | ✅ 完了 | yohaku-trial 3 並列 classifier、44 秒 |
+| Phase 4 (リリース準備) | ✅ 完了 | yohaku-trial v0.0.0→v0.1.0、4 件手動作業検出 |
+| Phase 5 (オンボーディング) | ✅ 完了 | yohaku-trial 4 persona subagent + FAQ + state |
+| **Phase 6 (Plugin 化)** | ✅ 完了 | **2 環境で `yohaku init --bootstrap` 完走** |
 | Phase 7 (普及) | 次 | 継続的・実 OSS 公開・事例蓄積 |
 
 ## 関連ナレッジ

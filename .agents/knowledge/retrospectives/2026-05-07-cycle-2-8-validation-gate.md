@@ -10,7 +10,7 @@ tags: [phase-2, cycle-2-8, validation-gate, dev-edition, ux-feedback]
 
 ## サイクル要約
 
-利用者が Salesforce Developer Edition で `sfai-trial` プロジェクトを構築し、`sfai init` → `sfai graph build` → `sfai render` → Claude Code から `/onboard` `/explain` を実行する一連のフローを完走。**検証ゲート通過**を確認した。
+利用者が Salesforce Developer Edition で `yohaku-trial` プロジェクトを構築し、`yohaku init` → `yohaku graph build` → `yohaku render` → Claude Code から `/onboard` `/explain` を実行する一連のフローを完走。**検証ゲート通過**を確認した。
 
 検証中に **2 件の重大バグ** を発見・即修正:
 1. symlink isDirectInvoke バグ (CRITICAL)
@@ -54,10 +54,10 @@ tags: [phase-2, cycle-2-8, validation-gate, dev-edition, ux-feedback]
 
 具体的には:
 ```
-sfai init --profile minimal --project-name sfai-trial --language ja
-sfai graph build
-sfai render system-index
-sfai render objects
+yohaku init --profile minimal --project-name yohaku-trial --language ja
+yohaku graph build
+yohaku render system-index
+yohaku render objects
 ```
 
 **4 コマンド** をシーケンシャルに叩く必要があった。日常運用では `graph build → render` の 2 コマンドが頻繁、初回セットアップでは 4 コマンド必要。
@@ -66,9 +66,9 @@ sfai render objects
 
 詳細: [improvements/2026-05-07-cli-ux-consolidation.md](../improvements/2026-05-07-cli-ux-consolidation.md)
 
-- `sfai init --bootstrap`: init + graph build + render を 1 コマンドで
-- `sfai render` (ターゲット省略): system-index + objects 全描画
-- `sfai sync`: graph build --incremental && render の日常コマンド
+- `yohaku init --bootstrap`: init + graph build + render を 1 コマンドで
+- `yohaku render` (ターゲット省略): system-index + objects 全描画
+- `yohaku sync`: graph build --incremental && render の日常コマンド
 
 ### Phase 3 への申し送り
 
@@ -86,14 +86,14 @@ sfai render objects
 
 ## 課題 (Problem)
 
-- **CI に symlink 経由テストが無い**: 同じバグが Phase 3 以降の他の bin script (Phase 6 の sfai init 等) でも起きうる
+- **CI に symlink 経由テストが無い**: 同じバグが Phase 3 以降の他の bin script (Phase 6 の yohaku init 等) でも起きうる
 - **sample-project に標準オブジェクト + Custom Field パターンが無い**: Phase 2.5 で追加
 - **コマンド数の多さ**: 利用者から明示的に UX 課題として指摘 → Phase 2.5 で対応
 
 ## 試したいこと (Try)
 
-- Phase 2.5 の最後に「再度 Dev Edition で `sfai init --bootstrap` 一発で全完了するか」の動作確認
-- Phase 3 で AI 関与する subagent を本格的に動かしたとき、`sfai metrics record` を hook 経由で自動呼び出しする仕組みの試行
+- Phase 2.5 の最後に「再度 Dev Edition で `yohaku init --bootstrap` 一発で全完了するか」の動作確認
+- Phase 3 で AI 関与する subagent を本格的に動かしたとき、`yohaku metrics record` を hook 経由で自動呼び出しする仕組みの試行
 
 ## 蓄積された関連ナレッジ
 

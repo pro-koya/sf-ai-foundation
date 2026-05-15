@@ -9,7 +9,7 @@ tags: [v0.3.0, week-0, explain-write, marker-integrity, baseline]
 
 ## 何が効いたか
 
-`sfai explain-write --kind apexClass --fqn ExampleApexTriggerHandler --input <json>` を実プロジェクトへの初回実利用で実行し、AI_MANAGED 7 ブロックを一括書き戻して `updated=7 skipped=0` でロールバックなく完走した。マーカー (`<!-- AI_MANAGED_START id="..." -->` / `<!-- AI_MANAGED_END id="..." -->`) は破壊されず、DETERMINISTIC / HUMAN_MANAGED は無傷だった。
+`yohaku explain-write --kind apexClass --fqn ExampleApexTriggerHandler --input <json>` を実プロジェクトへの初回実利用で実行し、AI_MANAGED 7 ブロックを一括書き戻して `updated=7 skipped=0` でロールバックなく完走した。マーカー (`<!-- AI_MANAGED_START id="..." -->` / `<!-- AI_MANAGED_END id="..." -->`) は破壊されず、DETERMINISTIC / HUMAN_MANAGED は無傷だった。
 
 ## なぜ効いたか
 
@@ -19,13 +19,13 @@ tags: [v0.3.0, week-0, explain-write, marker-integrity, baseline]
 
 ## 適用条件
 
-- AI_MANAGED の書き戻しは **必ず** `sfai explain-write` 経由 (直接 `Edit` ツールで Markdown を編集しない)
+- AI_MANAGED の書き戻しは **必ず** `yohaku explain-write` 経由 (直接 `Edit` ツールで Markdown を編集しない)
 - 同時更新ブロック数が多い (7+) ケースでも、id 単位で正しく分離されていれば安全
 - 一時 JSON は **プロジェクトルート内** に置く (後述の pitfall 参照)
 
 ## 再利用方法
 
-- 利用者プロジェクトで `/sfai-explain` を回す際の安心材料として、ロールバック保証 (`updated=N skipped=0`) を運用ログに残す
+- 利用者プロジェクトで `/yohaku-explain` を回す際の安心材料として、ロールバック保証 (`updated=N skipped=0`) を運用ログに残す
 - 失敗時は `skipped > 0` のブロックを特定してマーカー破損を疑う
 
 ## 関連ナレッジ

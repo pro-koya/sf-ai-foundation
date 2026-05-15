@@ -27,7 +27,7 @@ labels: bug
 
 - **OS**: <!-- macOS 14 / Windows 11 / Ubuntu 24.04 など -->
 - **Node.js version**: <!-- `node -v` -->
-- **sfai version**: <!-- `npx sfai version` -->
+- **yohaku version**: <!-- `npx yohaku version` -->
 - **Profile**: <!-- minimal / standard / full -->
 - **Installation method**: <!-- npm / git clone / etc -->
 

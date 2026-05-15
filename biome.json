@@ -7,7 +7,7 @@
       "node_modules",
       "**/*.json",
       "scaffold/**",
-      ".sfai/**",
+      ".yohaku/**",
       "**/*.eta",
       "tests/golden/**/expected/**",
       "tests/golden/**/input/**",

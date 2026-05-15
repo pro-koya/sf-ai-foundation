@@ -12,11 +12,11 @@ argument-hint: <object|field|flow|apex|permissionSet 名>
 1. **エンティティ種別の判定**
    - `$ARGUMENTS` を以下の順で照合:
      ```bash
-     sfai graph query "SELECT 'object' AS kind, fqn FROM objects WHERE fqn = '$ARGUMENTS'"
-     sfai graph query "SELECT 'field' AS kind, fqn FROM fields WHERE fqn = '$ARGUMENTS'"
-     sfai graph query "SELECT 'flow' AS kind, fqn FROM flows WHERE fqn = '$ARGUMENTS'"
-     sfai graph query "SELECT 'apex' AS kind, fqn FROM apex_classes WHERE fqn = '$ARGUMENTS'"
-     sfai graph query "SELECT 'trigger' AS kind, fqn FROM apex_triggers WHERE fqn = '$ARGUMENTS'"
+     yohaku graph query "SELECT 'object' AS kind, fqn FROM objects WHERE fqn = '$ARGUMENTS'"
+     yohaku graph query "SELECT 'field' AS kind, fqn FROM fields WHERE fqn = '$ARGUMENTS'"
+     yohaku graph query "SELECT 'flow' AS kind, fqn FROM flows WHERE fqn = '$ARGUMENTS'"
+     yohaku graph query "SELECT 'apex' AS kind, fqn FROM apex_classes WHERE fqn = '$ARGUMENTS'"
+     yohaku graph query "SELECT 'trigger' AS kind, fqn FROM apex_triggers WHERE fqn = '$ARGUMENTS'"
      ```
 
 2. **見つかったエンティティの詳細表示**
@@ -28,7 +28,7 @@ argument-hint: <object|field|flow|apex|permissionSet 名>
 
 3. **依存関係の可視化** (オプション)
    ```bash
-   sfai graph query "SELECT * FROM dependencies WHERE from_fqn = '$ARGUMENTS' OR to_fqn = '$ARGUMENTS'"
+   yohaku graph query "SELECT * FROM dependencies WHERE from_fqn = '$ARGUMENTS' OR to_fqn = '$ARGUMENTS'"
    ```
    → 「このエンティティを参照しているもの」「このエンティティが参照しているもの」を整理
 

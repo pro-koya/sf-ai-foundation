@@ -6,15 +6,15 @@ dist/
 .pnpm-store/
 
 # 知識グラフ (再生成可能な中間正本)
-.sfai/graph.sqlite
-.sfai/graph.sqlite-journal
-.sfai/graph.sqlite-shm
-.sfai/graph.sqlite-wal
-.sfai/cache/
-.sfai/tmp-*.json
+.yohaku/graph.sqlite
+.yohaku/graph.sqlite-journal
+.yohaku/graph.sqlite-shm
+.yohaku/graph.sqlite-wal
+.yohaku/cache/
+.yohaku/tmp-*.json
 
 # オンボーディング状態 (ローカル)
-.sfai/onboarding-state.json
+.yohaku/onboarding-state.json
 
 # Claude Code セッションローカル
 .claude/local/

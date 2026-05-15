@@ -22,14 +22,14 @@ model: sonnet
 
 ### ステップ 1: 全体像
 
-1. `sfai graph query "SELECT key, value FROM meta"` でグラフのメタ情報を取得
-2. `sfai graph query "SELECT COUNT(*) ...` で各テーブルの件数
+1. `yohaku graph query "SELECT key, value FROM meta"` でグラフのメタ情報を取得
+2. `yohaku graph query "SELECT COUNT(*) ...` で各テーブルの件数
 3. `Read docs/generated/system-index.md` で派生ドキュメントを読む
 4. 提示: 「このプロジェクトには object N 件、flow M 件あります。最も重要な 5 つのオブジェクトから見ましょう」
 
 ### ステップ 2: 主要オブジェクト Top 5
 
-1. `sfai graph query "SELECT object, COUNT(*) AS field_count FROM fields GROUP BY object ORDER BY field_count DESC LIMIT 5"`
+1. `yohaku graph query "SELECT object, COUNT(*) AS field_count FROM fields GROUP BY object ORDER BY field_count DESC LIMIT 5"`
 2. 各オブジェクトについて、object-documenter サブエージェント (Task ツール) を **並列で 5 つ起動** して概要を取得
 3. 結果を統合して提示
 
@@ -49,7 +49,7 @@ model: sonnet
 
 ### ステップ 5: 進捗の記録
 
-1. このセッションで参画者が見たエンティティを `.sfai/onboarding-state.json` に記録 (gitignore 対象)
+1. このセッションで参画者が見たエンティティを `.yohaku/onboarding-state.json` に記録 (gitignore 対象)
 2. 主要 5 件を見終えたら「次は副次オブジェクトに進みますか? それとも特定領域を深掘りしますか?」と問う
 
 ## 禁則

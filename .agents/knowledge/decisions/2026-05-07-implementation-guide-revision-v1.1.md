@@ -18,10 +18,10 @@ tags: [governance, salesforce-ecosystem, reproducibility, segments, wellness-kpi
 2. **3 セグメント（大企業 / 中小企業 / ベンダー）への価値マッピング章を新設**
 3. **再現性ガバナンス章を新設** — プロンプト=コード扱い、ゴールデンテスト、`source` 列、temperature=0 一致率 CI
 4. **Salesforce 公式エコシステムとの責務境界章を新設** — DX MCP Server / Code Analyzer v5 / ApexGuru / sf CLI / SDR との関係を明文化、JSforce 直接接続・SFDX Hardis・Provar を禁則 11 で禁忌化
-5. **AI コストとセキュリティ方針章を新設** — モデル選定ポリシー、Haiku 自動退避、PII マスキング、`.sfai/` 暗号化方針
+5. **AI コストとセキュリティ方針章を新設** — モデル選定ポリシー、Haiku 自動退避、PII マスキング、`.yohaku/` 暗号化方針
 6. **検証ゲート（実ユーザ検証）を Phase 2/3/4 にも配置**
 
-加えて、Phase 別の小修正（カバレッジ 80% 統一、ライセンス Apache 2.0 即決、テンプレートエンジン eta 確定、`sfai graph schema` 追加、hooks 閾値 500ms 統一、Antigravity の Phase 6 互換確認、Phase 7 KPI 定量化、ナレッジ層を Phase 2 から運用）を行う。
+加えて、Phase 別の小修正（カバレッジ 80% 統一、ライセンス Apache 2.0 即決、テンプレートエンジン eta 確定、`yohaku graph schema` 追加、hooks 閾値 500ms 統一、Antigravity の Phase 6 互換確認、Phase 7 KPI 定量化、ナレッジ層を Phase 2 から運用）を行う。
 
 ## 文脈
 

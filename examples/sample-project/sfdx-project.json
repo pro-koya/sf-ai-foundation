@@ -1,6 +1,6 @@
 {
   "packageDirectories": [{ "path": "force-app", "default": true }],
-  "name": "sfai-sample-project",
+  "name": "yohaku-sample-project",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "62.0"

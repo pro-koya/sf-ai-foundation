@@ -1,6 +1,6 @@
 # Security Policy
 
-SF-AI-Foundation は Salesforce 組織のメタデータを扱う性質上、セキュリティを最重要視する。
+yohakuforce は Salesforce 組織のメタデータを扱う性質上、セキュリティを最重要視する。
 脆弱性を発見した場合、以下の方針で対応する。
 
 ---
@@ -56,8 +56,8 @@ Phase 1〜5 (内部検証期) は最新コミットのみ対象。
 
 | 脅威 | 防御策 |
 |---|---|
-| 顧客メタデータが AI に送信される | `.sfai/secrets-rules.yaml` によるマスキング (Phase 1) |
-| `.sfai/graph.sqlite` の盗難 | OS キーチェーン連携による暗号化オプション (Phase 6) |
+| 顧客メタデータが AI に送信される | `.yohaku/secrets-rules.yaml` によるマスキング (Phase 1) |
+| `.yohaku/graph.sqlite` の盗難 | OS キーチェーン連携による暗号化オプション (Phase 6) |
 | 認証情報の流出 | 本 OSS は org に直接接続しない (sf CLI / DX MCP に委譲) |
 | 悪意あるテンプレート (`scaffold/`) 注入 | サプライチェーンセキュリティ (npm 署名、Dependabot, Phase 6) |
 | プロンプトインジェクション | AI 出力のスキーマ検証 + `source` 列で人手介入領域を保護 |

@@ -10,7 +10,7 @@ tags: [v0.3.0, observed, v0.4.0-candidate, onboard, system-index]
 
 ## Before
 
-`docs/generated/system-index.md` の `AI_MANAGED id="summary"` ブロックが、`sfai init --bootstrap` 直後はテンプレート文 (「本プロジェクト全体の概要 (AI 生成、再生成で上書きされます)」) のまま残る。利用者がプロジェクト全景を `system-index.md` 経由で把握しようとしたとき、最も重要な要約が空のため初動の体験が劣化する。
+`docs/generated/system-index.md` の `AI_MANAGED id="summary"` ブロックが、`yohaku init --bootstrap` 直後はテンプレート文 (「本プロジェクト全体の概要 (AI 生成、再生成で上書きされます)」) のまま残る。利用者がプロジェクト全景を `system-index.md` 経由で把握しようとしたとき、最も重要な要約が空のため初動の体験が劣化する。
 
 ## After (構想)
 
@@ -18,14 +18,14 @@ tags: [v0.3.0, observed, v0.4.0-candidate, onboard, system-index]
 
 1. 知識グラフから top-level メタ件数・主要ドメイン (sales / finance 等) を抽出
 2. `system-index` 用の `purpose` / `executive-summary` / `executive-risks` を AI 推論で生成
-3. `sfai explain-write --kind systemIndex --input <tmp.json>` で書き戻し
+3. `yohaku explain-write --kind systemIndex --input <tmp.json>` で書き戻し
 4. state に「summary-bootstrapped=true」を記録し、2 回目以降は実行しない (再生成は明示的なコマンドで)
 
 ## 変更内容 (案)
 
 - `/onboard` skill (`.claude/commands/onboard.md` 想定) に Step「初回判定 → summary 自動生成」を追加
-- `sfai explain-write` の `--kind` に `systemIndex` を追加 (新 ExplainKind に該当 → v0.3.0 Out of Scope)
-- もしくは既存 `/sfai-explain` を再利用する形で `systemIndex` ターゲットを後付け
+- `yohaku explain-write` の `--kind` に `systemIndex` を追加 (新 ExplainKind に該当 → v0.3.0 Out of Scope)
+- もしくは既存 `/yohaku-explain` を再利用する形で `systemIndex` ターゲットを後付け
 
 ## 効果測定
 

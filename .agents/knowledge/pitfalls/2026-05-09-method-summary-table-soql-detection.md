@@ -31,7 +31,7 @@ for (AggregateResult ar : [
 
 ## 原因 (推測)
 
-`packages/sfai-core/src/render/method-summary-table.ts` の `walkNodes` 関数は `controlFlows[].nodes` を再帰的に走査して `kind: "soql"` を数えるが、`for` ループの **header (= イテレーション元の式)** に埋め込まれた `[SELECT ...]` 式が、controlFlow 抽出時に `soql` ノードとして登録されていない可能性。
+`packages/core/src/render/method-summary-table.ts` の `walkNodes` 関数は `controlFlows[].nodes` を再帰的に走査して `kind: "soql"` を数えるが、`for` ループの **header (= イテレーション元の式)** に埋め込まれた `[SELECT ...]` 式が、controlFlow 抽出時に `soql` ノードとして登録されていない可能性。
 
 実際、`processing-overview-table` の "外部呼出" 列には `SUM` / `ar.get` が出ている → SOQL aggregate であることは別経路で検出されている。つまり SOQL の **存在**は extractor が知っているが、メソッド統合表の「件数」としては反映されていない。
 
@@ -55,6 +55,6 @@ for (AggregateResult ar : [
 
 ## 関連
 
-- 発見コード: `packages/sfai-core/src/render/method-summary-table.ts`
+- 発見コード: `packages/core/src/render/method-summary-table.ts`
 - 影響対象: 全 Apex Class の `processing-overview-table` (Phase 13 で導入)
 - 同種の懸念: Trigger の `processing-summary-table` も同じロジックを使うため同様の問題がありうる

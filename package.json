@@ -1,10 +1,10 @@
 {
-  "name": "sf-ai-foundation",
-  "version": "0.3.0",
+  "name": "yohakuforce",
+  "version": "0.4.0",
   "private": true,
   "description": "Salesforce 特化の AI 駆動プロジェクト推進基盤 OSS。属人化の解消・運用タスク自動化・AI 駆動開発の再現性を提供する。",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/pro-koya/sf-ai-foundation",
+  "homepage": "https://github.com/pro-koya/yohakuforce",
   "type": "module",
   "engines": {
     "node": ">=20.0.0"
@@ -37,9 +37,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/pro-koya/sf-ai-foundation"
+    "url": "https://github.com/pro-koya/yohakuforce"
   },
   "bugs": {
-    "url": "https://github.com/pro-koya/sf-ai-foundation/issues"
+    "url": "https://github.com/pro-koya/yohakuforce/issues"
   }
 }

@@ -24,7 +24,7 @@ argument-hint: [--from <ref>] [--to <ref>] [--output docs/ai-augmented/change-su
 ```markdown
 ## 差分サマリ: <fromRef>..<toRef>
 
-> 自動生成 (sfai change-summary): <createdAt>
+> 自動生成 (yohaku change-summary): <createdAt>
 
 **集計**
 - 変更ファイル: N 件 (+X / -Y)
@@ -63,13 +63,13 @@ argument-hint: [--from <ref>] [--to <ref>] [--output docs/ai-augmented/change-su
 ### 4. ファイル配置とマージ
 
 - 出力先: `docs/ai-augmented/change-summaries/<YYYY-MM-DD>-<short-id>.md`
-- 既存ファイルがあれば **HUMAN_MANAGED ブロックを保護** (sfai render の merge と同等の挙動)
+- 既存ファイルがあれば **HUMAN_MANAGED ブロックを保護** (yohaku render の merge と同等の挙動)
 - 同時に `<...>.json` も配置 (機械可読バックアップ)
 
 ### 5. メトリクス記録
 
 ```bash
-sfai metrics record --model claude-sonnet-4-6 --command /change-summary --in <est> --out <est>
+yohaku metrics record --model claude-sonnet-4-6 --command /change-summary --in <est> --out <est>
 ```
 
 ## 禁則

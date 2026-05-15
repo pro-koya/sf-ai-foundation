@@ -30,7 +30,7 @@ Salesforce 公式の **Salesforce DX MCP Server** (Apache 2.0、2025-05 Develope
 ## アダプタ設計の最小骨子
 
 ```
-sfai-core
+core
    │
    ├── 入力ソース層 (interface)
    │     ├── LocalSourceAdapter   (force-app/ を読む、デフォルト)
@@ -41,7 +41,7 @@ sfai-core
 
 - 入力ソース層に共通 IF (`fetchMetadata(types) -> ComponentSet`) を切る（Phase 2）
 - LocalSourceAdapter のみ Phase 1〜5 で実装
-- DxMcpSourceAdapter は Phase 6 で追加し、`sfai init --source dx-mcp` で切り替え可能に
+- DxMcpSourceAdapter は Phase 6 で追加し、`yohaku init --source dx-mcp` で切り替え可能に
 
 ## トレードオフ
 

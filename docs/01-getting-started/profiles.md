@@ -1,6 +1,6 @@
 # 導入プロファイルの選び方
 
-`sfai init --profile <minimal|standard|full>` で 3 つのプロファイルから選択できる。
+`yohaku init --profile <minimal|standard|full>` で 3 つのプロファイルから選択できる。
 
 ## 比較表 (Phase 6 時点で確定)
 
@@ -36,12 +36,12 @@
 
 ```
                     minimal  standard  full
-sfai sync              ✅       ✅      ✅
-sfai diff              ✅       ✅      ✅
-sfai onboard context   ✅       ✅      ✅
-sfai onboard state     ✅       ✅      ✅
-sfai onboard faq       ✅       ✅      ✅
-sfai metrics           ✅       ✅      ✅
+yohaku sync              ✅       ✅      ✅
+yohaku diff              ✅       ✅      ✅
+yohaku onboard context   ✅       ✅      ✅
+yohaku onboard state     ✅       ✅      ✅
+yohaku onboard faq       ✅       ✅      ✅
+yohaku metrics           ✅       ✅      ✅
 /onboard               ✅       ✅      ✅
 /explain               ✅       ✅      ✅
 /impact                ✅       ✅      ✅
@@ -53,11 +53,11 @@ sfai metrics           ✅       ✅      ✅
 
 ## 後から切り替え
 
-`sfai init --profile <name> --conflict overwrite` で再 init すれば差し替え可能。
+`yohaku init --profile <name> --conflict overwrite` で再 init すれば差し替え可能。
 
 ```bash
 # minimal → full にアップグレード
-sfai init --profile full --conflict overwrite
+yohaku init --profile full --conflict overwrite
 ```
 
 **HUMAN_MANAGED ブロックは保護されるため、人手記述が消える心配はなし**。

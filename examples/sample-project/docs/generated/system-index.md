@@ -2,7 +2,7 @@
 
 <!-- DETERMINISTIC_START id="overview" -->
 - 生成日時: 2026-05-07T21:22:50.243Z
-- sfai version: 0.0.1
+- yohaku version: 0.0.1
 - Salesforce API version: 62.0
 - Source adapter: local
 - Source hash: `sha256:d9bf7b6a61897d93dee4fdbd534c14600febd740eb62c56febda743870d89631`

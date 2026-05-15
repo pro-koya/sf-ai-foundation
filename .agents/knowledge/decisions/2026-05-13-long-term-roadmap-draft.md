@@ -78,7 +78,7 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 
 ### v0.4.0 — 社内展開 + 知識グラフ基盤拡充 + 改名移行 + AI プロバイダ抽象化
 
-**North Star (案)**: 複数の Salesforce 案件に yohakuforce を適用可能にし、`context_sources` 抽象 API + AI プロバイダ抽象層を含む知識グラフ基盤を拡充する。同時に **改名移行** (`sfai` → `yohakuforce` / `yohaku`) を完遂する。
+**North Star (案)**: 複数の Salesforce 案件に yohakuforce を適用可能にし、`context_sources` 抽象 API + AI プロバイダ抽象層を含む知識グラフ基盤を拡充する。同時に **改名移行** (`yohaku` → `yohakuforce` / `yohaku`) を完遂する。
 
 **DoD たたき台**:
 - 2 件以上の独立した Salesforce プロジェクトで v0.3.0 と同等の運用が可能
@@ -89,7 +89,7 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 - v0.3.0 期間中に蓄積した `improvements/` の優先 3 件を本バージョンで吸収
 
 **主機能**:
-- **改名移行** (sfai → yohakuforce / yohaku、詳細は本バージョン Phase ADR で確定)
+- **改名移行** (yohaku → yohakuforce / yohaku、詳細は本バージョン Phase ADR で確定)
 - 案件マルチテナント設計 (`.yohaku/` の隔離、metrics の案件別集計)
 - `context_sources` テーブル設計 + 抽象 API
 - **AI プロバイダ抽象層** + 3 プロバイダ adapter (Claude / OpenAI / Antigravity)
@@ -97,13 +97,13 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 - v0.3 で見つかった pitfalls の解消 (path 制約改善、エラーメッセージ強化、等)
 
 **改名移行の詳細 (v0.4.0 Phase ADR で確定)**:
-- リポジトリ名: `SF-AI-Foundation` → `yohakuforce` (または `yohakuforce-core`)
-- パッケージ名: `sfai-core` → `yohakuforce-core` (npm) / `yohakuforce` (PyPI 確保)
-- CLI bin: `sfai` → `yohaku`
-- ディレクトリ: `.sfai/` → `.yohaku/` (旧 `.sfai/` は読み取り fallback を 1 バージョンだけ維持 → v0.5 で削除)
-- スキル / コマンド: `/sfai-explain` → `/yohaku-explain` 等
+- リポジトリ名: `yohakuforce` → `yohakuforce` (または `yohakuforce-core`)
+- パッケージ名: `core` → `yohakuforce-core` (npm) / `yohakuforce` (PyPI 確保)
+- CLI bin: `yohaku` → `yohaku`
+- ディレクトリ: `.yohaku/` → `.yohaku/` (旧 `.yohaku/` は読み取り fallback を 1 バージョンだけ維持 → v0.5 で削除)
+- スキル / コマンド: `/yohaku-explain` → `/yohaku-explain` 等
 - ドキュメント全更新 (README / CLAUDE / AGENTS / IMPLEMENTATION_GUIDE)
-- 過去 ADR (2026-05-06 〜 2026-05-10) は **歴史的決定として `sfai` 表記のまま保持**
+- 過去 ADR (2026-05-06 〜 2026-05-10) は **歴史的決定として `yohaku` 表記のまま保持**
 
 **メインペルソナへの価値**: SIer が複数案件で再利用可能な基盤になる。ユーザーが好みの AI モデル (Claude / GPT / Antigravity) を選べる。
 
@@ -114,8 +114,8 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 **North Star (案)**: 改修対象から依存先を辿り、要件文から触るべき資材を特定する AI 駆動の **影響範囲・実装範囲特定** 機構を実現する。
 
 **DoD たたき台**:
-- `sfai impact <fqn>` で当該資材の依存先 (Apex / Trigger / Flow / LWC / SObject) 一覧が出る
-- `sfai scope "<要件文>"` で触るべき資材候補が AI 推論で出る (precision/recall 評価枠付き)
+- `yohaku impact <fqn>` で当該資材の依存先 (Apex / Trigger / Flow / LWC / SObject) 一覧が出る
+- `yohaku scope "<要件文>"` で触るべき資材候補が AI 推論で出る (precision/recall 評価枠付き)
 - 議事録 adapter (Markdown / docx ファイル取り込み) 初版が動作する
 - 現参画または他社内案件で実用検証を 4 週
 
@@ -123,7 +123,7 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 - graph-based impact analysis (依存グラフ探索の専用クエリ)
 - requirement → scope NLP (LLM + graph 連携)
 - adapters/meeting-minutes-file/ の adapter 初版
-- `/sfai-impact` / `/sfai-scope` slash command (新規)
+- `/yohaku-impact` / `/yohaku-scope` slash command (新規)
 
 **メインペルソナへの価値**: 案件中盤の改修見積り精度が上がる、議事録から触る範囲が AI で出る。
 
@@ -143,7 +143,7 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 - requirement structurer (LLM プロンプト + Zod スキーマ強制)
 - gap detector (Salesforce 標準パターン辞書との突合)
 - inconsistency detector (新要件 vs 既存知識グラフ)
-- `/sfai-requirements` slash command
+- `/yohaku-requirements` slash command
 
 **重要**: 本バージョンは **「要件構造化支援」** であり、「要件定義 AI 駆動」ではない。要件そのものを決めるのは人間。表現は弱めに維持。
 
@@ -166,7 +166,7 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 - design suggester (LLM + best practice 参照)
 - design alternative generator (2+ alternatives with trade-offs)
 - adapters/slack-mcp/ の adapter 初版
-- `/sfai-design` slash command
+- `/yohaku-design` slash command
 
 **メインペルソナへの価値**: 案件中盤の設計工程が加速、設計判断の質が均質化。
 
@@ -188,7 +188,7 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 - test data generator (ガバナー制限考慮)
 - coverage analyzer (gap 検出)
 - adapters/gmail-mcp/ の adapter 初版
-- `/sfai-test` slash command
+- `/yohaku-test` slash command
 
 **なぜ L5 の前に L6 か**:
 - テストが先にあると、L5 (実装生成) の品質を **自動的に評価** できる
@@ -216,7 +216,7 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 - code reviewer (Code Analyzer 連携)
 - AI_GENERATED マーカー仕様
 - adapters/otter-meeting/ の adapter 初版
-- `/sfai-implement` slash command
+- `/yohaku-implement` slash command
 
 **重要**: 本バージョンは **「支援版」**。生成コードをそのまま production にデプロイすることは想定しない。
 
@@ -238,7 +238,7 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 - org-specific pattern learner (knowledge graph + AI)
 - auto-fix loop (lint → fix → re-evaluate)
 - production readiness checker
-- 既存 sfai 機能 (差分意味づけ / リリース準備) との統合
+- 既存 yohaku 機能 (差分意味づけ / リリース準備) との統合
 
 **メインペルソナへの価値**: 案件全体の AI 駆動率が大幅向上、案件あたり工数の本質的削減。
 
@@ -362,7 +362,7 @@ AI プロバイダ層 ─→ v0.4 で抽象層 + Claude/OpenAI/Antigravity 3 ada
 - decisions/[2026-05-13 製品ビジョン拡張](./2026-05-13-product-vision-expansion-ai-driven-development.md) — 本 ADR の前提となるビジョン
 - decisions/[2026-05-10 Phase スコープ規律](./2026-05-10-scope-discipline-and-phase-restructure.md) — 本 ADR の規律基盤
 - decisions/[2026-05-10 v0.3.0 内部検証 実証フェーズ着手計画](./2026-05-10-v0.3.0-internal-validation-plan.md) — 現フェーズ
-- improvements/[2026-05-13 sfai-explain bulk + category](../improvements/2026-05-13-sfai-explain-bulk-and-category-execution.md) — v0.4 / v0.5 で吸収候補
+- improvements/[2026-05-13 yohaku-explain bulk + category](../improvements/2026-05-13-yohaku-explain-bulk-and-category-execution.md) — v0.4 / v0.5 で吸収候補
 - improvements/[2026-05-13 metrics Claude Code integration](../improvements/2026-05-13-metrics-claude-code-session-integration.md) — v0.4 で吸収候補
 - improvements/[2026-05-13 business-notes scaffold](../improvements/2026-05-13-business-notes-scaffold.md) — v0.4 で吸収候補
 

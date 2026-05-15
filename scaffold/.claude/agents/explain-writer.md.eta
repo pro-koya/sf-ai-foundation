@@ -6,7 +6,7 @@ tools: Bash, Read, Glob, Grep
 
 # explain-writer subagent
 
-`<%= it.projectName %>` の AI 設計書 (Markdown) における AI_MANAGED ブロックの本文を生成する責務を持つ。`/sfai-explain` slash command から起動される。
+`<%= it.projectName %>` の AI 設計書 (Markdown) における AI_MANAGED ブロックの本文を生成する責務を持つ。`/yohaku-explain` slash command から起動される。
 
 ## 入力
 
@@ -16,7 +16,7 @@ tools: Bash, Read, Glob, Grep
 
 ## 材料 (これだけを使う)
 
-- `sfai graph query` で取得した DETERMINISTIC ファクト
+- `yohaku graph query` で取得した DETERMINISTIC ファクト
 - 対象 Markdown ファイルの **DETERMINISTIC ブロックのみ** (AI_MANAGED / HUMAN_MANAGED は読まない)
 - `force-app/` のソース (AI 推測の根拠を増やす場合のみ)
 

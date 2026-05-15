@@ -18,7 +18,7 @@ tags: [phase-13, completion, processing-overview, processing-details, narrative,
 | Trigger の AI_MANAGED ブロック | 4 | **6** (+ processing-overview-narrative / processing-details-narrative) |
 | ユニットテスト件数 | 235 | **246** (+11: method-summary 4, intra-class-call 1 統合, flow-sequence 3, trigger-summary 2, eta-engine post-process 2) |
 | Markdown 表崩れ | 表行間に空行が残り GitHub で表が崩壊 | **修正済**: `postProcessMarkdown` で表行直後の空行を局所削除 |
-| `sfai sync` warnings | 0 | **0** (維持) |
+| `yohaku sync` warnings | 0 | **0** (維持) |
 | Phase 8/11/12 の AI_MANAGED 出力 | OK | **OK** (`purpose` 等の既存内容を回帰なく保全) |
 
 ## 実装内容
@@ -92,7 +92,7 @@ GitHub の Markdown レンダラでは、ヘッダ区切り行とデータ行の
 | `autoTrim: [false, "nl"]` (`%>` 後ろのみ除去) | Mermaid 閉じフェンス glue / インライン `<% if %>` 後ろの改行も削れて bullets が連結 ❌ |
 | `autoTrim: false` + `postProcessMarkdown` 後処理 | **採用** ✓ |
 
-`renderEta` 出力に対して以下のローカル後処理を適用 (`packages/sfai-core/src/render/eta-engine.ts`):
+`renderEta` 出力に対して以下のローカル後処理を適用 (`packages/core/src/render/eta-engine.ts`):
 
 ```typescript
 function postProcessMarkdown(text: string): string {
@@ -124,7 +124,7 @@ function postProcessMarkdown(text: string): string {
 - Mermaid 多行値が `<%~ %>` で出力されたときに閉じフェンスが glue する念のため対策として `ensureTrailingNewline` ヘルパーで全ての Mermaid 値に末尾改行を保証 (`postProcessMarkdown` で問題ないことが確認できたが防御的に残す)
 - `eta-engine.ts` に `postProcessMarkdown` を追加し `renderEta` 経由で全テンプレ出力に適用
 
-## 検証 (sfai-trial)
+## 検証 (yohaku-trial)
 
 | 確認項目 | 結果 |
 |---|---|
@@ -133,8 +133,8 @@ function postProcessMarkdown(text: string): string {
 | `apex/InvoicePdfController.md` メソッド一覧表 | ヘッダ区切り直後にデータ行が連続 (空行なし) ✓ |
 | `flows/Order_AutoCreateShipmentOnApproval.md` 実行シーケンス表 | 1 要素 (`Create_Shipment`) の表が破綻なく描画 ✓ |
 | Apex / Trigger / Flow の Mermaid 閉じフェンス | 値の最終行と独立した行で `\`\`\`` が出力 ✓ |
-| 各エンティティの 既存 `purpose` ブロック | 過去の `/sfai-explain` 出力 (例: AccountBalanceService の AI 推定文) が保全 ✓ |
-| `sfai sync` warnings | **0** (Phase 12 から維持) |
+| 各エンティティの 既存 `purpose` ブロック | 過去の `/yohaku-explain` 出力 (例: AccountBalanceService の AI 推定文) が保全 ✓ |
+| `yohaku sync` warnings | **0** (Phase 12 から維持) |
 
 ## 設計判断のポイント
 
@@ -164,21 +164,21 @@ function postProcessMarkdown(text: string): string {
 | `key-design-decisions` (Phase 12) | **なぜこの設計にしたか** (実装トレードオフ) |
 | `operational-notes` (Phase 12) | **運用で気をつけること** (留意点) |
 
-役割が分かれているため、AI が `/sfai-explain` で書く際もどのブロックに何を書くべきか一意に決まる。
+役割が分かれているため、AI が `/yohaku-explain` で書く際もどのブロックに何を書くべきか一意に決まる。
 
 ## 既存仕様との非破壊性
 
-- Phase 8 `/sfai-explain` 出力 (`purpose` 内の AI 推定文) は **完全保全** (`AccountBalanceService.md` で確認)
+- Phase 8 `/yohaku-explain` 出力 (`purpose` 内の AI 推定文) は **完全保全** (`AccountBalanceService.md` で確認)
 - 全 Phase 1〜12 の 235 テストはすべて pass を維持、新規 +11 件で 246 件
 - 3 層分離 (DETERMINISTIC / AI_MANAGED / HUMAN_MANAGED) を維持
-- `sfai sync` warnings=0 を Phase 12 から継続
+- `yohaku sync` warnings=0 を Phase 12 から継続
 
 ## 残課題 (Phase 14 以降)
 
-- **AI_MANAGED ブロック内部の自動生成**: `/sfai-explain` を `narrative` / `business-scenario` / `processing-overview-narrative` / `processing-details-narrative` 等の複数 ID に対応させる
+- **AI_MANAGED ブロック内部の自動生成**: `/yohaku-explain` を `narrative` / `business-scenario` / `processing-overview-narrative` / `processing-details-narrative` 等の複数 ID に対応させる
 - 横断ドキュメント: 権限マトリクス / 自動化マトリクス
 - StaticResource / Tab / Application Tab の取り込み
-- 再現性 CI: `/sfai-explain` を温度 0 / プロンプトハッシュ / N-run 一致で固定
+- 再現性 CI: `/yohaku-explain` を温度 0 / プロンプトハッシュ / N-run 一致で固定
 - 路線 C (公開準備): GitHub Issue/PR テンプレ / `docs/01-getting-started/` 充実
 
 ## 関連ナレッジ

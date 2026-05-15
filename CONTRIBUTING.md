@@ -1,4 +1,4 @@
-# Contributing to SF-AI-Foundation
+# Contributing to yohakuforce
 
 ようこそ。本 OSS に貢献いただきありがとうございます。
 このプロジェクトの最終目的は **「Salesforce に携わる人々の余白と豊かさを生み出すこと」** です。
@@ -81,7 +81,7 @@ PR は必ずレビューを経て main にマージ。
 | カテゴリ | カバレッジ目標 | 補足 |
 |---|---|---|
 | 単体 + ゴールデンテスト | **80% 以上** | 決定的処理は完全一致、AI 出力は構造一致 + キーフレーズ |
-| 統合 | クリティカルパスのみ | `sfai graph build` → `sfai render` 通し |
+| 統合 | クリティカルパスのみ | `yohaku graph build` → `yohaku render` 通し |
 | E2E | Phase 5 以降 | persona 別 `/onboard` 完走 |
 
 詳細: [`IMPLEMENTATION_GUIDE.md` § 再現性ガバナンス](./IMPLEMENTATION_GUIDE.md#再現性ガバナンス)
@@ -91,7 +91,7 @@ PR は必ずレビューを経て main にマージ。
 ## コードスタイル
 
 - TypeScript + Node.js 20+
-- Linter / Formatter: Biome (設定は `packages/sfai-core/biome.json`)
+- Linter / Formatter: Biome (設定は `packages/core/biome.json`)
 - 命名: `camelCase` 関数 / 変数、`PascalCase` 型 / クラス、`UPPER_SNAKE_CASE` 定数
 - ファイルは 200〜400 行を目安、800 行を超えない
 - 関数 50 行を超えない、ネスト 4 段を超えない

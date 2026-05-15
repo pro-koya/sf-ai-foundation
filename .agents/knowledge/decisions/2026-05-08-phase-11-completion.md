@@ -13,10 +13,10 @@ tags: [phase-11, completion, lwc, aura, flexipage, ui]
 | 指標 | 完了前 | 完了後 |
 |---|---|---|
 | メタデータ取り込み種別 | 15 | **18** (+ LWC / Aura / FlexiPage) |
-| sfai-trial 出力ファイル数 | 60 | **66** |
+| yohaku-trial 出力ファイル数 | 60 | **66** |
 | ユニットテスト件数 | 214 | **226** (+12) |
-| `sfai sync` warnings | 0 | **0** (維持) |
-| Phase 8 `/sfai-explain` 出力保全 | OK | **OK** (回帰なし) |
+| `yohaku sync` warnings | 0 | **0** (維持) |
+| Phase 8 `/yohaku-explain` 出力保全 | OK | **OK** (回帰なし) |
 
 ## 実装内容
 
@@ -45,7 +45,7 @@ tags: [phase-11, completion, lwc, aura, flexipage, ui]
 - `render/summary.ts` に `summaryForLwc` / `summaryForAuraBundle` / `summaryForFlexiPage` を追加
 - `system-index.eta` の counts テーブルに 3 行追加
 
-## 検証 (sfai-trial)
+## 検証 (yohaku-trial)
 
 | 確認項目 | 結果 |
 |---|---|
@@ -83,7 +83,7 @@ tags: [phase-11, completion, lwc, aura, flexipage, ui]
 
 - 全エンティティの Quick Summary パターンを踏襲 (Phase 9-A2 標準)
 - 3 層分離 (DETERMINISTIC / AI_MANAGED / HUMAN_MANAGED) を全テンプレートで維持
-- Phase 8 の `/sfai-explain` 出力 (AI_MANAGED 内の customized テキスト) は sync で保全
+- Phase 8 の `/yohaku-explain` 出力 (AI_MANAGED 内の customized テキスト) は sync で保全
 - secrets 非開示パターンは LWC では該当なしだが、HTML/JS から secret 値を吸い出さない設計を維持
 
 ## 残課題 (Phase 11.x 以降)
@@ -93,7 +93,7 @@ tags: [phase-11, completion, lwc, aura, flexipage, ui]
 - LWC の **イベント受信側** (`addEventListener` / `@api` 上の callback) の追跡
 - FlexiPage の **platformActionList** / **componentInstanceProperties** の中身可視化
 - Aura の `<aura:dependency>` / inheritance の追跡
-- 再現性 CI: `/sfai-explain` を温度 0 / プロンプトハッシュ / N-run 一致で固定する仕組み
+- 再現性 CI: `/yohaku-explain` を温度 0 / プロンプトハッシュ / N-run 一致で固定する仕組み
 
 ## 関連ナレッジ
 

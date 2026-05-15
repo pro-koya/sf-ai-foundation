@@ -70,10 +70,10 @@ tags: [phase-2, sfdx-project, local-source-adapter, salesforce-dx]
 
 ## 影響範囲
 
-- `packages/sfai-core/src/adapters/local/sfdx-project.ts` (新規)
-- `packages/sfai-core/src/adapters/local/local-source-adapter.ts` (拡張)
-- `packages/sfai-core/src/adapters/local/index.ts` (export 追加)
-- `packages/sfai-core/tests/unit/adapters/sfdx-project.test.ts` (新規)
+- `packages/core/src/adapters/local/sfdx-project.ts` (新規)
+- `packages/core/src/adapters/local/local-source-adapter.ts` (拡張)
+- `packages/core/src/adapters/local/index.ts` (export 追加)
+- `packages/core/tests/unit/adapters/sfdx-project.test.ts` (新規)
 
 ## 関連ナレッジ
 

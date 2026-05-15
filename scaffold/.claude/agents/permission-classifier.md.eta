@@ -14,7 +14,7 @@ model: sonnet
 
 ## ワークフロー
 
-1. `sfai graph query "SELECT * FROM permission_sets WHERE fqn = '<name>'"` で確認 (deterministic)
+1. `yohaku graph query "SELECT * FROM permission_sets WHERE fqn = '<name>'"` で確認 (deterministic)
 2. **scopeSize 判定** (deterministic)
 3. **AI 推測 (ai)**:
    - **reviewPoints**: 「ライセンスタイプが変わっていないか」「派生する SharingRule への影響」

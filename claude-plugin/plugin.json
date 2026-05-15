@@ -1,19 +1,19 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
-  "name": "@sf-ai-foundation/sfai",
+  "name": "@yohakuforce/yohaku",
   "version": "0.1.0",
   "description": "Salesforce 特化の AI 駆動開発支援基盤。属人化解消・運用タスク自動化・AI 駆動開発の再現性を提供。",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/pro-koya/sf-ai-foundation",
-  "author": "SF-AI-Foundation contributors",
+  "homepage": "https://github.com/pro-koya/yohakuforce",
+  "author": "yohakuforce contributors",
   "keywords": ["salesforce", "claude-code", "knowledge-graph", "diff", "release-prep", "onboarding"],
   "compat": {
     "claude-code": ">=1.0.0",
     "node": ">=20.0.0"
   },
   "install": {
-    "command": "npm install -g @sf-ai-foundation/sfai-core",
-    "post_install": "sfai init --bootstrap"
+    "command": "npm install -g @yohakuforce/core",
+    "post_install": "yohaku init --bootstrap"
   },
   "scaffold": {
     "source": "../scaffold",
@@ -37,7 +37,7 @@
     }
   },
   "notes": [
-    "Plugin 仕様は Claude Code の現行版に依存します。Git clone + sfai init --bootstrap が主導入経路です。",
+    "Plugin 仕様は Claude Code の現行版に依存します。Git clone + yohaku init --bootstrap が主導入経路です。",
     "DX MCP アダプタは Phase 6 では stub 実装、Phase 7 で MCP GA 後に本実装予定です。",
     "Antigravity 互換は scaffold/AGENTS.md.eta + prompts/ の汎用 Markdown 形式で確保しています (現状未検証)。"
   ]

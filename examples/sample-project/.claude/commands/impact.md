@@ -11,17 +11,17 @@ argument-hint: <object|field|flow|apex 名>
 
 1. **直接の依存元 (Inbound) — このエンティティを参照しているもの**
    ```bash
-   sfai graph query "SELECT from_kind, from_fqn, kind FROM dependencies WHERE to_fqn = '$ARGUMENTS'"
+   yohaku graph query "SELECT from_kind, from_fqn, kind FROM dependencies WHERE to_fqn = '$ARGUMENTS'"
    ```
 
 2. **直接の依存先 (Outbound) — このエンティティが参照しているもの**
    ```bash
-   sfai graph query "SELECT to_kind, to_fqn, kind FROM dependencies WHERE from_fqn = '$ARGUMENTS'"
+   yohaku graph query "SELECT to_kind, to_fqn, kind FROM dependencies WHERE from_fqn = '$ARGUMENTS'"
    ```
 
 3. **間接 (2 ホップ) の依存元** (オプション、件数が多い時はサンプリング)
    ```bash
-   sfai graph query "SELECT DISTINCT d2.from_fqn FROM dependencies d1 JOIN dependencies d2 ON d1.from_fqn = d2.to_fqn WHERE d1.to_fqn = '$ARGUMENTS' LIMIT 20"
+   yohaku graph query "SELECT DISTINCT d2.from_fqn FROM dependencies d1 JOIN dependencies d2 ON d1.from_fqn = d2.to_fqn WHERE d1.to_fqn = '$ARGUMENTS' LIMIT 20"
    ```
 
 4. **影響カテゴリの分類** (Phase 3 で `/classify-diff` と統合予定)

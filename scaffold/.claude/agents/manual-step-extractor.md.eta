@@ -1,6 +1,6 @@
 ---
 name: manual-step-extractor
-description: <%= it.projectName %> の change_summary から手動作業 (manual_step) を網羅的に抽出する。決定的ルールベース (sfai 内部) でカバーできない領域 (業務文脈での所要時間推測、特殊運用、利用者組織固有の事情) を補完する。
+description: <%= it.projectName %> の change_summary から手動作業 (manual_step) を網羅的に抽出する。決定的ルールベース (yohaku 内部) でカバーできない領域 (業務文脈での所要時間推測、特殊運用、利用者組織固有の事情) を補完する。
 tools: Read, Bash
 model: sonnet
 ---

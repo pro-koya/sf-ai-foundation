@@ -10,7 +10,7 @@ tags: [phase-2, sqlite, foreign-key, salesforce-dx, standard-object]
 
 ## 何が起きたか
 
-Salesforce DX プロジェクトで `objects/Account/fields/MyCustom__c.field-meta.xml` のように **標準オブジェクトに Custom Field を追加** したケースで `sfai graph build` が `Error: FOREIGN KEY constraint failed` で停止。
+Salesforce DX プロジェクトで `objects/Account/fields/MyCustom__c.field-meta.xml` のように **標準オブジェクトに Custom Field を追加** したケースで `yohaku graph build` が `Error: FOREIGN KEY constraint failed` で停止。
 
 ## 根本原因
 
@@ -22,7 +22,7 @@ Salesforce DX プロジェクトで `objects/Account/fields/MyCustom__c.field-me
 
 ## 修正
 
-`packages/sfai-core/src/graph/builder.ts` に `ensureReferencedObjectStubs` を追加し、`fields` / `validationRules` / `apexTriggers` が参照する親オブジェクトのうち `objects` 配列に未登録のものを **stub として自動生成**:
+`packages/core/src/graph/builder.ts` に `ensureReferencedObjectStubs` を追加し、`fields` / `validationRules` / `apexTriggers` が参照する親オブジェクトのうち `objects` 配列に未登録のものを **stub として自動生成**:
 
 ```typescript
 function ensureReferencedObjectStubs(
@@ -55,11 +55,11 @@ function ensureReferencedObjectStubs(
 ## 検証
 
 ```bash
-mkdir -p /tmp/sfai-fk-test/force-app/main/default/objects/Account/fields
+mkdir -p /tmp/yohaku-fk-test/force-app/main/default/objects/Account/fields
 # (sfdx-project.json + Account/fields/MyCustom__c.field-meta.xml を配置)
-sfai graph build
-# → [sfai] graph build complete: objects=1 fields=1 (Account stub が生成される)
-sfai graph query "SELECT fqn, source_path FROM objects"
+yohaku graph build
+# → [yohaku] graph build complete: objects=1 fields=1 (Account stub が生成される)
+yohaku graph query "SELECT fqn, source_path FROM objects"
 # → "Account" が "<inferred:standard-or-managed-object>/Account" として登録
 ```
 

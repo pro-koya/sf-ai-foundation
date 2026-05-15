@@ -18,7 +18,7 @@ argument-hint: [--role new_joiner|reviewer|release_manager|customer_facing]
 ## ステップ 1: コンテキスト取得
 
 ```bash
-sfai onboard context --role <persona>
+yohaku onboard context --role <persona>
 ```
 
 返ってきた JSON から:
@@ -49,17 +49,17 @@ sfai onboard context --role <persona>
 
 セッション開始時:
 ```bash
-sfai onboard state record-step --role <persona> --step "session-start"
+yohaku onboard state record-step --role <persona> --step "session-start"
 ```
 
 主要ステップ完了ごとに:
 ```bash
-sfai onboard state record-step --role <persona> --step "<step-id>" --entities <comma-separated>
+yohaku onboard state record-step --role <persona> --step "<step-id>" --entities <comma-separated>
 ```
 
 質問を受けるたびに:
 ```bash
-sfai onboard state increment-questions --role <persona>
+yohaku onboard state increment-questions --role <persona>
 ```
 
 ## ステップ 5: ロール別アウトプット指針

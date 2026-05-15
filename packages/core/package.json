@@ -1,0 +1,48 @@
+{
+  "name": "@yohakuforce/core",
+  "version": "0.4.0",
+  "description": "Core CLI and knowledge graph engine for yohakuforce. Salesforce metadata → SQLite knowledge graph → deterministic Markdown rendering.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "yohaku": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "src/schema",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node scripts/copy-assets.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:golden": "vitest run --dir tests/golden",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src tests",
+    "bench:graph-build": "node scripts/bench-graph-build.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.1",
+    "better-sqlite3": "^11.0.0",
+    "eta": "^3.5.0",
+    "fast-xml-parser": "^5.7.3",
+    "yaml": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/node": "^20.16.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "peerDependencies": {
+    "@salesforce/source-deploy-retrieve": ">=12.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

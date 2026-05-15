@@ -42,8 +42,8 @@ Phase 1 を一気通貫で完成させたため、以下の小さな技術負債
 
 ### 4. `secrets-rules.yaml` の動的読み込み (高優先度)
 
-**現状**: `DEFAULT_RULES` のみハードコード。利用者が `.sfai/secrets-rules.yaml` を置いても読まれない。
-**改善**: `js-yaml` または `yaml` パッケージで `.sfai/secrets-rules.yaml` を動的にロードし、`DEFAULT_RULES` とマージ (利用者ルールが優先)。
+**現状**: `DEFAULT_RULES` のみハードコード。利用者が `.yohaku/secrets-rules.yaml` を置いても読まれない。
+**改善**: `js-yaml` または `yaml` パッケージで `.yohaku/secrets-rules.yaml` を動的にロードし、`DEFAULT_RULES` とマージ (利用者ルールが優先)。
 **効果**: 利用者プロジェクトごとにマスキング規則をカスタマイズ可能に。
 **着手目安**: Phase 2 サイクル 2-1。
 

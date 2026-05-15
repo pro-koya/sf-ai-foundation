@@ -23,11 +23,11 @@ model: sonnet
 
 ## 推奨ワークフロー
 
-1. `sfai graph query "SELECT * FROM objects WHERE fqn = '<NAME>'"` で実在確認
+1. `yohaku graph query "SELECT * FROM objects WHERE fqn = '<NAME>'"` で実在確認
 2. 存在しなければ「該当なし」を返す (推測しない)
-3. `sfai graph query "SELECT ... FROM fields WHERE object = '<NAME>'"` でフィールド取得
-4. `sfai graph query "SELECT ... FROM validation_rules WHERE object = '<NAME>'"` で VR 取得
-5. `sfai graph query "SELECT ... FROM dependencies WHERE from_fqn = '<NAME>' OR to_fqn = '<NAME>'"` で依存関係
+3. `yohaku graph query "SELECT ... FROM fields WHERE object = '<NAME>'"` でフィールド取得
+4. `yohaku graph query "SELECT ... FROM validation_rules WHERE object = '<NAME>'"` で VR 取得
+5. `yohaku graph query "SELECT ... FROM dependencies WHERE from_fqn = '<NAME>' OR to_fqn = '<NAME>'"` で依存関係
 6. `Read` で `docs/generated/objects/<NAME>.md` の HUMAN_MANAGED ブロックを取得
 7. `Bash(grep -l "<NAME>" .agents/knowledge/pitfalls/*.md)` で関連 pitfall 検索
 

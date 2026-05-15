@@ -3,18 +3,18 @@ type: retrospective
 date: 2026-05-07
 cycle: Phase 3 サイクル 3-8 (検証ゲート)
 phase: Phase-3
-tags: [phase-3, cycle-3-8, validation-gate, sfai-trial, classify-diff]
+tags: [phase-3, cycle-3-8, validation-gate, yohaku-trial, classify-diff]
 ---
 
 # Retrospective: Phase 3 検証ゲート
 
 ## サイクル要約
 
-利用者の現役プロジェクト相当 (`~/Desktop/sfai-trial` — Dev Edition retrieve 後の本格的な Salesforce DX ソース) で、`sfai diff` + 並列 classifier subagent + change_summary スキーマ検証 の 一連を実行。**検証ゲート通過**。
+利用者の現役プロジェクト相当 (`~/Desktop/yohaku-trial` — Dev Edition retrieve 後の本格的な Salesforce DX ソース) で、`yohaku diff` + 並列 classifier subagent + change_summary スキーマ検証 の 一連を実行。**検証ゲート通過**。
 
 ## 実行内容
 
-### 1. 環境準備 (sfai-trial)
+### 1. 環境準備 (yohaku-trial)
 
 - 10 SObjects (Account 標準 + 9 カスタム)、57 fields、1 flow、20 apex classes
 - `git init` 後 baseline コミット、続けて意図的差分 (3 ファイル変更) を `git commit`
@@ -27,10 +27,10 @@ tags: [phase-3, cycle-3-8, validation-gate, sfai-trial, classify-diff]
 | `permissionsets/RiskOps.permissionset-meta.xml` | permission | 新規 PermissionSet (label/desc のみ) |
 | `classes/AccountBalanceService.cls` | logic | Risk_Tier__c 自動判定ロジック追加 (HIGH/MEDIUM 閾値 hardcode) |
 
-### 3. `sfai diff` 検証
+### 3. `yohaku diff` 検証
 
 ```bash
-sfai diff --from HEAD~1 --to HEAD --json --path-prefix force-app/
+yohaku diff --from HEAD~1 --to HEAD --json --path-prefix force-app/
 ```
 
 結果:
@@ -67,7 +67,7 @@ sfai diff --from HEAD~1 --to HEAD --json --path-prefix force-app/
 
 ## 1. 要件整理 — 学び
 
-- 利用者の `sfai-trial` が Dev Edition retrieve 直後の **本格的なメタデータ** だったため、minimal sample-project では発見できない実用品質を検証できた
+- 利用者の `yohaku-trial` が Dev Edition retrieve 直後の **本格的なメタデータ** だったため、minimal sample-project では発見できない実用品質を検証できた
 - 3 カテゴリを並列でカバーすることで、相互侵食の有無を実測できた
 
 ## 2. 計画立案 — 学び
@@ -97,7 +97,7 @@ sfai diff --from HEAD~1 --to HEAD --json --path-prefix force-app/
 
 ## 6. 整理 — 学び
 
-- `docs/ai-augmented/change-summaries/2026-05-07-trial-001.json` を sfai-trial に永続化 (検証成果物)
+- `docs/ai-augmented/change-summaries/2026-05-07-trial-001.json` を yohaku-trial に永続化 (検証成果物)
 - 本 retrospective で記録
 
 ## 7. 課題提起 — 次サイクルへの種
@@ -106,8 +106,8 @@ sfai diff --from HEAD~1 --to HEAD --json --path-prefix force-app/
 
 - [ ] Phase 4 計画 ADR (手動作業管理 + リリース準備 8 サイクル)
 - [ ] manual-step-extractor / release-composer / rollback-drafter subagent 設計
-- [ ] `sfai release-prep` CLI 設計
-- [ ] **検証ゲート**: 1 リリースで `/release-prep` を実運用 (sfai-trial で再検証)
+- [ ] `yohaku release-prep` CLI 設計
+- [ ] **検証ゲート**: 1 リリースで `/release-prep` を実運用 (yohaku-trial で再検証)
 
 ### Phase 5 への申し送り
 
@@ -120,7 +120,7 @@ sfai diff --from HEAD~1 --to HEAD --json --path-prefix force-app/
 - **3 並列 classifier の実機動作確認**: 設計通り並列起動 + 相互侵食ゼロ
 - **Tracked&lt;T&gt; / source 列 / ajv 検証**: 全部効いた、AI 出力ハルシネーション抑止に有効
 - **subagent 出力品質**: hardcode 閾値の Custom Metadata 化提案など、実プロジェクトのレビューに使える品質
-- **Dev Edition retrieve 直後の sfai-trial で検証**: ダミーではなく現実的なメタデータ多様性
+- **Dev Edition retrieve 直後の yohaku-trial で検証**: ダミーではなく現実的なメタデータ多様性
 - **検証時間 44 秒**: 60 秒目標を大幅クリア
 
 ## 課題 (Problem)
@@ -131,7 +131,7 @@ sfai diff --from HEAD~1 --to HEAD --json --path-prefix force-app/
 
 ## 試したいこと (Try)
 
-- Phase 4 で `/release-prep` を実装後、本検証ゲートと同じパターン (sfai-trial での 1 リリース実行) で確認
+- Phase 4 で `/release-prep` を実装後、本検証ゲートと同じパターン (yohaku-trial での 1 リリース実行) で確認
 - Phase 5 で実 Claude API を `runConsistencyCheck` に統合し、本ケース (Risk_Tier__c) を N=5 再実行で一致率を計測
 
 ## 蓄積された関連ナレッジ

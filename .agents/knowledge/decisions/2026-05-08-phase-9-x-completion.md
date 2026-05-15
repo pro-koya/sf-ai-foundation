@@ -20,7 +20,7 @@ tags: [phase-9, completion, approval-process, sharing-rules, permission-set, con
 | 9-B2 | ApprovalProcess 取り込み | 新エンティティ。entryCriteria / approvalStep / 申請/承認/却下/取消 アクション を抽出。段階承認の Mermaid 図 (申請 → step1 → step2 → 最終承認/却下) を生成 |
 | 9-B3 | SharingRules 取り込み | criteriaBased / ownerBased を 1 ファイル内の複数ルールから展開。条件は **自然語表記** (`Net_Amount__c が 1000000 より大きい`) で出力 |
 
-## sfai-trial での実機検証
+## yohaku-trial での実機検証
 
 ### 新規 fixture (今回追加)
 
@@ -32,9 +32,9 @@ tags: [phase-9, completion, approval-process, sharing-rules, permission-set, con
 ### 生成結果
 
 ```
-$ sfai sync
-[sfai] graph build complete: objects=10 fields=58 flows=1 apex=20
-[sfai] render complete: written=53 archived=0 warnings=0
+$ yohaku sync
+[yohaku] graph build complete: objects=10 fields=58 flows=1 apex=20
+[yohaku] render complete: written=53 archived=0 warnings=0
 ```
 
 | 種別 | 件数 (Phase 9 末 → 9.x 末) | 主要強化 |
@@ -90,7 +90,7 @@ Boolean filter: `1 AND 2`
 | Test Files | 30 | **33** |
 | Tests | 196 | **209 (+13)** |
 | 取り込み対応エンティティ | 9 種 | **11 種** (+ ApprovalProcess + SharingRules) |
-| sfai-trial で生成される Markdown | 49 | **53** |
+| yohaku-trial で生成される Markdown | 49 | **53** |
 | AI_MANAGED 保全 (Phase 8 機能) | 動作 | 5 サイクル目の sync 後も維持を確認 |
 
 ## 修正したバグ (Phase 9.x)
@@ -102,7 +102,7 @@ Boolean filter: `1 AND 2`
 
 ## merge 仕様への影響
 
-Phase 8 で導入した「customized AI_MANAGED は保全」規則は ApprovalProcess / SharingRule / 強化された PermissionSet テンプレでも同じく機能。これらの新エンティティに `/sfai-explain` を当てる UX も Phase 8 の経路をそのまま使える。
+Phase 8 で導入した「customized AI_MANAGED は保全」規則は ApprovalProcess / SharingRule / 強化された PermissionSet テンプレでも同じく機能。これらの新エンティティに `/yohaku-explain` を当てる UX も Phase 8 の経路をそのまま使える。
 
 ## 残課題 (Phase 10 以降の候補)
 
@@ -111,7 +111,7 @@ Phase 8 で導入した「customized AI_MANAGED は保全」規則は ApprovalPr
 - **NamedCredential / RemoteSiteSetting** (連携設定の可視化)
 - **LWC / Aura** の取り込み (テンプレ + JS の対応)
 - **Profile body** (現在は メタ情報のみ。PermissionSet と同等に拡充)
-- **再現性 CI**: `/sfai-explain` を温度 0 / プロンプトハッシュ / N-run 一致でテスト
+- **再現性 CI**: `/yohaku-explain` を温度 0 / プロンプトハッシュ / N-run 一致でテスト
 
 ## 関連ナレッジ
 

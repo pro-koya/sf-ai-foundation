@@ -1,6 +1,6 @@
 # AGENTS.md — AI 自律ループの行動指針
 
-> 本書は、SF-AI-Foundation プロジェクトに参加するすべての AI エージェントの **行動憲章**である。
+> 本書は、yohakuforce プロジェクトに参加するすべての AI エージェントの **行動憲章**である。
 > Claude Code、Antigravity、Codex、その他の AI が共通で参照する。
 
 ---
@@ -275,6 +275,19 @@ Phase は単独では存在せず、必ず **どの v0.x.0 リリースに寄与
 - **CLAUDE.md / AGENTS.md を肥大化させる**
 - **subagent を「便利だから」という理由で乱用する**
 - **「動いたから OK」で整理ステップを飛ばす**
+
+---
+
+## 6.5. 知識グラフのクエリ規約 (必読)
+
+AI が `.yohaku/graph.sqlite` を読むときは **必ず** 以下を踏むこと。
+
+- スキーマ正本は [`docs/03-reference/knowledge-graph-schema.md`](./docs/03-reference/knowledge-graph-schema.md)
+- 実機確認は `yohaku graph schema --tables` (PRAGMA は `yohaku graph query` 経由では拒否される)
+- カラム名は **snake_case** (`fqn`, `triggering_object`, `events_json` …)。`fullyQualifiedName` は **DB カラムではなく renderers の出力エイリアス**
+- 許可される SQL は **単一の SELECT / WITH のみ**。PRAGMA, INSERT, 複文などはすべて拒否される (二重防御)
+
+カラム名・テーブル名は **推測しない**。迷ったら `yohaku graph schema --tables` を叩いてから書く。
 
 ---
 

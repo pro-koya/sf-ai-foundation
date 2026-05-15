@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yohakuforce.dev/schemas/change-summary.schema.json",
+  "title": "yohakuforce Change Summary",
+  "description": "Phase 3 差分意味づけの正本スキーマ。各値フィールドは source 列付き Tracked<T> を必須とする。",
+  "type": "object",
+  "required": ["id", "createdAt", "fromRef", "toRef", "staticAnalysisFindings", "categories", "humanAnnotations"],
+  "properties": {
+    "id": { "$ref": "#/$defs/TrackedString" },
+    "createdAt": { "$ref": "#/$defs/TrackedString" },
+    "fromRef": { "$ref": "#/$defs/TrackedString" },
+    "toRef": { "$ref": "#/$defs/TrackedString" },
+    "staticAnalysisFindings": {
+      "type": "object",
+      "required": ["value", "source"],
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SarifFinding" }
+        },
+        "source": { "$ref": "#/$defs/Source" },
+        "promptHash": { "type": "string" },
+        "model": { "type": "string" },
+        "temperature": { "type": "number" }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/CategorySection" }
+    },
+    "humanAnnotations": { "$ref": "#/$defs/HumanAnnotations" }
+  },
+  "$defs": {
+    "Source": { "type": "string", "enum": ["deterministic", "ai", "human"] },
+    "TrackedString": {
+      "type": "object",
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": "string" },
+        "source": { "$ref": "#/$defs/Source" },
+        "promptHash": { "type": "string" },
+        "model": { "type": "string" },
+        "temperature": { "type": "number" }
+      }
+    },
+    "TrackedBoolean": {
+      "type": "object",
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": "boolean" },
+        "source": { "$ref": "#/$defs/Source" },
+        "promptHash": { "type": "string" },
+        "model": { "type": "string" },
+        "temperature": { "type": "number" }
+      }
+    },
+    "TrackedStringArray": {
+      "type": "object",
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": "array", "items": { "type": "string" } },
+        "source": { "$ref": "#/$defs/Source" },
+        "promptHash": { "type": "string" },
+        "model": { "type": "string" },
+        "temperature": { "type": "number" }
+      }
+    },
+    "TrackedChangeKind": {
+      "type": "object",
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": "string", "enum": ["added", "modified", "removed", "renamed"] },
+        "source": { "$ref": "#/$defs/Source" },
+        "promptHash": { "type": "string" },
+        "model": { "type": "string" },
+        "temperature": { "type": "number" }
+      }
+    },
+    "TrackedScopeSize": {
+      "type": "object",
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": "string", "enum": ["small", "medium", "large"] },
+        "source": { "$ref": "#/$defs/Source" },
+        "promptHash": { "type": "string" },
+        "model": { "type": "string" },
+        "temperature": { "type": "number" }
+      }
+    },
+    "TrackedCategoryKind": {
+      "type": "object",
+      "required": ["value", "source"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "enum": ["data_model", "automation", "permission", "ui", "logic", "operational", "manual"]
+        },
+        "source": { "$ref": "#/$defs/Source" },
+        "promptHash": { "type": "string" },
+        "model": { "type": "string" },
+        "temperature": { "type": "number" }
+      }
+    },
+    "SarifFinding": {
+      "type": "object",
+      "required": ["ruleId", "level", "message", "locations"],
+      "properties": {
+        "ruleId": { "type": "string" },
+        "level": { "type": "string", "enum": ["none", "note", "warning", "error"] },
+        "message": { "type": "string" },
+        "locations": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "ChangeEntry": {
+      "type": "object",
+      "required": [
+        "entity",
+        "changeKind",
+        "scopeSize",
+        "affectedEntities",
+        "reviewPoints",
+        "manualStepsRequired",
+        "businessImpactHint"
+      ],
+      "properties": {
+        "entity": { "$ref": "#/$defs/TrackedString" },
+        "changeKind": { "$ref": "#/$defs/TrackedChangeKind" },
+        "scopeSize": { "$ref": "#/$defs/TrackedScopeSize" },
+        "affectedEntities": { "$ref": "#/$defs/TrackedStringArray" },
+        "reviewPoints": { "$ref": "#/$defs/TrackedStringArray" },
+        "manualStepsRequired": { "$ref": "#/$defs/TrackedBoolean" },
+        "businessImpactHint": { "$ref": "#/$defs/TrackedString" }
+      }
+    },
+    "CategorySection": {
+      "type": "object",
+      "required": ["type", "changes"],
+      "properties": {
+        "type": { "$ref": "#/$defs/TrackedCategoryKind" },
+        "changes": { "type": "array", "items": { "$ref": "#/$defs/ChangeEntry" } }
+      }
+    },
+    "HumanAnnotations": {
+      "type": "object",
+      "required": ["businessContext", "customerCommunicationNeeded"],
+      "properties": {
+        "businessContext": { "$ref": "#/$defs/TrackedString" },
+        "customerCommunicationNeeded": { "$ref": "#/$defs/TrackedBoolean" }
+      }
+    }
+  }
+}

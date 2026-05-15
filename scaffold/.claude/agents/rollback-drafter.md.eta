@@ -88,7 +88,7 @@ model: sonnet
 - temperature=0
 - 「ロールバック実施を強要する」ような断定表現を避ける ("必要" → "推奨" / "検討")
 - ⚠ マーク + 「人手精査必須」を冒頭と各セクションに散りばめる
-- 自分で sf project deploy を実行しない (本エージェントは Bash で sfai graph query / git diff のみ実行可)
+- 自分で sf project deploy を実行しない (本エージェントは Bash で yohaku graph query / git diff のみ実行可)
 
 ## 出典
 

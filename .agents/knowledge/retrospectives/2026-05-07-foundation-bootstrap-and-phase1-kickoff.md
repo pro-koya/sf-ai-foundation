@@ -3,7 +3,7 @@ type: retrospective
 date: 2026-05-07
 cycle: Phase 1 着手前準備 + scaffold 初版 + eta 規則 ADR + Phase 1 着手 (4 サイクル統合)
 phase: Phase-1 (kickoff)
-tags: [bootstrap, license, scaffold, eta, sfai-core, json-schema, human-managed-merge]
+tags: [bootstrap, license, scaffold, eta, core, json-schema, human-managed-merge]
 ---
 
 # Retrospective: 統合 (4 サイクル)
@@ -15,7 +15,7 @@ tags: [bootstrap, license, scaffold, eta, sfai-core, json-schema, human-managed-
 1. **着手前準備**: LICENSE (Apache 2.0)、NOTICE、SECURITY.md、CONTRIBUTING.md、ルート `package.json` (monorepo workspaces) を整備
 2. **scaffold 初版**: `scaffold/CLAUDE.md.eta` `scaffold/AGENTS.md.eta` `scaffold/.gitignore` `scaffold/.claude/settings.json.eta` `scaffold/.agents/knowledge/INDEX.md` ほか、利用者プロジェクト向けひな型の最初のドラフトを起こした
 3. **eta 変数命名規則 ADR**: `it.` ネームスペース + camelCase + 必須 5 変数 + オプション数個を標準セットとして確定
-4. **Phase 1 着手**: `packages/sfai-core/` を作成し package.json / tsconfig / vitest / biome / 型定義 / 知識グラフ JSON Schema を整備、`HUMAN_MANAGED マージアルゴリズム ADR` を 6 テストケース込みで本書化、ゴールデンテストのディレクトリ骨格を配置
+4. **Phase 1 着手**: `packages/core/` を作成し package.json / tsconfig / vitest / biome / 型定義 / 知識グラフ JSON Schema を整備、`HUMAN_MANAGED マージアルゴリズム ADR` を 6 テストケース込みで本書化、ゴールデンテストのディレクトリ骨格を配置
 
 新規 ADR 2 件 (eta 変数規則 / HUMAN_MANAGED マージ)、新規ファイル 約 25 件、新規ディレクトリ 約 30 件。
 
@@ -38,7 +38,7 @@ tags: [bootstrap, license, scaffold, eta, sfai-core, json-schema, human-managed-
 
 ## 4. レビュー — 学び
 
-- scaffold 配下の `.eta` ファイルが `it.projectName` `it.profile` `it.salesforceApiVersion` `it.sfaiVersion` を使用しており、サイクル 3 で確定した変数規則と整合している (回顧で確認)
+- scaffold 配下の `.eta` ファイルが `it.projectName` `it.profile` `it.salesforceApiVersion` `it.yohakuVersion` を使用しており、サイクル 3 で確定した変数規則と整合している (回顧で確認)
 - `package.json` の `workspaces` 配列が `packages/*` のみで、`scaffold/` `claude-plugin/` `examples/` は対象外。意図的な選択だがドキュメントに明示しておくべきだった → 改善余地
 
 ## 5. 修正・再実装 — 学び
@@ -57,7 +57,7 @@ tags: [bootstrap, license, scaffold, eta, sfai-core, json-schema, human-managed-
 
 - [ ] **ルート README.md の構成表に LICENSE / NOTICE / SECURITY.md / CONTRIBUTING.md / package.json を追記** (ドキュメント整合)
 - [ ] **`tests/golden/render/case-1〜6/` の input/expected を実装** — HUMAN_MANAGED マージ ADR 仕様に従って具体的な Markdown ファイルペアを配置
-- [ ] **`packages/sfai-core/src/merge/` の実装** — まず Case 1 (新規ファイル) と Case 6 (マーカー破損検出) から、TDD で
+- [ ] **`packages/core/src/merge/` の実装** — まず Case 1 (新規ファイル) と Case 6 (マーカー破損検出) から、TDD で
 - [ ] **CI 基盤方針** — GitHub Actions のワークフロー雛型 (`.github/workflows/ci.yml`)。lint / typecheck / test / coverage の最小セット
 
 ### 中期 (Phase 1 完了まで)
@@ -65,7 +65,7 @@ tags: [bootstrap, license, scaffold, eta, sfai-core, json-schema, human-managed-
 - [ ] `LocalSourceAdapter` の実装 — `force-app/` 走査 + `@salesforce/source-deploy-retrieve` 連携
 - [ ] グラフビルダー — XML パース → SQLite 投入。registry を直接参照
 - [ ] `eta` 描画エンジン — マージロジックと統合
-- [ ] `sfai` CLI のコマンド入口
+- [ ] `yohaku` CLI のコマンド入口
 - [ ] **メタデータ機密性分類とマスキング規約** — `secrets-rules.yaml` 雛型と分類ロジック (Phase 1 必須成果物)
 
 ### 長期 (Phase 2 以降に持ち越す気づき)
@@ -85,13 +85,13 @@ tags: [bootstrap, license, scaffold, eta, sfai-core, json-schema, human-managed-
 
 - ドキュメント間の整合チェックが事後的になりがち (上記「整理」の学び)
 - `package.json` workspaces のスコープを明示する場所が無い (現状はメタ層 README の暗黙知)
-- AI コスト計測 (`sfai metrics`) の Phase 2 実装が遠い: メタ層では既に多くの decisions / pitfalls / wins を AI で書いているが、コスト計測は無い → メタ層運用の改善余地
+- AI コスト計測 (`yohaku metrics`) の Phase 2 実装が遠い: メタ層では既に多くの decisions / pitfalls / wins を AI で書いているが、コスト計測は無い → メタ層運用の改善余地
 
 ## 試したいこと (Try)
 
 - 次サイクルで `.github/workflows/ci.yml` の **最小ワークフロー** を書き、lint / typecheck だけでも CI を回す
 - HUMAN_MANAGED マージ Case 1 の golden test を **実装より先に書く** (TDD の RED フェーズ)
-- メタ層でも `sfai metrics` 相当の手動コストログを `.agents/knowledge/improvements/` に残す試行 (DX MCP / Claude API のトークン使用統計を意識化)
+- メタ層でも `yohaku metrics` 相当の手動コストログを `.agents/knowledge/improvements/` に残す試行 (DX MCP / Claude API のトークン使用統計を意識化)
 
 ## 蓄積された関連ナレッジ
 

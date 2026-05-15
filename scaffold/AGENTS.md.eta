@@ -1,6 +1,6 @@
 # <%= it.projectName %> — AI 自律ループの行動指針
 
-> このファイルは [SF-AI-Foundation](https://github.com/sf-ai-foundation/sf-ai-foundation) によって生成されました。
+> このファイルは [yohakuforce](https://github.com/yohakuforce/yohakuforce) によって生成されました。
 > このプロジェクトに参加する全ての AI エージェント (Claude Code、Antigravity、Codex 等) はこの指針に従ってください。
 
 ---
@@ -18,7 +18,7 @@
 ```
 1. 要件整理   ── 顧客 / チームからの依頼を「誰の何を解決するか」に翻訳
 2. 計画立案   ── 代替案 2 つ以上、ADR を decisions/ へ
-3. 実行       ── sfai CLI と知識グラフを活用、決定的処理を AI に肩代わりさせない
+3. 実行       ── yohaku CLI と知識グラフを活用、決定的処理を AI に肩代わりさせない
 4. レビュー   ── CRITICAL/HIGH/MEDIUM 分類、つまずきは pitfalls/ へ、効いた工夫は wins/ へ
 5. 修正       ── CRITICAL は即修正、HIGH は原則修正
 6. 再実装     ── 設計判断が誤っていたら計画立案へ戻る勇気
@@ -77,7 +77,7 @@
 
 ### 3. 実行
 - 小さなコミット単位
-- `sfai` CLI と知識グラフを活用
+- `yohaku` CLI と知識グラフを活用
 - 決定的処理は CLI、判断は AI、業務文脈は人手 — の境界を守る
 
 ### 4. レビュー (自己レビュー)
@@ -92,7 +92,7 @@
 
 ### 7. 整理
 - 不要削除
-- ドキュメント同期 (`sfai render` 再実行を含む)
+- ドキュメント同期 (`yohaku render` 再実行を含む)
 
 ### 8. 課題提起
 - retrospectives/ に Keep / Problem / Try
@@ -132,7 +132,7 @@
 - 「動いたから OK」で整理ステップを飛ばさない
 - 顧客名・顧客固有ロジックをナレッジに書き込まない
 
-詳細は [`CLAUDE.md`](./CLAUDE.md) と [SF-AI-Foundation の禁則 13 か条](https://github.com/sf-ai-foundation/sf-ai-foundation) 参照。
+詳細は [`CLAUDE.md`](./CLAUDE.md) と [yohakuforce の禁則 13 か条](https://github.com/yohakuforce/yohakuforce) 参照。
 
 ---
 

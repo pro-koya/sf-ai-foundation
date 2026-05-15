@@ -19,7 +19,7 @@ tags: [architecture, governance, directory-structure, scaffold]
 | **メタ層** | リポジトリルート直下 | 本 OSS を **開発する側** が使う指示書・設定・ナレッジ | OSS 開発者 / 開発時の AI |
 | **配布物層** | `scaffold/` `claude-plugin/` `examples/` `docs/` 配下 | OSS を **導入した利用者** に届く成果物 | OSS 利用者 / 利用者プロジェクトの AI |
 
-ディレクトリ名 `scaffold/` で確定する（`sfai init` が利用者プロジェクトに展開する内容のひな型を置く場所）。
+ディレクトリ名 `scaffold/` で確定する（`yohaku init` が利用者プロジェクトに展開する内容のひな型を置く場所）。
 
 ## 文脈
 
@@ -32,16 +32,16 @@ tags: [architecture, governance, directory-structure, scaffold]
 
 | 案 | 採否 | 理由 |
 |---|---|---|
-| A. **`scaffold/` で物理分離 (今回採用)** | 採用 | 判別ルールが単純（ルート直下=メタ、`scaffold/`=配布物）、既存メタ層の改修が最小、`sfai init` の実装も自然 |
+| A. **`scaffold/` で物理分離 (今回採用)** | 採用 | 判別ルールが単純（ルート直下=メタ、`scaffold/`=配布物）、既存メタ層の改修が最小、`yohaku init` の実装も自然 |
 | B. ファイル命名で区別 (`CLAUDE.user.md.eta` 等) | 却下 | 人間の目視確認は可能だが、ディレクトリレベルの隔離が無く混入事故が起きうる |
 | C. メタ層を `meta/` 配下に移動、ルートを配布物用に解放 | 却下 | 既存 ADR / リンクが大量に壊れる、ルートの自然さ (Claude Code が CLAUDE.md を見にくる慣行) を捨てる |
 | D. 別リポジトリに分離 | 却下 | リリースバージョンの整合が取りづらい、開発フローが煩雑化 |
-| E. monorepo で `packages/sfai-meta/` `packages/sfai-scaffold/` に分離 | 却下 | `package` の概念とずれる（メタ層は package ではなく開発リポジトリそのもの） |
+| E. monorepo で `packages/yohaku-meta/` `packages/yohaku-scaffold/` に分離 | 却下 | `package` の概念とずれる（メタ層は package ではなく開発リポジトリそのもの） |
 
 ## ディレクトリ構造（確定版）
 
 ```
-SF-AI-Foundation/                    ← リポジトリルート
+yohakuforce/                    ← リポジトリルート
 │
 ├── README.md                        ← プロジェクト全体
 ├── CLAUDE.md                        ← [メタ] OSS 開発時の AI 憲法
@@ -53,9 +53,9 @@ SF-AI-Foundation/                    ← リポジトリルート
 ├── .gitignore
 │
 ├── packages/                        ← [ソース] OSS 本体 (将来の monorepo)
-│   └── sfai-core/                   ← Phase 1 で実装 (CLI + 知識グラフ)
+│   └── core/                   ← Phase 1 で実装 (CLI + 知識グラフ)
 │
-├── scaffold/                        ← [配布物] sfai init で利用者プロジェクトに展開
+├── scaffold/                        ← [配布物] yohaku init で利用者プロジェクトに展開
 │   ├── README.md                    ←   このディレクトリの位置付け
 │   ├── CLAUDE.md.eta                ←   利用者プロジェクトの CLAUDE.md ひな型
 │   ├── AGENTS.md.eta                ←   利用者プロジェクトの AGENTS.md ひな型

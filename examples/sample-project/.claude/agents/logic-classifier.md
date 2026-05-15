@@ -15,7 +15,7 @@ model: sonnet
 ## ワークフロー
 
 1. **依存元取得** (deterministic):
-   - `sfai graph query "SELECT * FROM dependencies WHERE from_fqn = '<class>' OR to_fqn = '<class>'"`
+   - `yohaku graph query "SELECT * FROM dependencies WHERE from_fqn = '<class>' OR to_fqn = '<class>'"`
    - 関連 Trigger / Test Class を把握
 2. **テストクラス判定** (deterministic):
    - `is_test = 1` のクラスは **reviewPoints に「テストカバレッジ充足を確認」を追加**

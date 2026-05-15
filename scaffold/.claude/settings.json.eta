@@ -1,13 +1,19 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "_comment": "<%= it.projectName %> — sfai init で生成。プロファイル: <%= it.profile %>",
-  "_hooks_note": "hooks は wall-clock 2 秒以内を目標。大規模 org で重い場合は hooks セクションを {} に置き換えて手動実行に切り替え可能。",
+  "_comment": "<%= it.projectName %> — yohaku init で生成。プロファイル: <%= it.profile %>",
+  "_hooks_note": [
+    "graph build は --async で detach 起動するので Claude Code の wall-clock は最小化される。",
+    "PostToolUse の pathMatcher はメタデータ拡張子のみに絞り、無関係な編集で hook が走らないようにしている。",
+    "セッション終了時に Stop フックで未消化分を確実に取り込む。",
+    "実行時間は .yohaku/hook-timings.jsonl に記録され、2秒超は stderr に warning が出る。",
+    "重すぎる場合は hooks セクションを {} に置き換えて手動運用に切り替え可能。"
+  ],
   "permissions": {
     "allow": [
       "Read",
       "Write",
       "Edit",
-      "Bash(sfai:*)",
+      "Bash(yohaku:*)",
       "Bash(sf:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
@@ -23,28 +29,28 @@
     ]
   },
   "env": {
-    "SFAI_PROJECT_ROOT": "${workspaceFolder}",
-    "SFAI_PROFILE": "<%= it.profile %>"
+    "YOHAKU_PROJECT_ROOT": "${workspaceFolder}",
+    "YOHAKU_PROFILE": "<%= it.profile %>"
   },
   "hooks": {
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
-        "pathMatcher": "force-app/**",
+        "pathMatcher": "force-app/**/*.{cls,trigger,flow-meta.xml,object-meta.xml,field-meta.xml,validationRule-meta.xml,permissionset-meta.xml,profile-meta.xml}",
         "hooks": [
           {
             "type": "command",
-            "command": "sfai graph build --incremental --quiet"
+            "command": "yohaku graph build --incremental --quiet --async"
           }
         ]
-      },
+      }
+    ],
+    "Stop": [
       {
-        "matcher": "Edit|Write",
-        "pathMatcher": "docs/generated/**",
         "hooks": [
           {
             "type": "command",
-            "command": "sfai validate --target $file"
+            "command": "yohaku graph build --incremental --quiet"
           }
         ]
       }

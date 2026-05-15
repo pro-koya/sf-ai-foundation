@@ -1,9 +1,9 @@
-# SF-AI-Foundation 由来の生成物 (再生成可能)
-.sfai/graph.sqlite
-.sfai/graph.sqlite-journal
-.sfai/cache/
-.sfai/onboarding-state.json
-.sfai/metrics-cache/
+# yohakuforce 由来の生成物 (再生成可能)
+.yohaku/graph.sqlite
+.yohaku/graph.sqlite-journal
+.yohaku/cache/
+.yohaku/onboarding-state.json
+.yohaku/metrics-cache/
 
 # Claude Code セッションローカル
 .claude/local/

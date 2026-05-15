@@ -1,0 +1,446 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yohakuforce.dev/schemas/graph.schema.json",
+  "title": "yohakuforce Knowledge Graph",
+  "description": "Salesforce メタデータから構築される知識グラフのスキーマ。.yohaku/graph.sqlite の論理スキーマと 1:1 で対応する。Phase 1 では標準形のみ対応、例外形は Phase 7 以降。",
+  "type": "object",
+  "required": ["meta", "objects", "fields", "validationRules", "flows", "apexClasses", "apexTriggers", "permissionSets", "profiles", "recordTypes", "approvalProcesses", "sharingRules", "layouts", "customMetadataRecords", "namedCredentials", "remoteSiteSettings", "lwcs", "auraBundles", "flexiPages", "visualforcePages", "visualforceComponents", "customApplications", "dependencies", "tags"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/GraphMeta" },
+    "objects": { "type": "array", "items": { "$ref": "#/$defs/SObject" } },
+    "fields": { "type": "array", "items": { "$ref": "#/$defs/Field" } },
+    "validationRules": { "type": "array", "items": { "$ref": "#/$defs/ValidationRule" } },
+    "flows": { "type": "array", "items": { "$ref": "#/$defs/Flow" } },
+    "apexClasses": { "type": "array", "items": { "$ref": "#/$defs/ApexClass" } },
+    "apexTriggers": { "type": "array", "items": { "$ref": "#/$defs/ApexTrigger" } },
+    "permissionSets": { "type": "array", "items": { "$ref": "#/$defs/PermissionSet" } },
+    "profiles": { "type": "array", "items": { "$ref": "#/$defs/Profile" } },
+    "recordTypes": { "type": "array", "items": { "$ref": "#/$defs/RecordType" } },
+    "approvalProcesses": { "type": "array", "items": { "$ref": "#/$defs/ApprovalProcess" } },
+    "sharingRules": { "type": "array", "items": { "$ref": "#/$defs/SharingRule" } },
+    "layouts": { "type": "array", "items": { "$ref": "#/$defs/Layout" } },
+    "customMetadataRecords": { "type": "array", "items": { "$ref": "#/$defs/CustomMetadataRecord" } },
+    "namedCredentials": { "type": "array", "items": { "$ref": "#/$defs/NamedCredential" } },
+    "remoteSiteSettings": { "type": "array", "items": { "$ref": "#/$defs/RemoteSiteSetting" } },
+    "lwcs": { "type": "array", "items": { "$ref": "#/$defs/LightningWebComponent" } },
+    "auraBundles": { "type": "array", "items": { "$ref": "#/$defs/AuraBundle" } },
+    "flexiPages": { "type": "array", "items": { "$ref": "#/$defs/FlexiPage" } },
+    "visualforcePages": { "type": "array", "items": { "$ref": "#/$defs/VisualforcePage" } },
+    "visualforceComponents": { "type": "array", "items": { "$ref": "#/$defs/VisualforceComponent" } },
+    "customApplications": { "type": "array", "items": { "$ref": "#/$defs/CustomApplication" } },
+    "dependencies": { "type": "array", "items": { "$ref": "#/$defs/Dependency" } },
+    "tags": { "type": "array", "items": { "$ref": "#/$defs/Tag" } }
+  },
+  "$defs": {
+    "GraphMeta": {
+      "type": "object",
+      "required": ["yohakuVersion", "builtAt", "sourceAdapter", "salesforceApiVersion", "sourceHash"],
+      "properties": {
+        "yohakuVersion": { "type": "string" },
+        "builtAt": { "type": "string", "format": "date-time" },
+        "sourceAdapter": { "type": "string", "enum": ["local", "dx-mcp"] },
+        "salesforceApiVersion": { "type": "string" },
+        "sourceHash": {
+          "type": "string",
+          "description": "force-app/ 全体の決定的ハッシュ。同一値なら graph も同一になることが保証される"
+        },
+        "incremental": { "type": "boolean" }
+      }
+    },
+    "EntityRef": {
+      "type": "object",
+      "required": ["kind", "fullyQualifiedName"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["object", "field", "validationRule", "flow", "apexClass", "apexTrigger", "permissionSet", "profile", "recordType", "approvalProcess", "sharingRule", "layout", "customMetadataRecord", "namedCredential", "remoteSiteSetting", "lwc", "auraBundle", "flexiPage", "visualforcePage", "visualforceComponent", "customApplication"]
+        },
+        "fullyQualifiedName": {
+          "type": "string",
+          "description": "例: Account / Account.Industry / Account.RequireWebsite_VR"
+        }
+      }
+    },
+    "SObject": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "label", "isCustom", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "label": { "type": "string" },
+        "pluralLabel": { "type": "string" },
+        "description": { "type": "string" },
+        "isCustom": { "type": "boolean" },
+        "sharingModel": {
+          "type": "string",
+          "enum": [
+            "Private",
+            "Read",
+            "ReadSelect",
+            "ReadWrite",
+            "ReadWriteTransfer",
+            "FullAccess",
+            "ControlledByParent",
+            "ControlledByCampaign",
+            "ControlledByLeadOrContact"
+          ]
+        },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string", "description": "ファイル内容の SHA-256" }
+      }
+    },
+    "Field": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "object", "type", "isCustom", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "object": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "type": {
+          "type": "string",
+          "description": "Salesforce のフィールド型 (Text/Number/Lookup/MasterDetail/Picklist/...) "
+        },
+        "required": { "type": "boolean" },
+        "unique": { "type": "boolean" },
+        "isCustom": { "type": "boolean" },
+        "referenceTo": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Lookup/MasterDetail の参照先オブジェクト"
+        },
+        "picklistValues": { "type": "array", "items": { "type": "string" } },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "ValidationRule": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "object", "active", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "object": { "type": "string" },
+        "active": { "type": "boolean" },
+        "errorConditionFormula": { "type": "string" },
+        "errorMessage": { "type": "string" },
+        "errorDisplayField": { "type": "string" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "Flow": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "type", "status", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "type": {
+          "type": "string",
+          "description": "AutoLaunchedFlow / Screen / RecordTriggered / Scheduled / etc."
+        },
+        "status": { "type": "string", "enum": ["Active", "Draft", "Obsolete", "InvalidDraft"] },
+        "triggeringObject": { "type": "string" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "ApexClass": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "apiVersion", "isTest", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "apiVersion": { "type": "string" },
+        "isTest": { "type": "boolean" },
+        "isInterface": { "type": "boolean" },
+        "isAbstract": { "type": "boolean" },
+        "linesOfCode": { "type": "integer", "minimum": 0 },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "ApexTrigger": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "object", "events", "apiVersion", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "object": { "type": "string" },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["beforeInsert", "afterInsert", "beforeUpdate", "afterUpdate", "beforeDelete", "afterDelete", "afterUndelete"]
+          }
+        },
+        "apiVersion": { "type": "string" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "PermissionSet": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "label", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "license": { "type": "string" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "Profile": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "userLicense": { "type": "string" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "RecordType": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "object", "active", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "object": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "active": { "type": "boolean" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "ApprovalProcess": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "object", "active", "entryCriteria", "steps", "initialSubmissionActions", "finalApprovalActions", "finalRejectionActions", "recallActions", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "object": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "active": { "type": "boolean" },
+        "entryCriteria": { "type": "array" },
+        "steps": { "type": "array" },
+        "initialSubmissionActions": { "type": "array" },
+        "finalApprovalActions": { "type": "array" },
+        "finalRejectionActions": { "type": "array" },
+        "recallActions": { "type": "array" },
+        "recordEditability": { "type": "string" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "Layout": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "object", "layoutName", "sections", "relatedLists", "quickActions", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "object": { "type": "string" },
+        "layoutName": { "type": "string" },
+        "sections": { "type": "array" },
+        "relatedLists": { "type": "array" },
+        "quickActions": { "type": "array", "items": { "type": "string" } },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "CustomMetadataRecord": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "type", "recordName", "values", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "type": { "type": "string" },
+        "recordName": { "type": "string" },
+        "label": { "type": "string" },
+        "protected": { "type": "boolean" },
+        "values": { "type": "array" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "NamedCredential": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "hasSecret", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "label": { "type": "string" },
+        "endpoint": { "type": "string" },
+        "principalType": { "type": "string" },
+        "protocol": { "type": "string" },
+        "hasSecret": { "type": "boolean" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "LightningWebComponent": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "isExposed", "targets", "hasHtml", "hasCss", "apexImports", "labelImports", "publicProperties", "wires", "customEvents", "childComponents", "standardComponents", "directives", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "apiVersion": { "type": "string" },
+        "masterLabel": { "type": "string" },
+        "description": { "type": "string" },
+        "isExposed": { "type": "boolean" },
+        "targets": { "type": "array", "items": { "type": "string" } },
+        "hasHtml": { "type": "boolean" },
+        "hasCss": { "type": "boolean" },
+        "apexImports": { "type": "array" },
+        "labelImports": { "type": "array", "items": { "type": "string" } },
+        "publicProperties": { "type": "array", "items": { "type": "string" } },
+        "wires": { "type": "array" },
+        "customEvents": { "type": "array", "items": { "type": "string" } },
+        "childComponents": { "type": "array", "items": { "type": "string" } },
+        "standardComponents": { "type": "array" },
+        "directives": { "type": "array", "items": { "type": "string" } },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "AuraBundle": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "bundleKind", "hasController", "hasHelper", "hasRenderer", "hasStyle", "attributes", "handlers", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "bundleKind": { "type": "string", "enum": ["Component", "Application", "Event", "Interface", "Tokens"] },
+        "apiVersion": { "type": "string" },
+        "description": { "type": "string" },
+        "hasController": { "type": "boolean" },
+        "hasHelper": { "type": "boolean" },
+        "hasRenderer": { "type": "boolean" },
+        "hasStyle": { "type": "boolean" },
+        "attributes": { "type": "array", "items": { "type": "string" } },
+        "handlers": { "type": "array", "items": { "type": "string" } },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "FlexiPage": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "regions", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "type": { "type": "string" },
+        "sobjectType": { "type": "string" },
+        "pageTemplate": { "type": "string" },
+        "masterLabel": { "type": "string" },
+        "description": { "type": "string" },
+        "regions": { "type": "array" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "VisualforcePage": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "extensions", "hasMarkup", "markupCounts", "methodReferences", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "apiVersion": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "controller": { "type": "string" },
+        "extensions": { "type": "array", "items": { "type": "string" } },
+        "standardController": { "type": "string" },
+        "renderAs": { "type": "string" },
+        "availableInTouch": { "type": "boolean" },
+        "confirmationTokenRequired": { "type": "boolean" },
+        "hasMarkup": { "type": "boolean" },
+        "markupCounts": { "type": "array" },
+        "methodReferences": { "type": "array", "items": { "type": "string" } },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "VisualforceComponent": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "attributes", "hasMarkup", "markupCounts", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "apiVersion": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "controller": { "type": "string" },
+        "attributes": { "type": "array" },
+        "hasMarkup": { "type": "boolean" },
+        "markupCounts": { "type": "array" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "CustomApplication": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "formFactors", "tabs", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "navType": { "type": "string" },
+        "formFactors": { "type": "array", "items": { "type": "string" } },
+        "tabs": { "type": "array", "items": { "type": "string" } },
+        "utilityBar": { "type": "string" },
+        "brandColor": { "type": "string" },
+        "logo": { "type": "string" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "RemoteSiteSetting": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "active", "disableProtocolSecurity", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "url": { "type": "string" },
+        "description": { "type": "string" },
+        "active": { "type": "boolean" },
+        "disableProtocolSecurity": { "type": "boolean" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "SharingRule": {
+      "type": "object",
+      "required": ["fullyQualifiedName", "object", "kind", "accessLevel", "sharedTo", "criteriaItems", "sourcePath", "contentHash"],
+      "properties": {
+        "fullyQualifiedName": { "type": "string" },
+        "object": { "type": "string" },
+        "kind": { "type": "string", "enum": ["criteriaBased", "ownerBased", "territoryBased"] },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "accessLevel": { "type": "string" },
+        "sharedTo": { "type": "object" },
+        "criteriaItems": { "type": "array" },
+        "criteriaBooleanFilter": { "type": "string" },
+        "ownerSource": { "type": "string" },
+        "sourcePath": { "type": "string" },
+        "contentHash": { "type": "string" }
+      }
+    },
+    "Dependency": {
+      "type": "object",
+      "required": ["from", "to", "kind"],
+      "description": "エンティティ間の参照関係 (多対多)。例: ApexClass から SObject への参照、Flow から Field への参照",
+      "properties": {
+        "from": { "$ref": "#/$defs/EntityRef" },
+        "to": { "$ref": "#/$defs/EntityRef" },
+        "kind": {
+          "type": "string",
+          "enum": ["references", "extends", "implements", "queries", "writes", "triggers", "grants", "uses"]
+        },
+        "evidencePath": {
+          "type": "string",
+          "description": "参照が検出されたソースのパスや行番号 (再現性検証用)"
+        }
+      }
+    },
+    "Tag": {
+      "type": "object",
+      "required": ["entity", "namespace", "value"],
+      "description": "domain / feature / release などの論理タグ",
+      "properties": {
+        "entity": { "$ref": "#/$defs/EntityRef" },
+        "namespace": { "type": "string", "enum": ["domain", "feature", "release", "custom"] },
+        "value": { "type": "string" }
+      }
+    }
+  }
+}

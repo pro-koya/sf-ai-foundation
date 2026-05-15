@@ -1,7 +1,7 @@
 # sample-project — Claude Code 憲法
 
-> このファイルは [SF-AI-Foundation](https://github.com/sf-ai-foundation/sf-ai-foundation) によって生成されました。
-> プロファイル: **full** / Salesforce API: **62.0** / sfai: **0.0.1**
+> このファイルは [yohakuforce](https://github.com/yohakuforce/yohakuforce) によって生成されました。
+> プロファイル: **full** / Salesforce API: **62.0** / yohaku: **0.0.1**
 > 軽量・参照中心を維持してください (上限 15KB 目安)。
 
 ---
@@ -17,18 +17,18 @@ sample-project は Salesforce 開発プロジェクトです。
 
 | 順 | パス | 目的 |
 |---|---|---|
-| 1 | `docs/generated/system-index.md` | プロジェクト全体像 (sfai render system-index で生成) |
+| 1 | `docs/generated/system-index.md` | プロジェクト全体像 (yohaku render system-index で生成) |
 | 2 | `docs/human/business-notes/` (あれば) | 業務文脈 (人手記述、AI 上書き禁止) |
 | 3 | `.agents/knowledge/INDEX.md` | 過去の判断・つまずき・成功事例 |
-| 4 | `.sfai/graph.sqlite` | 知識グラフ (sfai graph query <SQL> でアクセス) |
+| 4 | `.yohaku/graph.sqlite` | 知識グラフ (yohaku graph query <SQL> でアクセス) |
 
 ---
 
 ## 2. 設計 3 原則 (踏み外さない)
 
-1. **3 層分離** — 決定的処理 (sfai CLI) / AI 判断 / 人手補完 を混ぜない
+1. **3 層分離** — 決定的処理 (yohaku CLI) / AI 判断 / 人手補完 を混ぜない
 2. **正本は実装側** — 正本は `force-app/` と Git。`docs/generated/` は派生物 (手編集禁止)
-3. **AI に生 XML を読ませない** — 必ず `.sfai/graph.sqlite` 経由で構造化情報を取得
+3. **AI に生 XML を読ませない** — 必ず `.yohaku/graph.sqlite` 経由で構造化情報を取得
 
 ---
 
@@ -47,16 +47,16 @@ sample-project は Salesforce 開発プロジェクトです。
 
 ## 4. 使えるコマンド
 
-### sfai CLI (決定的処理)
+### yohaku CLI (決定的処理)
 
 ```bash
-sfai graph build [--incremental]      # force-app/ → 知識グラフ
-sfai graph query "<SQL>"              # グラフへ任意の SOQL/SQL
-sfai graph schema                     # スキーマ定義を出力
-sfai render <target>                  # docs/generated/ に Markdown 出力
-sfai diff --from <ref> --to <ref>     # Git 差分を JSON 化
-sfai metrics --period month           # AI コスト計測
-sfai version
+yohaku graph build [--incremental]      # force-app/ → 知識グラフ
+yohaku graph query "<SQL>"              # グラフへ任意の SOQL/SQL
+yohaku graph schema                     # スキーマ定義を出力
+yohaku render <target>                  # docs/generated/ に Markdown 出力
+yohaku diff --from <ref> --to <ref>     # Git 差分を JSON 化
+yohaku metrics --period month           # AI コスト計測
+yohaku version
 ```
 
 ### Slash commands (AI エージェント)
@@ -74,9 +74,9 @@ sfai version
 ## 5. 禁則 (このプロジェクト固有)
 
 - `force-app/` を AI が直接編集しない (コードの編集は別途コーディングエージェントへ)
-- `docs/generated/` を手編集しない (`sfai render` で再生成される派生物)
+- `docs/generated/` を手編集しない (`yohaku render` で再生成される派生物)
 - `docs/human/` を AI が上書きしない (人手補完領域)
-- `.sfai/graph.sqlite` を直接 INSERT/UPDATE しない (必ず `sfai` CLI 経由)
+- `.yohaku/graph.sqlite` を直接 INSERT/UPDATE しない (必ず `yohaku` CLI 経由)
 - `HUMAN_MANAGED` ブロックを AI が書き換えない
 - 顧客名・顧客固有ロジック・顧客データをコミットしない
 

@@ -1,6 +1,6 @@
-# sample-project — SF-AI-Foundation 検証用ダミー Salesforce DX プロジェクト
+# sample-project — yohakuforce 検証用ダミー Salesforce DX プロジェクト
 
-> **顧客固有情報を含まないダミーデータのみ** (禁則 8 遵守)。`sfai` の動作確認 + 検証ゲート用。
+> **顧客固有情報を含まないダミーデータのみ** (禁則 8 遵守)。`yohaku` の動作確認 + 検証ゲート用。
 
 ## 構成 (Phase 6 で充実)
 
@@ -18,7 +18,7 @@
 ## 1 コマンドでの動作確認 (Phase 2.5 以降推奨)
 
 ```bash
-sfai init --bootstrap --target . --profile full --project-name sample-project
+yohaku init --bootstrap --target . --profile full --project-name sample-project
 ```
 
 これで scaffold 展開 + graph build + render が一気通貫で動作。
@@ -27,23 +27,23 @@ sfai init --bootstrap --target . --profile full --project-name sample-project
 
 ```bash
 # 1. scaffold 展開
-sfai init --target . --profile full --project-name sample-project
+yohaku init --target . --profile full --project-name sample-project
 
 # 2. 知識グラフ構築
-sfai graph build
+yohaku graph build
 
 # 3. グラフ確認
-sfai graph query "SELECT fqn, label FROM objects ORDER BY fqn"
-sfai graph query "SELECT * FROM dependencies"
-sfai graph query "SELECT object, COUNT(*) cnt FROM fields GROUP BY object"
+yohaku graph query "SELECT fqn, label FROM objects ORDER BY fqn"
+yohaku graph query "SELECT * FROM dependencies"
+yohaku graph query "SELECT object, COUNT(*) cnt FROM fields GROUP BY object"
 
 # 4. ドキュメント描画
-sfai render
+yohaku render
 
 # 5. Phase 3: 差分意味づけ (要 git init + commit)
 git init -q && git add -A && git commit -q -m "baseline"
 # (ここで何かファイルを編集して再コミット)
-sfai diff --from HEAD~1 --to HEAD --json
+yohaku diff --from HEAD~1 --to HEAD --json
 ```
 
 ## 期待結果

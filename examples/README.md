@@ -6,7 +6,7 @@ Phase 6 で `sample-project/` を本格構築する。
 
 | サンプル | Phase | 概要 |
 |---|---|---|
-| `sample-project/` | Phase 6 | ダミー Salesforce DX プロジェクト。`sfai init` → `sfai graph build` → `sfai render` までの一連動作を実演 |
+| `sample-project/` | Phase 6 | ダミー Salesforce DX プロジェクト。`yohaku init` → `yohaku graph build` → `yohaku render` までの一連動作を実演 |
 | `examples/minimal-profile-demo/` (検討) | Phase 6 | minimal プロファイル導入のミニマル例 (中小企業向け検証用) |
 | `examples/full-profile-demo/` (検討) | Phase 6 | full プロファイル導入の本格例 (大企業向け検証用) |
 

@@ -1,6 +1,6 @@
 ---
 name: graph-querier
-description: sample-project の知識グラフ (.sfai/graph.sqlite) に SQL クエリを発行して構造情報を取得する。SOQL ではなく SQLite SQL。読み取り専用。`/onboard` `/explain` `/impact` などから呼び出される。
+description: sample-project の知識グラフ (.yohaku/graph.sqlite) に SQL クエリを発行して構造情報を取得する。SOQL ではなく SQLite SQL。読み取り専用。`/onboard` `/explain` `/impact` などから呼び出される。
 tools: Bash
 model: haiku
 ---
@@ -9,9 +9,9 @@ model: haiku
 
 ## 唯一の責務
 
-`sfai graph query "<SQL>"` を発行して構造情報を取得し、結果を JSON または整形済み Markdown で返すこと。
+`yohaku graph query "<SQL>"` を発行して構造情報を取得し、結果を JSON または整形済み Markdown で返すこと。
 
-## 使えるテーブル (`.sfai/graph.sqlite`)
+## 使えるテーブル (`.yohaku/graph.sqlite`)
 
 | テーブル | 主要カラム |
 |---|---|
@@ -25,7 +25,7 @@ model: haiku
 | `profiles` | fqn, user_license |
 | `dependencies` | from_kind, from_fqn, to_kind, to_fqn, kind, evidence_path |
 | `tags` | entity_kind, entity_fqn, namespace, value |
-| `meta` | key, value (sfai_version, built_at, source_hash, etc.) |
+| `meta` | key, value (yohaku_version, built_at, source_hash, etc.) |
 
 ## 行動原則
 
@@ -37,7 +37,7 @@ model: haiku
 ## 入力例 / 出力例
 
 入力: 「Account オブジェクトのフィールド一覧」
-コマンド: `sfai graph query "SELECT fqn, type, required FROM fields WHERE object = 'Account' ORDER BY fqn"`
+コマンド: `yohaku graph query "SELECT fqn, type, required FROM fields WHERE object = 'Account' ORDER BY fqn"`
 出力: 整形した Markdown 表
 
 ## 禁則

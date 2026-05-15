@@ -1,0 +1,309 @@
+---
+description: <%= it.projectName %> のオブジェクトに紐づくトリガ処理全体（Apex+Flow+カスケード）を分析し、最小/最大クエリ数とバッチ許容件数を算出する
+argument-hint: <ObjectApiName>
+---
+
+# /analyze-batch-limits $ARGUMENTS
+
+対象オブジェクトに紐づくトリガ処理（Apex Trigger / Record-Triggered Flow）を起点に、
+カスケードで発火するすべての下流トリガを追跡し、トランザクション内の累計 SOQL クエリ数を算出。
+Salesforce ガバナ制限に基づく最大バッチ許容件数を導出する。
+
+> 知識グラフのスキーマは [`docs/03-reference/knowledge-graph-schema.md`](../../docs/03-reference/knowledge-graph-schema.md) に従う。
+> カラム名は **snake_case** (`fqn`, `object`, `events_json`, `triggering_object`, `type`, `status`)。
+> 推測で camelCase を使わない（`yohaku graph query` が拒否する）。
+
+## 【必須】Insert / Update 両シナリオを分けて分析すること
+
+- **Insert シナリオ**: `before insert` / `after insert` のみ発火するトリガ・フロー、`recordTriggerType = Create` のフロー
+- **Update シナリオ**: `before update` / `after update` のみ発火するトリガ・フロー、`recordTriggerType = Update` のフロー
+- **両方**: `before insert, before update` / `CreateAndUpdate` などのトリガ・フロー
+
+クエリ数マトリクス・バッチ許容件数・判定は **Insert / Update それぞれ独立して** 算出する。
+
+## 【禁止】あいまい分析
+
+以下の表現・手法は禁止する:
+
+- 「ほぼ非発火」「おそらく非発火」などの推測表現 → **必ず実際のフロー XML / Apex を読んで確定させる**
+- 「N本まとめて ❌」などの一括判定 → **各フロー・各ハンドラを個別に列挙・確認する**
+- カスケード下流（Lv.2 以降）のフロー・Apex を「条件不成立と推定」で省略する → **末端まで実際に読む**
+
+---
+
+## ステップ 1: 対象オブジェクトの確認
+
+```bash
+yohaku graph query "SELECT fqn, label FROM objects WHERE fqn = '$ARGUMENTS'"
+```
+
+見つからない場合は候補を列挙して終了:
+```bash
+yohaku graph query "SELECT fqn, label FROM objects WHERE fqn LIKE '%$ARGUMENTS%' LIMIT 10"
+```
+
+---
+
+## ステップ 2: トリガ・フロー一覧の取得
+
+```bash
+yohaku graph query "SELECT fqn, events_json FROM apex_triggers WHERE object = '$ARGUMENTS'"
+yohaku graph query "SELECT fqn, type, status FROM flows WHERE triggering_object = '$ARGUMENTS' AND status = 'Active'"
+```
+
+> `apex_triggers.events_json` は JSON 文字列（例: `["before insert", "after update"]`）。
+> パースしてから Insert/Update の分岐評価に使う。
+
+---
+
+## ステップ 3: カスケード追跡（cascade-tracer）
+
+cascade-tracer を **単独で先に起動** し、カスケードツリー（Lv.0 → Lv.N）を確定させる。
+
+入力として渡す情報:
+- 対象オブジェクト API 名
+- ステップ 2 で取得したトリガ名
+
+> **注意**: ステップ 4 は cascade-tracer の結果が確定してから実行する。
+
+---
+
+## ステップ 4: 全カスケードレベルの Apex・フロー分析（並列）
+
+cascade-tracer の CASCADE_TREE で特定された **全オブジェクト（Lv.0 ～ Lv.N）それぞれについて**、
+以下の 2 エージェントを **同一メッセージ内で並列起動** する。
+
+### apex-query-tracer（各カスケードレベルごとに起動）
+
+各レベルのトリガハンドラ + 呼び出しサービスクラス全体を読み、SOQL/DML を A/B/C/D に分類する。
+
+入力として渡す情報:
+- 当該レベルのオブジェクト API 名
+- cascade-tracer で特定されたトリガ名・ハンドラ名・サービスクラス名
+
+**apex-query-tracer への必須指示:**
+
+1. **全サービスクラスを再帰的に読む**
+   ハンドラが呼ぶサービスクラスのメソッドを全て読み込み、その中の SOQL・DML・条件分岐を全て確認する。
+   「ハンドラのみ」「一段階のみ」で止めない。
+
+2. **DML 更新フィールドを列挙する**
+   各 DML（UPDATE/INSERT/DELETE）で書き込むフィールド名を全て列挙する。
+   これをステップ 4.5 のカスケード条件クロスチェックに使用する。
+
+3. **条件分岐を個別確認する**
+   サービスクラス呼び出しが条件 (`if` 文) 内にある場合:
+   - 条件式を完全にコピーして記録する
+   - 「条件付き」と断定するために、当該条件式のフィールドを上流 DML のフィールドリストと照合する
+   - **照合結果を明示する**（合致 ✅ / 非合致 ❌ / 不明 ⚠ のいずれか）
+
+4. **「集計パスでは不発火」を断定しない**
+   「集計パスでは不発火」と書くのは、ハンドラの条件式フィールドと上流 DML の更新フィールドを
+   照合して **確認済み** の場合のみ許可。照合なしの推測断定は禁止。
+
+5. **カスタムメタデータの取得はガバナカウントしない**: LongTextArea 型フィールドを取得する場合を除き、
+   `__mdt` の取得はガバナ制限に算入しない。LTA 判定は `yohaku graph query` で `type='LongTextArea'` を確認する。
+
+> **全レベル必須**: Lv.0 だけでなく Lv.1, Lv.2... のすべてのオブジェクトで起動すること。
+> 各レベルの apex-query-tracer は並列起動して効率化できる。
+
+### flow-query-tracer（各カスケードレベルごとに起動）
+
+各オブジェクトのアクティブ Record-Triggered Flow を確認し、全 Flow XML を個別解析する。
+
+各オブジェクトのフロー確認（cascade-tracer 完了後に実行）:
+```bash
+yohaku graph query "SELECT fqn, type, status FROM flows WHERE triggering_object = '<ObjectApiName>' AND status = 'Active'"
+```
+
+- フローが **1 本以上ある** → flow-query-tracer を起動して全 Flow XML を個別確認
+- フローが **0 本** → 「フロー: なし」として記録しスキップ
+
+**flow-query-tracer への必須指示:**
+
+- **Flow Get Records のバルク化を適用する**: ループ外の Get Records は `$Record` 依存フィルタ（`WHERE ParentId = {!$Record.Id}` 等）があっても **B 分類**（固定）。Salesforce が N 個のインタビューを同一要素で待機させ単一 SOQL として実行するため、N 倍にカウントしない。C 分類とするのは `<loops>` 要素の**内側**にある Get Records のみ。
+
+- **ループ外 DML の正常パターンを DML_C と誤分類しない**: ループ内で Collection 変数に値を追加し、ループ外の DML 要素（inputReference = Collection 変数）で一括処理するパターンは **DML_B**（正常）。DML 要素が `<loops>` 要素の内側に記述されているかどうかを XML で確認してから分類すること。
+
+- **フロー XML に含まれる Assignment / RecordUpdate の対象フィールドを全て列挙する**
+  これらは下流トリガハンドラへのインプットになるため、省略せず明示する。
+
+> **全レベル必須**: Lv.0 だけでなく Lv.1, Lv.2... のすべてのカスケード先オブジェクトも
+> 同様に確認すること。省略不可。
+
+---
+
+## ステップ 4.5: カスケード条件クロスチェック（必須・全レベル）
+
+ステップ 4 の apex-query-tracer / flow-query-tracer の結果を受け取った後、
+**各カスケードレベルのフィールドを次レベルのトリガ条件と照合する**。
+
+### 照合手順
+
+1. **上流 DML の更新フィールドリストを取得**
+   - Lv.N の apex-query-tracer が出力した「DML更新フィールド一覧」
+   - Lv.N の flow-query-tracer が出力した「Assignment/RecordUpdate フィールド一覧」
+
+2. **下流ハンドラの条件式を取得**
+   - Lv.N+1 の apex-query-tracer が出力した各条件分岐の条件式フィールドリスト
+   - 特に `onAfterUpdate` / `onAfterInsert` 内の条件式を重点確認
+
+3. **フィールドを照合して発火可否を確定**
+   - 上流フィールド ∩ 下流条件フィールド が空でない → 「⚠ 条件付き発火確定」
+   - 上流フィールド ∩ 下流条件フィールド が空 → 「❌ 不発火確定」
+   - どちらか不明 → 「⚠ 要確認」（推測断定禁止）
+
+4. **発火確定の条件パスを再分析対象に追加**
+   「⚠ 条件付き発火確定」となったサービスクラス・DML は、
+   そのコストを **クエリ数・DML マトリクスに追記** する。
+
+### 照合対象として特に注意すべきパターン
+
+- **集計系サービス**: 更新フィールドが多い。下流ハンドラの条件式と突き合わせて、見落としなく確認する。
+- **論理削除フラグ連鎖**: フローが `$Record.X` を子レコードの同名フィールドに設定するパターンが多い。子トリガの `IsChanged` 条件に必ず合致する。
+- **通貨変更連鎖（CurrencyIsoCode）**: フローが CurrencyIsoCode を子レコードへコピーする場合、子トリガの `CurrencyIsoCode IsChanged` 条件に合致する。
+
+### 照合結果のドキュメント形式
+
+```markdown
+#### カスケード条件クロスチェック: Lv.N → Lv.N+1
+
+**上流DML更新フィールド (Lv.N: <ObjectApiName>)**
+- <FieldApiName1>
+- <FieldApiName2>
+...
+
+**下流条件式 (Lv.N+1: <ObjectApiName>, onAfterUpdate)**
+
+| 条件式フィールド | 上流合致 | 呼び出す処理 | 判定 |
+|---|---|---|---|
+| <FieldApiName1> | ✅ | <ServiceClass>.<method>() | ⚠ 条件付き発火確定 |
+| <FieldApiName2> | ❌ | <ServiceClass2>.<method>() | ❌ 不発火確定 |
+```
+
+---
+
+## ステップ 5: batch-calculator で集計・算出
+
+cascade-tracer + apex-query-tracer + flow-query-tracer の全結果を batch-calculator に渡し、
+以下を算出させる:
+
+- **分類A**: ゼロカウント（__mdt LTA なし、Custom Setting 静的アクセス）
+- **分類B**: 固定クエリ（バッチサイズ非依存）
+- **分類C**: バッチ比例クエリ（トリガレコード N 件ごと）
+- **分類D**: 紐づき比例クエリ（関連レコード M 件ごと）
+- **カスケード累計**: 各レベルの B/C/D を積み上げ
+
+出力:
+- クエリ数マトリクス（N=1,5,10,20,50 × M=0,1,5,10）
+- 各 N, M の組み合わせに対する最大バッチ許容件数
+- ボトルネック要因（SOQL 上限 / 行数上限 / DML 上限）
+- ⚠ データ連携バッチ 200 件との比較
+
+---
+
+## ステップ 6: レポート出力
+
+```markdown
+# バッチ許容件数分析: $ARGUMENTS
+生成日時: <ISO 8601>
+
+## カスケードチェーン
+...
+
+## アクティブフロー発火分析
+
+> 各フローを **個別に** XML を読んで確認すること。「N本まとめて」の一括判定禁止。
+> 発火可否は ✅ / ⚠ / ❌ のみ（「ほぼ非発火」などの推測表現禁止）。
+> 各エントリに INSERT / UPDATE 列を設け、シナリオ別発火可否を記載する。
+> フロー XML の Assignment/RecordUpdate で設定するフィールドを備考欄に明記する。
+
+| フロー名 | 対象オブジェクト | 種別 | SOQL(Insert) | SOQL(Update) | DML(Insert) | DML(Update) | Insert発火 | Update発火 | 根拠 |
+|---|---|---|---|---|---|---|---|---|---|
+| ... | | | | | | | | | |
+
+## カスケード条件クロスチェック
+
+> ステップ 4.5 の照合結果。各 Lv.N → Lv.N+1 の条件照合を記載する。
+> 「集計パスでは不発火」の断定は照合完了後にのみ記載する。
+
+### Lv.0 → Lv.1 の照合
+
+| 上流DML更新フィールド | Lv.1 条件式フィールド | 合致 | 呼び出す処理 | 判定 |
+|---|---|---|---|---|
+| ... | ... | ✅/❌ | ... | ⚠/❌ |
+
+### Lv.1 → Lv.2 の照合（あれば）
+...
+
+## クエリ数マトリクス（INSERT シナリオ）
+
+> 条件付き SOQL は「0〜X (条件付)」と明示し、条件を脚注に記載する。
+
+B_total = XX〜YY / C_total = ZZ / D_total = WW
+...
+
+## クエリ数マトリクス（UPDATE シナリオ）
+
+B_total = XX〜YY / C_total = ZZ / D_total = WW
+...
+
+## DML 数マトリクス（INSERT シナリオ）
+
+> DML 行数は DML 対象レコード数に依存する場合は「≦ kN 行 (条件付)」と明示する。
+
+| DML操作 | 対象オブジェクト | DML文数 | DML行数(N件バッチ時) | 条件 |
+|---|---|---|---|---|
+| ... | | | | 常時 / 条件付 |
+
+## DML 数マトリクス（UPDATE シナリオ）
+...
+
+## 最大バッチ許容件数
+
+> 条件によって上限が変わる場合は行を分けて記載する。
+
+| シナリオ | SOQL制限ベース | DML行制限ベース | 有効最大 | 推奨(×0.8) |
+|---|---|---|---|---|
+| INSERT (条件なし) | | | | |
+| INSERT (条件付き最悪) | | | | |
+| UPDATE 通常 (条件なし) | | | | |
+| UPDATE 通常 (条件付き最悪) | | | | |
+| ... | | | | |
+
+## 判定
+推奨バッチサイズ（INSERT, 条件なし）: XX 件（安全マージン 20%）
+推奨バッチサイズ（INSERT, 条件付き最悪）: XX 件（安全マージン 20%）
+推奨バッチサイズ（UPDATE 通常）: ...
+データ連携 200 件: [OK / ⚠ 超過]
+ボトルネック: [SOQL / 行数 / DML]
+⚠ 注意事項: (条件付きシナリオの注意事項があれば記載)
+
+## 要対応事項
+...（未計上・要確認事項を列挙。解決済みは ✅ と明記）
+```
+
+結果は `docs/ai-augmented/batch-analysis/<YYYY-MM-DD>-$ARGUMENTS.md` に保存。
+ディレクトリが無ければ作成する。
+
+---
+
+## 禁則
+
+- `force-app/` の Apex ファイルを AI が直接編集しない（分析のみ）
+- クエリ数の推測で確認できないものは「要確認」と明示し、捏造しない
+- `__mdt` クエリは LongTextArea フィールドの有無を `yohaku graph query` で確認してから分類する
+  （`type = 'LongTextArea'` を見る。`Textarea` (255 文字) は別物なので混同しない）
+- ループ内 SOQL を発見した場合は「⚠ アンチパターン」として別途指摘する
+- **Flow Get Records をループ内/外の確認なしで C 分類しない**: ループ外の Get Records は Salesforce バルク化仕様により B 分類（$Record 依存フィルタでも同様）。C 分類となるのはループ内 Get Records のみ。
+- **Flow の DML を「ループ内で値を集計しているから DML_C」と誤分類しない**: ループ内で Collection に追加し、ループ外 DML 要素（inputReference = Collection）で一括処理するパターンは DML_B（正常パターン）。XML の `<loops>` 要素内に `<recordUpdates>` 等が直接記述されているかを確認してから DML_C と判定すること。
+- **「集計パスでは不発火」を照合なしで断定しない**: 上流 DML の更新フィールドと下流ハンドラの条件式を
+  フィールドレベルで照合してから判定する。照合前の断定は禁止。
+- **ハンドラが呼ぶサービスクラスを省略しない**: トリガハンドラが呼ぶサービスクラスのメソッドを
+  全て再帰的に読み込み、SOQL/DML/条件分岐を確認する。ハンドラ単体の分析で終わらない。
+- **DML 行数の条件依存性を見落とさない**: DML 行数が定数ではなく「対象レコード件数 × k」に
+  なる場合は、k の値と条件を明示する。「≦ N 行」と単純化しない。
+- **フロー XML の Assignment 更新フィールドを省略しない**: フローが下流トリガに渡すフィールドを
+  確認せずに「フロー DML のみ記録」して終わらない。更新フィールドを列挙して照合に使う。
+- `yohaku graph query` の SQL は snake_case (`fqn`, `object`, `events_json`, `triggering_object`, `type`, `status`)。
+  古い名前 (`api_name`, `object_api_name`, `process_type` 等) で書くと CLI がエラーを返す。

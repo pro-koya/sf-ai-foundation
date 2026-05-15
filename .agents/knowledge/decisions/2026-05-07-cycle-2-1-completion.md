@@ -17,7 +17,7 @@ Phase 1 から繰り越した技術負債と既知制約のうち、コード変
 
 | # | 項目 | 状態 | 影響範囲 |
 |---|---|---|---|
-| 2-1.A | tsconfig の `exactOptionalPropertyTypes` を off に調整 | ✅ | `packages/sfai-core/tsconfig.json` |
+| 2-1.A | tsconfig の `exactOptionalPropertyTypes` を off に調整 | ✅ | `packages/core/tsconfig.json` |
 | 2-1.B | `extractors.ts` を 8 ファイルに分割 | ✅ | `src/graph/extractors/{object,field,validationRule,flow,apexClass,apexTrigger,permissionSet,profile,types,index}.ts` |
 | 2-1.C | `secrets-rules.yaml` の動的読み込み (`yaml` 依存追加) | ✅ | `src/secrets/load.ts` 新規 + テスト 7 ケース |
 | 2-1.D | `KnowledgeGraphReader` を `cli.ts` から抽出、`as any` 排除 | ✅ | `src/graph/sqlite-reader.ts` 新規、`cli.ts` から SQL マッピング除去 |

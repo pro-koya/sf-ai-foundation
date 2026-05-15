@@ -15,6 +15,6 @@ labels: question
 
 - **OS**:
 - **Node.js version**:
-- **sfai version**:
+- **yohaku version**:
 
 ## 補足 / Notes

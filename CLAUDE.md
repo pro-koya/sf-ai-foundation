@@ -1,4 +1,4 @@
-# SF-AI-Foundation — Claude Code 憲法
+# yohakuforce — Claude Code 憲法
 
 > 本ファイルは「軽量・参照中心」を貫く (上限 15KB 目安)。詳細は参照先で読む。
 
@@ -25,7 +25,7 @@
 
 1. **3 層分離** — 決定的処理 (CLI) / AI 判断 / 人手補完 を混ぜない。
 2. **正本は実装側** — 正本は `force-app/` と Git。Markdown は派生物。
-3. **AI に生データを読ませない** — XML を直接読まず、必ず知識グラフ (`.sfai/graph.sqlite`) を経由する。
+3. **AI に生データを読ませない** — XML を直接読まず、必ず知識グラフ (`.yohaku/graph.sqlite`) を経由する。
 
 詳細は [`IMPLEMENTATION_GUIDE.md` § 貫く設計原則](./IMPLEMENTATION_GUIDE.md#貫く設計原則) 参照。
 
@@ -72,8 +72,11 @@
 
 | 種類 | パス | 状態 |
 |---|---|---|
-| CLI | `bin/sfai` | Phase 1 で作る |
-| 知識グラフ | `.sfai/graph.sqlite` | Phase 1 で作る (gitignore) |
+| CLI | `bin/yohaku` | Phase 1 で作る |
+| 知識グラフ | `.yohaku/graph.sqlite` | Phase 1 で作る (gitignore) |
+| 知識グラフのスキーマ | [`docs/03-reference/knowledge-graph-schema.md`](./docs/03-reference/knowledge-graph-schema.md) | `yohaku graph query` 発行時の必読 |
+| パフォーマンス / hook 設定 | [`docs/03-reference/performance.md`](./docs/03-reference/performance.md) | Claude Code hook が遅いと感じたら |
+| バッチ許容件数分析 | [`docs/03-reference/batch-limits-analysis.md`](./docs/03-reference/batch-limits-analysis.md) | `/analyze-batch-limits` で対象オブジェクトのガバナ制限を算出 |
 | Subagents | `.claude/agents/` | Phase 2 以降で追加 |
 | Slash commands | `.claude/commands/` | Phase 2 以降で追加 |
 | Hooks | `.claude/settings.json` | Phase 2 以降で追加 |

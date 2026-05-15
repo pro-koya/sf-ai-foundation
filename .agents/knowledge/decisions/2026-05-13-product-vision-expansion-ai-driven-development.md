@@ -14,7 +14,7 @@ tags: [vision, north-star, scope-expansion, ai-driven-development, sier-persona,
 
 ## サマリ (1 文)
 
-sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサイクル全体の AI 駆動化」** に拡張し、メインペルソナを **コンサル / SIer** に絞る。既存 OSS の空白を埋める「組織を知識グラフ化する基盤」として位置付け、AI エージェントを "Salesforce を知る AI" から "あなたの組織を知る AI" へ進化させる。
+yohaku の北極星を **「運用 AI 化」から「Salesforce 開発ライフサイクル全体の AI 駆動化」** に拡張し、メインペルソナを **コンサル / SIer** に絞る。既存 OSS の空白を埋める「組織を知識グラフ化する基盤」として位置付け、AI エージェントを "Salesforce を知る AI" から "あなたの組織を知る AI" へ進化させる。
 
 ---
 
@@ -74,7 +74,7 @@ sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサ
 
 開発ライフサイクルを 6 層に分解する:
 
-| 層 | 名称 | 内容 | 既存 sfai (v0.2) との距離 |
+| 層 | 名称 | 内容 | 既存 yohaku (v0.2) との距離 |
 |---|---|---|---|
 | L1 | **影響範囲特定** | 改修対象から依存先を辿る | 近い (graph query 拡張) |
 | L2 | **実装範囲特定** | 要件文 → 触るべき資材特定 | やや近い (NLP + graph) |
@@ -87,7 +87,7 @@ sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサ
 
 ### 柱 2: 対象者拡張 (運用者 → 開発ライフサイクル全関与者)
 
-メインペルソナ (SIer) を起点に、以下の役割が間接的にも sfai の出力を消費できる:
+メインペルソナ (SIer) を起点に、以下の役割が間接的にも yohaku の出力を消費できる:
 
 - プロジェクトリーダー (案件マネジメント)
 - 開発者 (設計・実装)
@@ -101,18 +101,18 @@ sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサ
 
 **Salesforce エコシステムの現状**:
 
-| 機能 | 提供している OSS / 公式ツール | sfai との関係 |
+| 機能 | 提供している OSS / 公式ツール | yohaku との関係 |
 |---|---|---|
 | メタデータの型理解 | Salesforce 公式 SDK (`@salesforce/source-deploy-retrieve`) | **取り込み** (extract 層で利用) |
 | コード品質静的解析 | Code Analyzer v5 | **取り込み** (SARIF 経由で classifier 入力に統合済み) |
 | ソース ↔ 組織のやりとり | Salesforce CLI / DX MCP | **取り込み** (DX MCP アダプタ済み) |
-| **組織を完全に知識グラフ化する基盤** | **空白** | **← ここが sfai の位置** |
-| 汎用 AI コーディング | Cursor / Copilot / Claude Code 等 | **共存** (sfai は context provider として動く) |
+| **組織を完全に知識グラフ化する基盤** | **空白** | **← ここが yohaku の位置** |
+| 汎用 AI コーディング | Cursor / Copilot / Claude Code 等 | **共存** (yohaku は context provider として動く) |
 
 **取り込み原則**:
-- 既存 OSS が解決している領域を sfai が再実装しない (フォーク禁止)
+- 既存 OSS が解決している領域を yohaku が再実装しない (フォーク禁止)
 - adapter / アダプタパターンで疎結合に接続
-- 既存 OSS の出力を **AI が消費しやすい形に正規化** (= sfai の付加価値)
+- 既存 OSS の出力を **AI が消費しやすい形に正規化** (= yohaku の付加価値)
 - 既存 OSS が提供しない「組織固有文脈」の層に専念
 
 ### 柱 4: AI エージェントの進化 — 一般知識から組織知識へ
@@ -121,7 +121,7 @@ sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサ
 - "Salesforce の使い方は知っているが、あなたの組織のことは知らない AI"
 - 例: 一般的な Apex のベストプラクティスは答えられるが、`ExampleApexTriggerHandler` の業務的役割は知らない
 
-**After**: sfai 知識グラフ + AI エージェントルール + 組織コンテキスト
+**After**: yohaku 知識グラフ + AI エージェントルール + 組織コンテキスト
 - "あなたの組織の特性とビジネスロジックに精通した AI"
 - 例: 「`Account.Outstanding_Balance__c` の算出ロジックを変更すると影響範囲は X / Y / Z、過去の議事録で議論された懸念は…」と答えられる
 
@@ -139,7 +139,7 @@ sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサ
 本プロジェクトを OSS として育てる **明示的な理由**:
 
 1. **コマンドベースで簡単に基盤構築できるようにするため**
-   - SIer / コンサルが新規案件着手時に `sfai init --bootstrap` 1 コマンドで開始できる
+   - SIer / コンサルが新規案件着手時に `yohaku init --bootstrap` 1 コマンドで開始できる
    - クローズドだと配布・更新・依存解決のコストが顧客 / SIer に転嫁される
 
 2. **社内にとどめず、どんな人にも価値を届けたい**
@@ -148,7 +148,7 @@ sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサ
 
 3. **改善はみんなでしていきたい / いろんな人の意見にこそ価値がある**
    - メタデータの型は標準化されているが、業務適用パターンは多様
-   - コミュニティからの adapter / pattern / 業界別テンプレ寄贈で sfai の知識基盤が拡張する
+   - コミュニティからの adapter / pattern / 業界別テンプレ寄贈で yohaku の知識基盤が拡張する
    - 利用者 ≠ 開発者 という構造を取らない
 
 ### OSS が罠になりうるリスクと対処
@@ -156,7 +156,7 @@ sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサ
 | リスク | 対処 |
 |---|---|
 | 維持コスト (issue / PR / ガバナンス) で開発が止まる | コア・adapter を分離、コアは少人数で守る。adapter は寄贈受け入れ |
-| 商業 fork で価値が分散 | Apache 2.0 を維持しつつ、商標 (sfai 名) は別途保護を将来検討 |
+| 商業 fork で価値が分散 | Apache 2.0 を維持しつつ、商標 (yohaku 名) は別途保護を将来検討 |
 | 「OSS = 無料」期待で BtoB 値付け困難 | OSS は基盤、サポート / プロ機能 / 商用ホスティングで収益化する分離設計を v1.x で検討 |
 | OSS が目的化する | **本 ADR で OSS の理由を 3 つ明示** したのでこれが拠り所。理由が薄れたら見直す |
 
@@ -180,18 +180,18 @@ sfai の北極星を **「運用 AI 化」から「Salesforce 開発ライフサ
 
 ---
 
-## ベストプラクティスは外部参照、sfai は定義しない
+## ベストプラクティスは外部参照、yohaku は定義しない
 
-sfai 自身が「これが Salesforce のベストプラクティス」と言い切らない。
+yohaku 自身が「これが Salesforce のベストプラクティス」と言い切らない。
 
 **理由**:
 - ベストプラクティスは Salesforce 公式 / Trailhead / SI 各社 / OSS コミュニティでバラつく
-- sfai が定義すると越権 / 古びる / コミュニティ衝突
+- yohaku が定義すると越権 / 古びる / コミュニティ衝突
 - 組織固有の慣習は HUMAN_MANAGED 領域で表現する設計が既にある
 
 **実装方針**:
 - ベストプラクティス参照は **外部リソースへのリンク** (公式ドキュメント / Code Analyzer ルール ID / Trailhead モジュール) として提示
-- sfai はベストプラクティス違反の **検出** はする (Code Analyzer 経由) が、定義はしない
+- yohaku はベストプラクティス違反の **検出** はする (Code Analyzer 経由) が、定義はしない
 - 組織固有の慣習 (例: "このプロジェクトでは Trigger を直接書かず Handler 経由") は HUMAN_MANAGED 領域に書き、AI はそれを読んで尊重する
 
 ---
@@ -202,7 +202,7 @@ sfai 自身が「これが Salesforce のベストプラクティス」と言い
 
 コンテキスト層 (議事録 / Slack / Gmail / 会議文字起こし) は **線形ロードマップ ladder から外し、独立トラック** として並走する。ただし「独立 = 切り離す」ではなく、**統合 API を v0.4.0 で先に固める**。
 
-### 統合 API: `context_sources` テーブル (.sfai/graph.sqlite 内)
+### 統合 API: `context_sources` テーブル (.yohaku/graph.sqlite 内)
 
 ```
 context_sources
@@ -218,7 +218,7 @@ context_sources
 
 ### AI エージェントとのインターフェース
 
-- AI は **`sfai graph query` 経由でのみ context を取り出す** (直接 Slack / Gmail を読まない = 3 層分離維持)
+- AI は **`yohaku graph query` 経由でのみ context を取り出す** (直接 Slack / Gmail を読まない = 3 層分離維持)
 - 例:
   ```sql
   SELECT * FROM context_sources
@@ -237,7 +237,7 @@ adapters/
 └── otter-meeting/          — Otter.ai / Zoom 文字起こし (v0.9〜)
 ```
 
-各 adapter は **独立リポジトリ的に開発可能**。コア (sfai-core) は context_sources の読み書き API だけを提供。
+各 adapter は **独立リポジトリ的に開発可能**。コア (core) は context_sources の読み書き API だけを提供。
 
 ### この設計が「完璧統合」を成立させる理由
 
@@ -258,7 +258,7 @@ adapters/
 
 ## 設計 3 原則の維持
 
-新ビジョンでも、sfai の DNA である **設計 3 原則** は維持する:
+新ビジョンでも、yohaku の DNA である **設計 3 原則** は維持する:
 
 1. **3 層分離** — 決定的処理 (CLI) / AI 判断 / 人手補完 を混ぜない
 2. **正本は実装側** — `force-app/` と Git が正本、Markdown は派生物
@@ -305,7 +305,7 @@ adapters/
 | C. ペルソナを「Salesforce 開発全関与者」のまま広くする | 却下 | 誰にも刺さらない罠 (ChatGPT for everything パターン) |
 | D. L3 を「要件定義 AI 駆動」表現で維持 | 却下 | over-promise リスクが高すぎる、信頼失墜の代償が大きい |
 | E. コンテキスト層を線形 ladder の最後 (v1.x) に置く | 却下 | SIer ペルソナで生命線、後回しにできない / 統合 API を最初に固めれば独立軸で十分 |
-| F. ベストプラクティスを sfai が定義 | 却下 | 越権 / 古びる / コミュニティ衝突 |
+| F. ベストプラクティスを yohaku が定義 | 却下 | 越権 / 古びる / コミュニティ衝突 |
 
 ---
 
@@ -330,7 +330,7 @@ adapters/
 
 - 由来: **yohaku (余白)** + **force** (Salesforce ecosystem の事実上の共通サフィックス)
 - 「Salesforce 開発者の余白を生む力」を意味する
-- 旧名 `sfai` は **`salesforce/sfai-sdk`** (Salesforce 公式 SDK、2025-07 作成・2025-12 更新の現役 OSS) と直接衝突するため放棄
+- 旧名 `yohaku` は **`salesforce/yohaku-sdk`** (Salesforce 公式 SDK、2025-07 作成・2025-12 更新の現役 OSS) と直接衝突するため放棄
 
 ### CLI 実行名: `yohaku`
 
@@ -345,12 +345,12 @@ yohaku explain-write --kind apexClass --fqn ...
 
 ### 競合調査結果 (2026-05-13)
 
-| 名前空間 | yohakuforce | sfai (旧) |
+| 名前空間 | yohakuforce | yohaku (旧) |
 |---|---|---|
 | npm | ✅ 空き | ✅ 空き |
 | PyPI | ✅ 空き | ⚠️ 取得済み (squat) |
 | GitHub user | ✅ 空き | ⚠️ 取得済み (San Francisco Art Institute、2011 〜) |
-| GitHub repo (active) | ✅ ゼロ | ❌ **salesforce/sfai-sdk** (Apache 2.0、現役) |
+| GitHub repo (active) | ✅ ゼロ | ❌ **salesforce/yohaku-sdk** (Apache 2.0、現役) |
 | Salesforce TM リスク | 低 (community OSS の -force サフィックス慣例) | 高 (Salesforce 本家利用中) |
 
 ### Salesforce 商標との関係
@@ -361,16 +361,16 @@ yohaku explain-write --kind apexClass --fqn ...
 
 ### 改名移行 (リポジトリ / コード)
 
-現コードベースは `sfai` を使用中。移行は **v0.4.0 着手時にまとめて実施** (本 ADR では「移行対象として記録」のみ):
-- リポジトリ名: SF-AI-Foundation → yohakuforce (または yohakuforce-core)
-- パッケージ名: `sfai-core` → `@yohakuforce/core` または `yohakuforce-core`
-- CLI bin: `sfai` → `yohaku`
-- `.sfai/` ディレクトリ → `.yohaku/`
+現コードベースは `yohaku` を使用中。移行は **v0.4.0 着手時にまとめて実施** (本 ADR では「移行対象として記録」のみ):
+- リポジトリ名: yohakuforce → yohakuforce (または yohakuforce-core)
+- パッケージ名: `core` → `@yohakuforce/core` または `yohakuforce-core`
+- CLI bin: `yohaku` → `yohaku`
+- `.yohaku/` ディレクトリ → `.yohaku/`
 - ファイル / 変数名の全置換
 - ドキュメント全更新
 - 移行詳細は v0.4.0 Phase ADR で確定
 
-過去 ADR (`decisions/2026-05-06〜2026-05-10`) は **歴史的決定** として `sfai` 表記のまま保持 (Status: Superseded by renaming は付けない、改名は表記変更であり判断の差し替えではないため)。
+過去 ADR (`decisions/2026-05-06〜2026-05-10`) は **歴史的決定** として `yohaku` 表記のまま保持 (Status: Superseded by renaming は付けない、改名は表記変更であり判断の差し替えではないため)。
 
 ---
 
@@ -462,7 +462,7 @@ Phase 3: 社外導入 (v1.0.0 以降、OSS としてグローバル公開)
 
 ## 関連ナレッジ
 
-- decisions/[2026-05-06 プロジェクト基盤の初期構築](./2026-05-06-bootstrap-project-foundation.md) — sfai の出発点
+- decisions/[2026-05-06 プロジェクト基盤の初期構築](./2026-05-06-bootstrap-project-foundation.md) — yohaku の出発点
 - decisions/[2026-05-07 IMPLEMENTATION_GUIDE.md v1.1 改訂](./2026-05-07-implementation-guide-revision-v1.1.md) — 旧 6 本柱
 - decisions/[2026-05-10 Phase スコープ規律](./2026-05-10-scope-discipline-and-phase-restructure.md) — 本 ADR の規律基盤
 - decisions/[2026-05-10 v0.3.0 内部検証 実証フェーズ着手計画](./2026-05-10-v0.3.0-internal-validation-plan.md) — 現フェーズ、本 ADR と並走
@@ -476,4 +476,4 @@ Phase 3: 社外導入 (v1.0.0 以降、OSS としてグローバル公開)
 2. ~~`status: active` に昇格~~ ✅ 2026-05-13 完了
 3. v0.3.0 期間中は本 ADR の内容を判断材料として参照可。ただし本文 (AGENTS.md / README.md / IMPLEMENTATION_GUIDE.md / CLAUDE.md) への反映は **v0.3.0 完了後 (2026-06-15 週以降)** に実施
 4. v0.4.0 着手 ADR を起こすときに、本 ADR をロードマップの根拠として参照
-5. 改名移行 (`sfai` → `yohakuforce` / `yohaku`) は v0.4.0 Phase ADR で詳細手順を確定
+5. 改名移行 (`yohaku` → `yohakuforce` / `yohaku`) は v0.4.0 Phase ADR で詳細手順を確定

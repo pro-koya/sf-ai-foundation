@@ -16,9 +16,9 @@ tags: [phase-2-5, ux, cli, completion]
 
 | 改善 | コード変更 | E2E 結果 |
 |---|---|---|
-| `sfai init --bootstrap` | `cmdInit` に bootstrap フラグ。完了後 `buildAndStore` + `renderSystemIndex` + `renderObjects` を順次実行、進行ログを出力 | ✅ 1 コマンドで scaffold 17 + graph build + render 2 完了 |
-| `sfai sync` | 新規 `cmdSync` を `COMMANDS` Map に登録。デフォルト `--incremental`、`--full-rebuild` で完全再構築 | ✅ 日常運用 1 コマンドで build + render 完了 |
-| `sfai render` 引数省略 | `cmdRender` の `target === undefined` 分岐を「全描画」に変更。後方互換 (個別指定は維持) | ✅ system-index + objects を 1 コマンドで描画 |
+| `yohaku init --bootstrap` | `cmdInit` に bootstrap フラグ。完了後 `buildAndStore` + `renderSystemIndex` + `renderObjects` を順次実行、進行ログを出力 | ✅ 1 コマンドで scaffold 17 + graph build + render 2 完了 |
+| `yohaku sync` | 新規 `cmdSync` を `COMMANDS` Map に登録。デフォルト `--incremental`、`--full-rebuild` で完全再構築 | ✅ 日常運用 1 コマンドで build + render 完了 |
+| `yohaku render` 引数省略 | `cmdRender` の `target === undefined` 分岐を「全描画」に変更。後方互換 (個別指定は維持) | ✅ system-index + objects を 1 コマンドで描画 |
 
 加えて:
 - ヘルプを「Quick start (recommended)」セクションを最上段に置く形に再構成
@@ -28,9 +28,9 @@ tags: [phase-2-5, ux, cli, completion]
 
 | 操作 | Before | After |
 |---|---|---|
-| 初回セットアップ | 4 コマンド | **1 コマンド** (`sfai init --bootstrap`) |
-| 日常運用 | 3 コマンド | **1 コマンド** (`sfai sync`) |
-| render 全描画 | 2 コマンド (`render system-index` + `render objects`) | **1 コマンド** (`sfai render`) |
+| 初回セットアップ | 4 コマンド | **1 コマンド** (`yohaku init --bootstrap`) |
+| 日常運用 | 3 コマンド | **1 コマンド** (`yohaku sync`) |
+| render 全描画 | 2 コマンド (`render system-index` + `render objects`) | **1 コマンド** (`yohaku render`) |
 
 ## 内部実装の整理
 
@@ -41,7 +41,7 @@ tags: [phase-2-5, ux, cli, completion]
 
 ## 後方互換
 
-- 旧コマンド (`sfai graph build`, `sfai render system-index`, `sfai render objects`) は **すべて引き続き有効**
+- 旧コマンド (`yohaku graph build`, `yohaku render system-index`, `yohaku render objects`) は **すべて引き続き有効**
 - 旧フラグ (`--incremental`, `--quiet`, `--root`) も同等動作
 - 既存利用者への影響なし
 
@@ -50,9 +50,9 @@ tags: [phase-2-5, ux, cli, completion]
 | 案 | 採否 | 理由 |
 |---|---|---|
 | A. **`init --bootstrap` + `sync` + `render` 引数省略** | 採用 | 後方互換 + 直感的 + 4→1 圧縮率最大 |
-| B. `sfai run` のような汎用ラッパー | 却下 | 何が走るか不透明、デバッグ性が落ちる |
-| C. interactive wizard (`sfai init` 引数なしで対話モード) | 却下 (Phase 6 へ繰越) | 実装スコープ拡大、Phase 2.5 では非対話で十分 |
-| D. `sfai watch` で fs 監視自動同期 | 却下 (Phase 7 へ繰越) | 監視プロセスの管理が増えるため Phase 2.5 のスコープを超える |
+| B. `yohaku run` のような汎用ラッパー | 却下 | 何が走るか不透明、デバッグ性が落ちる |
+| C. interactive wizard (`yohaku init` 引数なしで対話モード) | 却下 (Phase 6 へ繰越) | 実装スコープ拡大、Phase 2.5 では非対話で十分 |
+| D. `yohaku watch` で fs 監視自動同期 | 却下 (Phase 7 へ繰越) | 監視プロセスの管理が増えるため Phase 2.5 のスコープを超える |
 
 ## 検証
 
@@ -62,16 +62,16 @@ tags: [phase-2-5, ux, cli, completion]
 | `npm run lint` | ✅ pass |
 | `npm test` | ✅ 54/54 (UX 改善は CLI レイヤなので既存テストに影響なし) |
 | `npm run build` | ✅ + scaffold 同梱 |
-| E2E: `sfai init --bootstrap` | ✅ scaffold 17 + graph build (objects=1 fields=1) + render 2 |
-| E2E: `sfai sync` | ✅ build + render 連続実行 |
-| E2E: `sfai render` (引数なし) | ✅ system-index + objects 全描画 |
-| E2E: `sfai render objects` | ✅ 後方互換、個別描画 |
+| E2E: `yohaku init --bootstrap` | ✅ scaffold 17 + graph build (objects=1 fields=1) + render 2 |
+| E2E: `yohaku sync` | ✅ build + render 連続実行 |
+| E2E: `yohaku render` (引数なし) | ✅ system-index + objects 全描画 |
+| E2E: `yohaku render objects` | ✅ 後方互換、個別描画 |
 
 ## 残課題 (Phase 3 / Phase 6 以降)
 
-- **対話モード `sfai init`**: Phase 6 で readline ベース実装
-- **`sfai watch`**: Phase 7 で fs 監視自動同期
-- **`sfai status`**: 現在のグラフ状態 (オブジェクト数 / 直近 build 時刻 / hash) — Phase 7 で
+- **対話モード `yohaku init`**: Phase 6 で readline ベース実装
+- **`yohaku watch`**: Phase 7 で fs 監視自動同期
+- **`yohaku status`**: 現在のグラフ状態 (オブジェクト数 / 直近 build 時刻 / hash) — Phase 7 で
 - **進行プログレスバー**: 大規模 org で `bootstrap` が長時間化する場合の UX 改善 — Phase 7 で
 
 ## 関連ナレッジ

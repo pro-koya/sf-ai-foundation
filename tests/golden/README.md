@@ -7,9 +7,9 @@
 ```
 tests/golden/
 ├── deterministic/          ← source: deterministic フィールドの完全一致テスト
-│   ├── graph-build/        ←   sfai graph build の入出力 SQLite snapshot
-│   ├── render/             ←   sfai render の入出力 Markdown
-│   └── diff/               ←   sfai diff の入出力 JSON (Phase 3 から)
+│   ├── graph-build/        ←   yohaku graph build の入出力 SQLite snapshot
+│   ├── render/             ←   yohaku render の入出力 Markdown
+│   └── diff/               ←   yohaku diff の入出力 JSON (Phase 3 から)
 ├── ai/                     ← source: ai フィールドの構造一致 + キーフレーズチェック
 │   ├── classify-diff/      ←   /classify-diff の入出力 (Phase 3 から)
 │   └── ...

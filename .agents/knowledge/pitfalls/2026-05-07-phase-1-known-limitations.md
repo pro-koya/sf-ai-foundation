@@ -45,7 +45,7 @@ Phase 1 の実装は標準形のメタデータを前提としているため、
 
 ### 4. 増分ビルドが実は全件書き戻し
 
-**現状**: `sfai graph build --incremental` は SQLite を `DELETE FROM ... ; INSERT ...` で全件書き戻し。
+**現状**: `yohaku graph build --incremental` は SQLite を `DELETE FROM ... ; INSERT ...` で全件書き戻し。
 **根拠**: ファイル単位のハッシュ比較 → 差分検出ロジックが Phase 1 では未実装。
 **回避策**: 大規模組織 (5000+ オブジェクト) では時間がかかる可能性。Phase 7 で fine-grained 増分対応予定。
 

@@ -10,7 +10,7 @@ tags: [phase-2, cycle-2-1, ci, e2e, bugs]
 
 ## 何が起きたか
 
-サイクル 2-1 完了直後に CI (`npm install / typecheck / lint / test`) と E2E スモークテスト (ダミー Salesforce DX プロジェクト `/tmp/sfai-smoke/` で `graph build → render` を通す) を実行したところ、6 件のバグが見つかった。**全件修正完了済み**。
+サイクル 2-1 完了直後に CI (`npm install / typecheck / lint / test`) と E2E スモークテスト (ダミー Salesforce DX プロジェクト `/tmp/yohaku-smoke/` で `graph build → render` を通す) を実行したところ、6 件のバグが見つかった。**全件修正完了済み**。
 
 ## バグ一覧
 
@@ -63,7 +63,7 @@ tags: [phase-2, cycle-2-1, ci, e2e, bugs]
 
 ### B8: graph query コマンドの SQL 引数が parser で誤って `command` 配列に入る
 
-**事象**: `sfai graph query "SELECT ..." --root /tmp/sfai-smoke` で SQL が `args.positional` に入らず空文字列扱いになり Usage エラー。
+**事象**: `yohaku graph query "SELECT ..." --root /tmp/yohaku-smoke` で SQL が `args.positional` に入らず空文字列扱いになり Usage エラー。
 **根本原因**: `parseArgs` は `--flag` を見るまで argv を `command[]` に積む設計。SQL は flag より前に来るので command に入る。
 **修正**: `cmdGraphQuery` 内で `args.command.slice(2)` も SQL 候補として結合する。
 **再発防止**: subcommand の引数解析は CLI ライブラリ (commander 等) の利用を Phase 5/6 で再検討。手書き parser はエッジケースが多い。
@@ -72,7 +72,7 @@ tags: [phase-2, cycle-2-1, ci, e2e, bugs]
 
 - B1, B2, B3: `npm run typecheck` 初回実行
 - B4, B5: `npm test` 初回実行 (3 件失敗)
-- B6, B7, B8: ダミー Salesforce プロジェクト (`/tmp/sfai-smoke/`) での E2E 実行
+- B6, B7, B8: ダミー Salesforce プロジェクト (`/tmp/yohaku-smoke/`) での E2E 実行
 
 ## 効果検証
 

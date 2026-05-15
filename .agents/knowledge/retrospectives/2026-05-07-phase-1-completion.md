@@ -3,7 +3,7 @@ type: retrospective
 date: 2026-05-07
 cycle: Phase 1 完遂 (9 サイクル統合: A〜I)
 phase: Phase-1
-tags: [phase-1, completion, milestone, sfai-core]
+tags: [phase-1, completion, milestone, core]
 ---
 
 # Retrospective: Phase 1 完遂
@@ -17,7 +17,7 @@ tags: [phase-1, completion, milestone, sfai-core]
 - **D**: スキーマ validator (ajv)、ハッシュユーティリティ、`LocalSourceAdapter`
 - **E**: グラフビルダー (XML 解析、エンティティ抽出 8 種、依存解析、SQLite 投入)
 - **F**: render エンジン (eta + マージ統合 + archive)
-- **G**: `sfai` CLI 入口 (graph build/query/schema/render/validate/metrics/version)
+- **G**: `yohaku` CLI 入口 (graph build/query/schema/render/validate/metrics/version)
 - **H**: secrets マスキング (rules + mask) + scaffold YAML 雛型
 - **I**: Phase 1 完了 ADR + 統合振り返り
 
@@ -75,9 +75,9 @@ tags: [phase-1, completion, milestone, sfai-core]
 
 ### 中期 (Phase 2 全体)
 
-- [ ] AI コスト計測 (`sfai metrics`) の実装と Phase 2 終了時の使用統計測定
+- [ ] AI コスト計測 (`yohaku metrics`) の実装と Phase 2 終了時の使用統計測定
 - [ ] hooks (`.claude/settings.json` の PostToolUse) を 500ms 以内で動作確認
-- [ ] `sfai diff` の最小骨格 (Phase 3 で本実装)
+- [ ] `yohaku diff` の最小骨格 (Phase 3 で本実装)
 
 ### 長期 (Phase 7 で改善)
 
@@ -91,7 +91,7 @@ tags: [phase-1, completion, milestone, sfai-core]
 - **TDD 風のテスト先行**: HUMAN_MANAGED マージは仕様 ADR を書いてから実装に入ったので、ゴールデンテストが自然な合否判定になった
 - **JSON Schema を正本、TS 型は派生**: 設計原則 (3 層分離) が型レベルで強制された
 - **immutable / readonly の徹底**: コードの予測可能性が高く、レビューが楽
-- **monorepo 構造**: 将来の `sfai-prompts` `sfai-adapters-dx-mcp` 分割に対応する土台ができた
+- **monorepo 構造**: 将来の `yohaku-prompts` `yohaku-adapters-dx-mcp` 分割に対応する土台ができた
 - **scaffold と packages の物理分離**: 開発中も「これはメタ層 / これは配布物」の判断が即時できた
 
 ## 課題 (Problem)

@@ -1,6 +1,6 @@
-# Quickstart — sfai を初めて使う
+# Quickstart — yohaku を初めて使う
 
-> 想定読者: Salesforce DX プロジェクトに **sfai を導入する利用者**
+> 想定読者: Salesforce DX プロジェクトに **yohaku を導入する利用者**
 > 所要時間: **30 分以内**
 
 ---
@@ -14,22 +14,22 @@
 
 ---
 
-## 1. sfai-core のインストール
+## 1. core のインストール
 
 ```bash
-git clone https://github.com/pro-koya/sf-ai-foundation
-cd sf-ai-foundation
+git clone https://github.com/pro-koya/yohakuforce
+cd yohakuforce
 npm install
 npm run build
 ```
 
-ビルドすると `packages/sfai-core/dist/cli.js` が `sfai` 本体になる。
+ビルドすると `packages/core/dist/cli.js` が `yohaku` 本体になる。
 グローバルから呼びたい場合:
 
 ```bash
-npm link --workspace @sf-ai-foundation/sfai-core
-which sfai
-sfai version
+npm link --workspace @yohakuforce/core
+which yohaku
+yohaku version
 ```
 
 ---
@@ -41,22 +41,22 @@ sfai version
 無い場合は最寄りのプロジェクトに移動するか、サンプルから始める:
 
 ```bash
-cp -r /path/to/sf-ai-foundation/examples/sample-project ./my-sfai-trial
-cd my-sfai-trial
+cp -r /path/to/yohakuforce/examples/sample-project ./my-yohaku-trial
+cd my-yohaku-trial
 ```
 
 (自分の Dev Edition org からメタデータを取得する手順は [`dev-edition-setup.md`](./dev-edition-setup.md) 参照)
 
 ---
 
-## 3. `sfai init --bootstrap` で 1 コマンド完了 (推奨)
+## 3. `yohaku init --bootstrap` で 1 コマンド完了 (推奨)
 
 ```bash
-sfai init --bootstrap --profile minimal --project-name my-trial --language ja
+yohaku init --bootstrap --profile minimal --project-name my-trial --language ja
 ```
 
 これだけで scaffold 展開 + `graph build` + `render` が完了する。
-個別実行したい場合は `--bootstrap` を外して `sfai init` のみにし、後から `sfai graph build` `sfai render` を別途叩く。
+個別実行したい場合は `--bootstrap` を外して `yohaku init` のみにし、後から `yohaku graph build` `yohaku render` を別途叩く。
 
 展開される構成:
 
@@ -71,7 +71,7 @@ my-trial/
 ├── .agents/
 │   ├── knowledge/       ← INDEX.md + decisions/pitfalls/wins/improvements/retrospectives/
 │   └── templates/       ← decision.md, pitfall.md, ...
-├── .sfai/
+├── .yohaku/
 │   └── secrets-rules.yaml ← マスキングルール (デフォルト + カスタム可)
 └── .gitignore
 ```
@@ -88,13 +88,13 @@ my-trial/
 `--bootstrap` を使った場合は既に完了しているのでスキップ可。個別に走らせるなら:
 
 ```bash
-sfai graph build
+yohaku graph build
 ```
 
-成功すると `.sfai/graph.sqlite` が生成される。出力例:
+成功すると `.yohaku/graph.sqlite` が生成される。出力例:
 
 ```
-[sfai] graph build complete: objects=12 fields=145 flows=8 apex=23
+[yohaku] graph build complete: objects=12 fields=145 flows=8 apex=23
 ```
 
 トラブルシュート:
@@ -103,24 +103,24 @@ sfai graph build
 
 ---
 
-## 5. 日常運用: `sfai sync` 1 コマンドで再構築
+## 5. 日常運用: `yohaku sync` 1 コマンドで再構築
 
-`force-app/` を編集した後の再構築は `sfai sync` 1 つで OK:
+`force-app/` を編集した後の再構築は `yohaku sync` 1 つで OK:
 
 ```bash
-sfai sync
+yohaku sync
 # 内部で graph build --incremental + render を実行
 ```
 
-完全再ビルドが必要なら `sfai sync --full-rebuild`。
+完全再ビルドが必要なら `yohaku sync --full-rebuild`。
 
 ---
 
 ## 6. グラフへの SQL クエリで検証
 
 ```bash
-sfai graph query "SELECT fqn, label FROM objects ORDER BY fqn LIMIT 10"
-sfai graph query "SELECT object, COUNT(*) AS cnt FROM fields GROUP BY object ORDER BY cnt DESC LIMIT 5"
+yohaku graph query "SELECT fqn, label FROM objects ORDER BY fqn LIMIT 10"
+yohaku graph query "SELECT object, COUNT(*) AS cnt FROM fields GROUP BY object ORDER BY cnt DESC LIMIT 5"
 ```
 
 ---
@@ -130,9 +130,9 @@ sfai graph query "SELECT object, COUNT(*) AS cnt FROM fields GROUP BY object ORD
 `sync` で全描画されるが、個別にしたい場合:
 
 ```bash
-sfai render             # system-index + objects 全描画
-sfai render system-index
-sfai render objects
+yohaku render             # system-index + objects 全描画
+yohaku render system-index
+yohaku render objects
 ```
 
 出力:
@@ -183,27 +183,27 @@ sfai render objects
 
 ```bash
 # 進捗記録
-sfai onboard state record-step --role new_joiner --step "session-start"
+yohaku onboard state record-step --role new_joiner --step "session-start"
 
 # 質問数カウント
-sfai onboard state increment-questions --role new_joiner
+yohaku onboard state increment-questions --role new_joiner
 
 # 進捗確認
-sfai onboard state show
+yohaku onboard state show
 
 # 対話ログから FAQ 抽出 (PII マスキング込み)
-sfai onboard faq extract --input dialogs.md --topic general
+yohaku onboard faq extract --input dialogs.md --topic general
 ```
 
-`.sfai/context-map.yaml` を編集すれば、persona 別の読み順を利用者プロジェクトに合わせて調整できる。
+`.yohaku/context-map.yaml` を編集すれば、persona 別の読み順を利用者プロジェクトに合わせて調整できる。
 
 ---
 
 ## 9. メトリクスの確認
 
 ```bash
-sfai metrics show --period month
-sfai metrics record --model claude-sonnet-4-6 --command /onboard --in 1500 --out 800
+yohaku metrics show --period month
+yohaku metrics record --model claude-sonnet-4-6 --command /onboard --in 1500 --out 800
 ```
 
 ---
@@ -211,8 +211,8 @@ sfai metrics record --model claude-sonnet-4-6 --command /onboard --in 1500 --out
 ## 10. 差分意味づけ (Phase 3)
 
 ```bash
-sfai diff --from main --to HEAD --json
-sfai diff --from main --to HEAD --include-static-analysis report.sarif
+yohaku diff --from main --to HEAD --json
+yohaku diff --from main --to HEAD --include-static-analysis report.sarif
 ```
 
 ---
@@ -220,7 +220,7 @@ sfai diff --from main --to HEAD --include-static-analysis report.sarif
 ## 困ったとき
 
 - ビルドが失敗 → コンソールメッセージを確認、[`SECURITY.md`](../../SECURITY.md) のフローでバグ報告
-- 機密情報マスキングを調整したい → `.sfai/secrets-rules.yaml` を編集
-- 依存解析がおかしい → `sfai graph query "SELECT * FROM dependencies WHERE ..."` で生データ確認
+- 機密情報マスキングを調整したい → `.yohaku/secrets-rules.yaml` を編集
+- 依存解析がおかしい → `yohaku graph query "SELECT * FROM dependencies WHERE ..."` で生データ確認
 - AI コストが高い → minimal プロファイルへ降格、または hooks を無効化
 - バグ報告 → [`/SECURITY.md`](../../SECURITY.md) のフロー

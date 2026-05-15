@@ -1,9 +1,9 @@
 ---
 type: decision
 date: 2026-05-09
-title: Phase 15 完了 — `/sfai-explain` 実機検証 (実 AI 推論で end-to-end)
+title: Phase 15 完了 — `/yohaku-explain` 実機検証 (実 AI 推論で end-to-end)
 status: completed
-tags: [phase-15, completion, sfai-explain, end-to-end-validation, real-ai]
+tags: [phase-15, completion, yohaku-explain, end-to-end-validation, real-ai]
 ---
 
 # Phase 15 完了
@@ -12,16 +12,16 @@ tags: [phase-15, completion, sfai-explain, end-to-end-validation, real-ai]
 
 | 指標 | 完了前 | 完了後 |
 |---|---|---|
-| `sfai explain-write` の実 AI 推論動作確認 | 未検証 (Phase 14 は擬似テキスト) | **5 エンティティ × 21 ブロックで動作確認済** |
+| `yohaku explain-write` の実 AI 推論動作確認 | 未検証 (Phase 14 は擬似テキスト) | **5 エンティティ × 21 ブロックで動作確認済** |
 | 検証で見つかった課題 | — | pitfalls 1 / wins 1 / improvements 4 件を追記 |
-| `sfai sync` 再実行後の AI_MANAGED 保全 | — | **全 21 ブロック保全** ✓ |
+| `yohaku sync` 再実行後の AI_MANAGED 保全 | — | **全 21 ブロック保全** ✓ |
 | Phase 8 既存 `purpose` の保全 | OK | **OK** (回帰なし、再々検証) |
-| `sfai sync` warnings | 0 | **0** (維持) |
+| `yohaku sync` warnings | 0 | **0** (維持) |
 | コード変更量 | — | **0 行** (基盤側は Phase 14 で完成済、本 Phase は検証のみ) |
 
 ## 実機検証結果
 
-claude-code セッション内の私 (= AI) が `explain-writer` subagent の指針 (`scaffold/.claude/agents/explain-writer.md.eta`) に従い、知識グラフのファクトのみを材料に各ブロック本文を生成 → `sfai explain-write` で書き戻すフローを実演:
+claude-code セッション内の私 (= AI) が `explain-writer` subagent の指針 (`scaffold/.claude/agents/explain-writer.md.eta`) に従い、知識グラフのファクトのみを材料に各ブロック本文を生成 → `yohaku explain-write` で書き戻すフローを実演:
 
 | # | Kind | FQN | 書き込んだ ID 数 | 結果 |
 |---|---|---|---|---|
@@ -31,7 +31,7 @@ claude-code セッション内の私 (= AI) が `explain-writer` subagent の指
 | 4 | object | `Invoice__c` | 3 (summary / narrative / business-domain) | `updated=3 skipped=0` |
 | 5 | flow | `Order_AutoCreateShipmentOnApproval` | 4 (Phase 14 擬似テキストの上書き再生成) | `updated=4 skipped=0` |
 
-**合計 21 ブロック書き込み完了**、全件 `sfai sync` 再実行後も保全。
+**合計 21 ブロック書き込み完了**、全件 `yohaku sync` 再実行後も保全。
 
 ### 評価観点ごとの結果
 
@@ -90,7 +90,7 @@ Phase 13 で導入した `postProcessMarkdown` のおかげで、AI が大量の
 - Phase 14 の registry 検証が早期エラーガードを担保
 - 246 + 10 = 256 テストすべて pass を維持
 - 3 層分離 (DETERMINISTIC / AI_MANAGED / HUMAN_MANAGED) を完全保全
-- `sfai sync` warnings=0 を維持
+- `yohaku sync` warnings=0 を維持
 
 ## 残課題 (Phase 16 以降)
 

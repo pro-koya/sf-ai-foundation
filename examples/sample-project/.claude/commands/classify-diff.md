@@ -17,7 +17,7 @@ argument-hint: [--from <ref>] [--to <ref>] [--include-static-analysis <sarif>]
 ### ステップ 2: 決定的差分の取得
 
 ```bash
-sfai diff --from <fromRef> --to <toRef> --json --path-prefix force-app/
+yohaku diff --from <fromRef> --to <toRef> --json --path-prefix force-app/
 ```
 
 `<fromRef>` `<toRef>` は引数 `$ARGUMENTS` から抽出 (デフォルト: `--from origin/main --to HEAD`)。
@@ -61,7 +61,7 @@ sfai diff --from <fromRef> --to <toRef> --json --path-prefix force-app/
 ### ステップ 5: スキーマ検証
 
 ```bash
-echo '<JSON>' | sfai validate --change-summary --target -
+echo '<JSON>' | yohaku validate --change-summary --target -
 ```
 
 **ajv 検証で source 列未指定が弾かれる**。失敗したら subagent 出力を修正。
@@ -73,7 +73,7 @@ echo '<JSON>' | sfai validate --change-summary --target -
 
 ### ステップ 7: AI コスト記録
 
-`sfai metrics record` でこのサイクルの token 使用を記録 (各 subagent 終了時にも個別記録推奨)。
+`yohaku metrics record` でこのサイクルの token 使用を記録 (各 subagent 終了時にも個別記録推奨)。
 
 ## 出力例
 
@@ -97,7 +97,7 @@ echo '<JSON>' | sfai validate --change-summary --target -
 
 ## 大型差分対応
 
-- `sfai diff --limit 1000` で取得時にトリミング (`truncated: true` がフラグ)
+- `yohaku diff --limit 1000` で取得時にトリミング (`truncated: true` がフラグ)
 - 1000 ファイル超なら **カテゴリ別代表サンプル** だけ subagent に渡す (Phase 3-7 で詳細化)
 
 ## 禁則

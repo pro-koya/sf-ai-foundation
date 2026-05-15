@@ -1,11 +1,11 @@
-# scaffold/ — 配布物の雛型 (sfai init で展開される一式)
+# scaffold/ — 配布物の雛型 (yohaku init で展開される一式)
 
 > **この層は「OSS を導入した利用者プロジェクト」に展開されるひな型を置く場所。**
 > リポジトリルート直下の `CLAUDE.md` `AGENTS.md` `.claude/` `.agents/` (= **メタ層**) とは用途が異なる。
 
 ## 何が入る予定か
 
-`sfai init` を利用者プロジェクトで実行すると、このディレクトリ配下が **eta テンプレートとして展開** されて配置される。
+`yohaku init` を利用者プロジェクトで実行すると、このディレクトリ配下が **eta テンプレートとして展開** されて配置される。
 
 | ファイル / ディレクトリ | 用途 | 構築 Phase |
 |---|---|---|
@@ -17,7 +17,7 @@
 | `.agents/knowledge/INDEX.md` | 利用者プロジェクトのナレッジ索引初期状態 | Phase 2 |
 | `.agents/knowledge/README.md` | ナレッジ運用の説明 | Phase 2 |
 | `.agents/templates/*.md` | decision / pitfall / win / improvement / retrospective テンプレ | Phase 2 |
-| `.gitignore` | `.sfai/`, `.claude/local/` などの除外設定 | Phase 1 |
+| `.gitignore` | `.yohaku/`, `.claude/local/` などの除外設定 | Phase 1 |
 
 ## 命名規則
 

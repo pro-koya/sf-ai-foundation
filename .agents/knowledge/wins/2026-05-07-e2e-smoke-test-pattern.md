@@ -9,7 +9,7 @@ tags: [phase-2, e2e, smoke-test, salesforce-dx]
 
 ## 何が効いたか
 
-Phase 1 完了後の動作確認で、`/tmp/sfai-smoke/` に **最小の Salesforce DX プロジェクト構造** をその場で組み立て、`sfai graph build → query → render` を通すスモークテストパターンを発見した。
+Phase 1 完了後の動作確認で、`/tmp/yohaku-smoke/` に **最小の Salesforce DX プロジェクト構造** をその場で組み立て、`yohaku graph build → query → render` を通すスモークテストパターンを発見した。
 ユニットテストでは検出できないバグが 3 件 (B6, B7, B8) このパターンで顕在化。
 
 ## なぜ効いたか
@@ -30,16 +30,16 @@ Phase 1 完了後の動作確認で、`/tmp/sfai-smoke/` に **最小の Salesfo
 
 ```bash
 # 1. ダミープロジェクトを /tmp に作成
-mkdir -p /tmp/sfai-smoke/force-app/main/default/{objects/Account/fields,classes}
+mkdir -p /tmp/yohaku-smoke/force-app/main/default/{objects/Account/fields,classes}
 
-cat > /tmp/sfai-smoke/sfdx-project.json <<'EOF'
+cat > /tmp/yohaku-smoke/sfdx-project.json <<'EOF'
 {
   "packageDirectories": [{ "path": "force-app", "default": true }],
   "sourceApiVersion": "62.0"
 }
 EOF
 
-cat > /tmp/sfai-smoke/force-app/main/default/objects/Account/Account.object-meta.xml <<'EOF'
+cat > /tmp/yohaku-smoke/force-app/main/default/objects/Account/Account.object-meta.xml <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
   <label>Account</label>
@@ -48,7 +48,7 @@ cat > /tmp/sfai-smoke/force-app/main/default/objects/Account/Account.object-meta
 </CustomObject>
 EOF
 
-cat > /tmp/sfai-smoke/force-app/main/default/objects/Account/fields/Industry.field-meta.xml <<'EOF'
+cat > /tmp/yohaku-smoke/force-app/main/default/objects/Account/fields/Industry.field-meta.xml <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
   <fullName>Industry</fullName>
@@ -57,7 +57,7 @@ cat > /tmp/sfai-smoke/force-app/main/default/objects/Account/fields/Industry.fie
 </CustomField>
 EOF
 
-cat > /tmp/sfai-smoke/force-app/main/default/classes/AccountService.cls <<'EOF'
+cat > /tmp/yohaku-smoke/force-app/main/default/classes/AccountService.cls <<'EOF'
 public with sharing class AccountService {
     public static List<Account> findActive() {
         return [SELECT Id, Name FROM Account];
@@ -65,7 +65,7 @@ public with sharing class AccountService {
 }
 EOF
 
-cat > /tmp/sfai-smoke/force-app/main/default/classes/AccountService.cls-meta.xml <<'EOF'
+cat > /tmp/yohaku-smoke/force-app/main/default/classes/AccountService.cls-meta.xml <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <ApexClass xmlns="http://soap.sforce.com/2006/04/metadata">
   <apiVersion>60.0</apiVersion>
@@ -74,11 +74,11 @@ cat > /tmp/sfai-smoke/force-app/main/default/classes/AccountService.cls-meta.xml
 EOF
 
 # 2. 通しで実行
-cd /tmp/sfai-smoke
-node /path/to/sfai-core/dist/cli.js graph build --root /tmp/sfai-smoke
-node /path/to/sfai-core/dist/cli.js graph query "SELECT * FROM objects" --root /tmp/sfai-smoke
-node /path/to/sfai-core/dist/cli.js render system-index --root /tmp/sfai-smoke
-node /path/to/sfai-core/dist/cli.js render objects --root /tmp/sfai-smoke
+cd /tmp/yohaku-smoke
+node /path/to/core/dist/cli.js graph build --root /tmp/yohaku-smoke
+node /path/to/core/dist/cli.js graph query "SELECT * FROM objects" --root /tmp/yohaku-smoke
+node /path/to/core/dist/cli.js render system-index --root /tmp/yohaku-smoke
+node /path/to/core/dist/cli.js render objects --root /tmp/yohaku-smoke
 
 # 3. HUMAN_MANAGED 保護検証 (重要)
 # - 出力 docs/generated/objects/Account.md の HUMAN_MANAGED ブロックに何か書く

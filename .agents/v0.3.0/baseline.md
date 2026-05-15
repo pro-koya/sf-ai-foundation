@@ -16,10 +16,10 @@
 
 ---
 
-## 1. `sfai sync` 運用状況 (DoD #1 のベースライン)
+## 1. `yohaku sync` 運用状況 (DoD #1 のベースライン)
 
 - 現状: v0.2.0 未導入のため運用なし
-- v0.3.0 Week 1 開始時点で `sfai init --bootstrap` 実施済みになる予定
+- v0.3.0 Week 1 開始時点で `yohaku init --bootstrap` 実施済みになる予定
 - **ベースライン値**: 0 回/週
 
 ---

@@ -13,10 +13,10 @@ tags: [phase-12, completion, narrative, visualforce, lightning-app, er-diagram]
 | 指標 | 完了前 | 完了後 |
 |---|---|---|
 | 取り込みメタデータ種別 | 18 | **21** (+ VisualforcePage / VisualforceComponent / CustomApplication) |
-| sfai-trial 出力ファイル数 | 66 | **69** |
+| yohaku-trial 出力ファイル数 | 66 | **69** |
 | ユニットテスト件数 | 226 | **235** (+9: VFP 2, VFC 2, App 2, ER 図 3) |
-| `sfai sync` warnings | 0 | **0** (維持) |
-| Phase 8/11 の `/sfai-explain` 出力保全 | OK | **OK** (purpose ブロック既存内容を保全) |
+| `yohaku sync` warnings | 0 | **0** (維持) |
+| Phase 8/11 の `/yohaku-explain` 出力保全 | OK | **OK** (purpose ブロック既存内容を保全) |
 | 設計書として書ける AI_MANAGED ブロック数 (Apex) | 2 (purpose / concerns) | **5** (+ narrative / business-scenario / key-design-decisions) |
 | ER 図 | なし | **system-overview.md に Mermaid erDiagram で描画** |
 
@@ -34,7 +34,7 @@ tags: [phase-12, completion, narrative, visualforce, lightning-app, er-diagram]
 | `object.eta` | summary | + `narrative` / `business-domain` |
 | その他 (LWC/Aura/FlexiPage/Layout/PS/Profile/VR/RT/AP/SR/CMR/NC/RSS) | purpose | (改修なし) |
 
-各ブロックは見出し付きでテンプレート側にプレースホルダを置き、AI が `/sfai-explain` 拡張で書き込む想定。**今 Phase ではブロック枠の追加までを行い、AI 自動生成は次 Phase**。
+各ブロックは見出し付きでテンプレート側にプレースホルダを置き、AI が `/yohaku-explain` 拡張で書き込む想定。**今 Phase ではブロック枠の追加までを行い、AI 自動生成は次 Phase**。
 
 #### 後方互換性の確保 (重要)
 
@@ -81,7 +81,7 @@ tags: [phase-12, completion, narrative, visualforce, lightning-app, er-diagram]
 - `render/er-diagram.ts` を新規作成
 - `system-index.eta` の counts テーブルに 3 行追加
 
-## 検証 (sfai-trial)
+## 検証 (yohaku-trial)
 
 | 確認項目 | 結果 |
 |---|---|
@@ -91,13 +91,13 @@ tags: [phase-12, completion, narrative, visualforce, lightning-app, er-diagram]
 | `system-overview.md` の ER 図 | Master-Detail と Lookup を区別、12 リレーション可視化 ✓ |
 | `apex/AccountBalanceService.md` の `purpose` ブロック | 既存 AI 推定文が **回帰なく保全** ✓ |
 | `apex/AccountBalanceService.md` の `narrative` 等の新ブロック | プレースホルダ文で正しく初期化 ✓ |
-| `sfai sync` warnings | **0** (Phase 11 から維持) |
+| `yohaku sync` warnings | **0** (Phase 11 から維持) |
 
 ## 設計判断のポイント
 
 ### purpose を残して新ブロックを追加した理由
 
-- 既に sfai-trial の Phase 8 で `/sfai-explain` により `purpose` ブロックに具体的な内容が書かれている (`AccountBalanceService` 等)
+- 既に yohaku-trial の Phase 8 で `/yohaku-explain` により `purpose` ブロックに具体的な内容が書かれている (`AccountBalanceService` 等)
 - これを上書きすると Phase 8 完了 ADR の保全要件に違反する
 - 新ブロックを **並列で追加** することで、既存運用を一切壊さず情報量だけを増やせた
 
@@ -109,7 +109,7 @@ tags: [phase-12, completion, narrative, visualforce, lightning-app, er-diagram]
 
 ### ER 図のスコープ判断
 
-- 全 referenceTo を 1 つの Mermaid に詰め込むと、大規模組織で読めなくなる懸念があるが、sfai-trial 規模では問題なし
+- 全 referenceTo を 1 つの Mermaid に詰め込むと、大規模組織で読めなくなる懸念があるが、yohaku-trial 規模では問題なし
 - 大規模対応は次 Phase で「ドメイン別 ER 図」として分割可能にする (今 Phase ではスコープ外)
 
 ### `.app-meta.xml` の衝突解決
@@ -122,17 +122,17 @@ tags: [phase-12, completion, narrative, visualforce, lightning-app, er-diagram]
 
 - 全エンティティの Quick Summary パターンを踏襲 (Phase 9-A2 標準)
 - 3 層分離 (DETERMINISTIC / AI_MANAGED / HUMAN_MANAGED) を全テンプレートで維持
-- Phase 8 の `/sfai-explain` 出力 (AI_MANAGED 内の customized テキスト) は sync で保全
+- Phase 8 の `/yohaku-explain` 出力 (AI_MANAGED 内の customized テキスト) は sync で保全
 - Phase 1〜11 までの 226 テストはすべて pass を維持
 
 ## 残課題 (Phase 13.x 以降)
 
-- **AI_MANAGED ブロック内部の自動生成**: `/sfai-explain` を `narrative` / `business-scenario` 等の複数 ID に対応させる
+- **AI_MANAGED ブロック内部の自動生成**: `/yohaku-explain` を `narrative` / `business-scenario` 等の複数 ID に対応させる
 - StaticResource / Tab / Application Tab の取り込み
 - 横断ドキュメント: 権限マトリクス (object × profile/PS の CRUD 集約) / 自動化マトリクス (object × Trigger/Flow/ApprovalProcess)
 - ER 図のドメイン別分割 (大規模組織対応)
 - Visualforce markup から Apex メソッドへの双方向参照解決 (現状はメソッド名候補のみ)
-- 再現性 CI: `/sfai-explain` を温度 0 / プロンプトハッシュ / N-run 一致で固定
+- 再現性 CI: `/yohaku-explain` を温度 0 / プロンプトハッシュ / N-run 一致で固定
 - 路線 C (公開準備): GitHub Issue/PR テンプレ / `docs/01-getting-started/` 充実 / セキュリティレビュー
 
 ## 関連ナレッジ

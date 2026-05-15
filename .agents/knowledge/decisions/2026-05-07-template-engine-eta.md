@@ -10,7 +10,7 @@ tags: [phase-1, technology-stack]
 
 ## 判断
 
-`sfai render` のテンプレートエンジンに **eta** (https://eta.js.org/) を採用する。
+`yohaku render` のテンプレートエンジンに **eta** (https://eta.js.org/) を採用する。
 
 ## 文脈
 

@@ -25,7 +25,7 @@ Phase 9 (途切れ解消 + パッと分かる要約 + 条件式自然語化) を
 | 9-A2 | 全エンティティ Quick Summary | `src/render/summary.ts` で 6 種 (Apex/Trigger/Flow/ValidationRule/RecordType/PermissionSet) のファクトベース要約を 1〜3 行で生成。テンプレ最上部に追加 |
 | 9-B1 | ValidationRule formula 自然語化 | `src/render/formula.ts` に Salesforce 式の簡易 parser + AST → 日本語レンダラを実装。AND/OR/NOT/比較/関数 (ISCHANGED, ISPICKVAL, NULLVALUE, IF, etc.) をサポート |
 
-## 中間サンプル (sfai-trial 実機)
+## 中間サンプル (yohaku-trial 実機)
 
 ### Mermaid + 詳細表 (`AccountBalanceService.recalculate`)
 
@@ -94,7 +94,7 @@ AND(
 |---|---|---|
 | Test Files | 28 | **30** |
 | Tests | 169 | **196 (+27)** |
-| sfai-trial で生成される Markdown | 49 | 49 (file 数同じだが内容が大幅増) |
+| yohaku-trial で生成される Markdown | 49 | 49 (file 数同じだが内容が大幅増) |
 | 新規モジュール | — | `summary.ts`, `formula.ts` |
 | Mermaid 詳細表 | なし | Apex 全メソッド + Flow に出る |
 | Quick Summary | なし | 全 6 エンティティ種別の冒頭に出る |
@@ -110,14 +110,14 @@ AND(
 
 ## merge 仕様への影響なし
 
-Phase 8 で導入した「customized AI_MANAGED は保全」規則は Phase 9 でも変わらず機能。実機で `AccountBalanceService` の `purpose` ブロックが `/sfai-explain` 経由で書き換えた状態のまま、`sfai sync` を 3 回回しても保全されることを確認。
+Phase 8 で導入した「customized AI_MANAGED は保全」規則は Phase 9 でも変わらず機能。実機で `AccountBalanceService` の `purpose` ブロックが `/yohaku-explain` 経由で書き換えた状態のまま、`yohaku sync` を 3 回回しても保全されることを確認。
 
 ## 残課題 (Phase 9.x 以降)
 
-- **9-B2: ApprovalProcess** — 取り込み + 申請 → 段階承認 → 結果の Mermaid フロー化 (sfai-trial に fixture を追加してから着手)
+- **9-B2: ApprovalProcess** — 取り込み + 申請 → 段階承認 → 結果の Mermaid フロー化 (yohaku-trial に fixture を追加してから着手)
 - **9-B3: SharingRules** — owner/criteria-based の条件可視化
 - **9-B4: PermissionSet 権限の可視化** — フィールド/オブジェクト権限のマトリクス
-- **9-C: AI_MANAGED 自動充填** — `/sfai-explain` を CI 化し全エンティティに自然語要約を回す
+- **9-C: AI_MANAGED 自動充填** — `/yohaku-explain` を CI 化し全エンティティに自然語要約を回す
 - **エッジ拡張**: Mermaid 詳細表の表示量が多い大規模クラスに `<details>` 折り畳み制御を提供 (現在は 1 メソッド単位で折り畳み済)
 
 ## 関連ナレッジ

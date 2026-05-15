@@ -21,7 +21,7 @@ Phase 10 (Profile body 拡充 + Layout + CustomMetadata + NamedCredential + Remo
 | 10-C | CustomMetadata Record 取り込み | `*.md-meta.xml` から Type / RecordName / values を抽出。Quick Summary に主要値 3 個を要約 |
 | 10-D | NamedCredential + RemoteSiteSetting | エンドポイント / プロトコル / 有効状態を取り込み。**シークレット (password / oauthToken 等) は値を一切出さず存在のみ表示**。実機検証で実際の SECRET 文字列が出力に出ないことを確認 |
 
-## sfai-trial fixture (Phase 10 で追加)
+## yohaku-trial fixture (Phase 10 で追加)
 
 | ファイル | 種別 | 件数 |
 |---|---|---|
@@ -32,12 +32,12 @@ Phase 10 (Profile body 拡充 + Layout + CustomMetadata + NamedCredential + Remo
 | `namedCredentials/EDI_Service.namedCredential-meta.xml` | NamedCredential (秘密値含む) | 1 |
 | `remoteSiteSettings/EdiService.remoteSite-meta.xml` | RemoteSiteSetting | 1 |
 
-## sfai-trial 実機検証
+## yohaku-trial 実機検証
 
 ```
-$ sfai sync
-[sfai] graph build complete: objects=11 fields=58 flows=1 apex=20
-[sfai] render complete: written=60 archived=0 warnings=0
+$ yohaku sync
+[yohaku] graph build complete: objects=11 fields=58 flows=1 apex=20
+[yohaku] render complete: written=60 archived=0 warnings=0
 ```
 
 | 種別 | Phase 9.x 末 → Phase 10 末 |
@@ -72,20 +72,20 @@ NamedCredential fixture には `<password>SECRET_PASSWORD_PLACEHOLDER</password>
 | Test Files | 33 | **34** |
 | Tests | 209 | **214 (+5)** |
 | 取り込み対応エンティティ | 11 種 | **15 種** (+ Layout / CMR / NamedCredential / RemoteSiteSetting) |
-| sfai-trial で生成される Markdown | 53 | **60** |
+| yohaku-trial で生成される Markdown | 53 | **60** |
 | AI_MANAGED 保全 (Phase 8 機能) | 動作 | 6 サイクル目の sync 後も維持を確認 |
 
 ## 設計上の注意点 (Phase 10 で確立)
 
 1. **シークレット保護パターン**: 拡張可能な `SECRET_TAGS` リストでパスワード/OAuth/証明書系のタグを羅列し、存在検出のみを返す `hasSecret: boolean` フラグだけ生成。値そのものは graph にも Markdown にも残さない
 2. **Profile = PermissionSet**: 内部的には同じ body 構造を共有することで重複実装を回避 (`extractPermissionSetBody` を両方が呼ぶ)
-3. **適合 fixture を必ず先に追加**: 利用者ご指示の「念入り検証」の実装。Phase 10 では 4 種すべてに `sfai-trial` の最低 1 fixture を追加してから実装→検証
+3. **適合 fixture を必ず先に追加**: 利用者ご指示の「念入り検証」の実装。Phase 10 では 4 種すべてに `yohaku-trial` の最低 1 fixture を追加してから実装→検証
 
 ## 残課題 (Phase 11 以降)
 
 - **LWC / Aura 取り込み** (多ファイル構造で別設計が必要)
 - **FlexiPage / Lightning App** (UI レイアウトの延長線)
-- **再現性 CI**: `/sfai-explain` を温度 0 / プロンプトハッシュ / N-run 一致でテスト
+- **再現性 CI**: `/yohaku-explain` を温度 0 / プロンプトハッシュ / N-run 一致でテスト
 - **CustomMetadataType 自体 (object-meta.xml)** の専用テンプレ (現状は CustomObject として描画される)
 - **Profile の field-level security 完全表現** (大規模 Profile では全フィールドの readable/editable 一覧が肥大化する → 折り畳み or サマリ化を検討)
 

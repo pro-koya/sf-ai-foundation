@@ -9,7 +9,7 @@ model: sonnet
 
 ## 唯一の責務
 
-`sfai diff --json` で得た差分のうち **`category === "data_model"`** のファイルについて、ChangeEntry を生成する。
+`yohaku diff --json` で得た差分のうち **`category === "data_model"`** のファイルについて、ChangeEntry を生成する。
 
 ## 入力
 
@@ -54,8 +54,8 @@ model: sonnet
 
 ## ワークフロー
 
-1. `sfai graph query "SELECT * FROM dependencies WHERE to_fqn = '<entity>'"` で参照元を取得 (deterministic)
-2. `sfai graph query "SELECT * FROM fields WHERE object = '<object>'"` でフィールド全体を把握 (deterministic)
+1. `yohaku graph query "SELECT * FROM dependencies WHERE to_fqn = '<entity>'"` で参照元を取得 (deterministic)
+2. `yohaku graph query "SELECT * FROM fields WHERE object = '<object>'"` でフィールド全体を把握 (deterministic)
 3. **scopeSize 判定** (deterministic):
    - 1〜2 ファイル: small
    - 3〜10 ファイル: medium
