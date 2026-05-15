@@ -37,6 +37,9 @@ logs/
 .env.local
 .env.*.local
 
+# セキュリティ監査レポート (内部記録)
+docs/release-notes/*-security-audit.md
+
 # 内部検証ログ (顧客固有情報を含む可能性のある運用記録)
 # これらはローカル運用データであり公開リポジトリに含めない
 .agents/review-result/
