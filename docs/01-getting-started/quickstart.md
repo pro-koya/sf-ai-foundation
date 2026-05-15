@@ -16,10 +16,8 @@
 
 ## 1. sfai-core のインストール
 
-(現在は OSS 公開前なので、リポジトリから直接ビルド)
-
 ```bash
-git clone https://github.com/sf-ai-foundation/sf-ai-foundation
+git clone https://github.com/pro-koya/sf-ai-foundation
 cd sf-ai-foundation
 npm install
 npm run build

@@ -2,6 +2,26 @@
 
 **Salesforce に携わるすべての人へ、本物の価値を届けるための AI 駆動基盤 OSS**
 
+[![CI](https://github.com/pro-koya/sf-ai-foundation/actions/workflows/ci.yml/badge.svg)](https://github.com/pro-koya/sf-ai-foundation/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
+[![Node.js >=20](https://img.shields.io/badge/Node.js-%3E%3D20-green.svg)](https://nodejs.org/)
+[![Tests: 258 passing](https://img.shields.io/badge/Tests-258%20passing-brightgreen.svg)](./packages/sfai-core/)
+
+---
+
+## クイックスタート
+
+```bash
+git clone https://github.com/pro-koya/sf-ai-foundation
+cd sf-ai-foundation
+npm install && npm run build
+npm link --workspace @sf-ai-foundation/sfai-core
+cd /path/to/your-salesforce-project
+sfai init --bootstrap --profile minimal
+```
+
+30 分で導入完了する詳細手順: [`docs/01-getting-started/quickstart.md`](./docs/01-getting-started/quickstart.md)
+
 ---
 
 ## このプロジェクトの存在理由

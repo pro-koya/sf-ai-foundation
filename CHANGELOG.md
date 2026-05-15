@@ -2,6 +2,41 @@
 
 すべての注目すべき変更は本ファイルに記録される (SemVer 準拠)。
 
+## [0.3.0] - 2026-05-17 (内部検証 実証フェーズ 公開リリース)
+
+> **v0.3.0 は新機能を追加しない「実証リリース」**である。Week 0 (2026-05-11〜05-13) に発見・修正した既知 pitfalls の解消 (セキュリティ Hotfix + Windows 互換 + スキーマ拡充 + Mermaid 方向修正) を集約し、OSS 公開リポジトリとしての品質基準を整えた。
+> v0.3.0 期間の北極星: **「現参画プロジェクトでの実利用 + KPI 計測」** は引き続き実施中。
+
+### Changed — OSS 公開向け仕上げ
+
+- `.gitignore` に内部運用記録ディレクトリ (`.agents/review-result/`, `.agents/v0.3.0/intro/`, `.agents/v0.3.0/playbooks/`, `.agents/v0.3.0/hearing-script.md`) を追加。顧客固有情報の公開防止を明示化
+- GitHub リポジトリ description / topics を設定済み
+- `package.json`: ルートの `version` を `0.3.0` に更新
+
+### Includes (Week 0 変更の集約)
+
+以下の v0.2.1〜v0.2.4 の変更を本バージョンに集約する:
+
+- **v0.2.4**: Trigger / Flow Mermaid 矢印方向を `Object → Trigger/Flow` に修正 + 回帰防止テスト追加
+- **v0.2.3**: Schema enum を Salesforce 公式値で拡充 (sharingModel 等 9 値) + `.github/` PR/Issue テンプレート追加
+- **v0.2.2**: Windows パス区切り互換 5 箇所対応 + スキーマ検証エラーの可読性改善
+- **v0.2.1**: セキュリティ Hotfix 12 件 (CRIT 1 / HIGH 5 / MED 5 / 推奨 1) 全件対応
+
+### Verified
+
+- 258/258 テスト pass、build OK、lint OK、typecheck OK
+- `npm audit`: production 依存の脆弱性 0 件 (残存 5 件は dev-only vitest/vite/esbuild)
+- 全ファイルを対象とした顧客固有情報スキャン: 検出なし
+
+### Known Limitations (v0.4.0 で対処予定)
+
+- `method-summary-table` がインライン SOQL `[SELECT ...]` を検出しない ([pitfalls](./.agents/knowledge/pitfalls/2026-05-09-method-summary-table-soql-detection.md))
+- `explain-writer` 改善 4 件 (ソース参照オプション / dry-run / 文例追加 / kind 自動判定)
+- `sfai metrics` が Claude Code セッションのトークンを計測していない (手動記録で代替)
+- `/sfai-explain` 一括実行モード (`--all` / カテゴリ単位)
+
+---
+
 ## [0.2.4] - 2026-05-13 (Trigger / Flow Mermaid 矢印方向修正 / v0.3.0 Week 0)
 
 > 利用者フィードバック: Trigger Mermaid で `Trigger → Object` という意味的に逆向きの矢印になっていた事象を解消。SObject の DML イベントが Trigger を発火させる関係を表現するため **Object → Trigger** に統一。

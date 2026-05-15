@@ -8,7 +8,10 @@ dist/
 # 知識グラフ (再生成可能な中間正本)
 .sfai/graph.sqlite
 .sfai/graph.sqlite-journal
+.sfai/graph.sqlite-shm
+.sfai/graph.sqlite-wal
 .sfai/cache/
+.sfai/tmp-*.json
 
 # オンボーディング状態 (ローカル)
 .sfai/onboarding-state.json
@@ -33,3 +36,11 @@ logs/
 .env
 .env.local
 .env.*.local
+
+# 内部検証ログ (顧客固有情報を含む可能性のある運用記録)
+# これらはローカル運用データであり公開リポジトリに含めない
+.agents/review-result/
+.agents/v0.3.0/intro/
+.agents/v0.3.0/playbooks/
+.agents/v0.3.0/hearing-script.md
+.agents/v0.3.0/weekly/
