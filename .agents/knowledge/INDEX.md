@@ -103,6 +103,7 @@
 - [2026-05-09: explain-writer の AI 推論 end-to-end が成立した](wins/2026-05-09-explain-writer-end-to-end-validation.md) — Phase 14 の基盤 + scaffold 指針 + registry のおかげで claude-code セッションの AI 推論で 5 エンティティ × 21 ブロックを設計書化、コード変更ゼロ
 - [2026-05-13: explain-write のマーカー整合性保全が初回実利用で機能](wins/2026-05-13-explain-write-marker-integrity-validation.md) — 実プロジェクトで Apex 7 ブロック一括更新が `updated=7 skipped=0` で完走、マーカー破壊なし
 - [2026-05-13: sfai onboard context の JSON API が AI から直接消費できた](wins/2026-05-13-onboard-context-json-api.md) — `{goal, readOrder, domains, primaryAgent}` 構造化返却で追加パース不要、エージェント実行計画に直結
+- [2026-05-15: OSS 公開前の顧客固有情報スキャンパターンが機能した](wins/2026-05-15-oss-release-security-scan.md) — ナレッジファイルへの固有名詞混入を事前発見、`.gitignore` による内部運用記録除外パターンを確立
 
 ---
 
