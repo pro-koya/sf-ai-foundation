@@ -2,7 +2,7 @@
 
 **Salesforce に携わるすべての人へ、本物の価値を届けるための AI 駆動基盤 OSS**
 
-[![CI](https://github.com/pro-koya/yohakuforce/actions/workflows/ci.yml/badge.svg)](https://github.com/pro-koya/yohakuforce/actions/workflows/ci.yml)
+[![CI](https://github.com/yohakuforce/core/actions/workflows/ci.yml/badge.svg)](https://github.com/yohakuforce/core/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 [![Node.js >=20](https://img.shields.io/badge/Node.js-%3E%3D20-green.svg)](https://nodejs.org/)
 [![Tests: 310 passing](https://img.shields.io/badge/Tests-310%20passing-brightgreen.svg)](./packages/core/)
@@ -12,7 +12,7 @@
 ## クイックスタート
 
 ```bash
-git clone https://github.com/pro-koya/yohakuforce
+git clone https://github.com/yohakuforce/core yohakuforce
 cd yohakuforce
 npm install && npm run build
 npm link --workspace @yohakuforce/core

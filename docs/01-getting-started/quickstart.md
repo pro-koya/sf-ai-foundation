@@ -17,7 +17,7 @@
 ## 1. core のインストール
 
 ```bash
-git clone https://github.com/pro-koya/yohakuforce
+git clone https://github.com/yohakuforce/core yohakuforce
 cd yohakuforce
 npm install
 npm run build

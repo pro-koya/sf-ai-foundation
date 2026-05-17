@@ -65,7 +65,7 @@ claude --version
 # 例: ドキュメントフォルダ配下に配置する場合
 cd $env:USERPROFILE\Documents
 
-git clone https://github.com/pro-koya/yohakuforce.git
+git clone https://github.com/yohakuforce/core.git yohakuforce
 cd yohakuforce
 ```
 

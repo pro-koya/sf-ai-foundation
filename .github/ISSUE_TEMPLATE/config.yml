@@ -1,12 +1,12 @@
 blank_issues_enabled: false
 contact_links:
   - name: セキュリティ脆弱性報告 / Security vulnerability
-    url: https://github.com/pro-koya/yohakuforce/security/advisories/new
+    url: https://github.com/yohakuforce/core/security/advisories/new
     about: |
       脆弱性は public issue として公開せず、Security Advisory で **非公開報告** してください。
       Please report security vulnerabilities privately via Security Advisories instead of public issues.
   - name: 議論・アイデア相談 / Discussions
-    url: https://github.com/pro-koya/yohakuforce/discussions
+    url: https://github.com/yohakuforce/core/discussions
     about: |
       バグでも明確な要望でもない、ふんわりとしたアイデアや相談はこちら (有効化されていれば)。
       For open-ended ideas or design discussions (if enabled).
